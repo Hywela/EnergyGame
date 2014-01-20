@@ -4,6 +4,7 @@
 #include <gl\GL.h>
 #include <gl\GLU.h>
 #include <SDL_image.h>
+//tull og fanteri test
 //Note this code is currently just placeholder code.
 
 // ----------------------------------  D E C L A R A C T I O N S   ------------------------------------
