@@ -1,10 +1,10 @@
+/*
 #include <iostream>
 #include <SDL.h>
 #include <glew.h>
 #include <gl\GL.h>
 #include <gl\GLU.h>
 #include <SDL_image.h>
-//tull og fanteri test
 //Note this code is currently just placeholder code.
 
 // ----------------------------------  D E C L A R A C T I O N S   ------------------------------------
@@ -363,7 +363,7 @@ void RenderCube()
 	glNormalPointer(GL_FLOAT, 0, cubenormals);
 
 	//draw the Cube
-	glDrawArrays(GL_QUADS, 0, 24);
+	glDrawArrays(GL_QUADS 0, 24);
 
 	//restore the state GL back
 	glDisableClientState(GL_NORMAL_ARRAY);
@@ -424,3 +424,4 @@ void MoveSlider(int x, int y)
 {
 	sliderPosx = x;
 }
+*/
