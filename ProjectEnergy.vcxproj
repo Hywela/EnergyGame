@@ -68,7 +68,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="InputData.cpp" />
+    <ClCompile Include="InputQueue.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="InputData.h" />
+    <ClInclude Include="InputQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
