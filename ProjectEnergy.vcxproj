@@ -10,6 +10,23 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Camera.cpp" />
+    <ClCompile Include="Source\Input.cpp" />
+    <ClCompile Include="Source\InputData.cpp" />
+    <ClCompile Include="Source\InputQueue.cpp" />
+    <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\test.cpp" />
+    <ClCompile Include="Source\Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Camera.h" />
+    <ClInclude Include="Source\Input.h" />
+    <ClInclude Include="Source\InputData.h" />
+    <ClInclude Include="Source\InputQueue.h" />
+    <ClInclude Include="Source\SolidSphere.h" />
+    <ClInclude Include="Source\Window.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1950523D-860B-4A77-9B9B-705A3CB75F1D}</ProjectGuid>
     <RootNamespace>ProjectEnergy</RootNamespace>
@@ -67,17 +84,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="InputData.cpp" />
-    <ClCompile Include="InputQueue.cpp" />
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="InputData.h" />
-    <ClInclude Include="InputQueue.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
