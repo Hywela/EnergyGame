@@ -5,24 +5,47 @@
 #include <gl\GL.h>
 #include <gl\GLU.h>
 #include <SDL_image.h>
-#include "SolidSphere.h"
-class Window
-{
+#include <vector>
+#include "Box.h"
+#include "Player.h"
+#include <Box2D\Box2D.h>
+#include "Platform.h"
+using namespace std;
+
+
+
+class Window {
 private:
-	// GLOBAL OBJECTS
+	b2World *world; // The world 
+	b2Body *addCircle;	// 
+	int screenheight;
+	int screenwidth;
+	int flags;
+	bool running;
+	bool mouseHeld;
+	int lastx, lasty;
+	int timer;
+	float rotx, roty, rotz;
+
 	SDL_Window* window;
 	SDL_GLContext context;
-
-	int screenheight = 600;
-	int screenwidth = 800;
-	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
-	
+	SDL_Event e;
+	vector <Box*> boxes;
+	Player *player;
+	Platform *platform;
 public:
+	Window(int w = 800, int h = 600);
+	~Window();
+
 	void SetupSDL();
 	void SetupOGL();
-	void Render(int x, int y, float yAngle, float xAngle);
-	void RenderObject();
-	Window();
-	~Window();
+	void Render();
+	void RenderScene();
+	void RenderGUI();
+	void RenderCube(float scalex = 1, float scaley = 1, float scalez = 1);
+	void CheckKeyEvent(SDL_Event e);
+	void SetupWorld();
+	void DoStuffWithShapes();
+	void addCircleToWorld();
+	void addPlatform();
 };
-
