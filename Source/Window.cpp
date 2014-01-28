@@ -188,10 +188,15 @@ void Window::SetupWorld() {
 
 	world = new b2World(b2Vec2(0.0, 9.81));
 	platform = new Platform(); 
+	world->SetGravity(b2Vec2 (100,0));
 	player = new Player(0, 0);
-	
-	b2Body* body = platform->addRect(screenwidth / 2, screenheight - 50, screenwidth, 30, false, world);
-	
+	b2Body* sta1 = platform->addRect(100, 300, 50, 10, false, world);
+	b2Body* sta2 = platform->addRect(600, 300, 50, 10, false, world);
+	b2Body* sta3 = platform->addRect(screenwidth / 2, 0+10, screenwidth, 10, false, world);
+	b2Body* sta4 = platform->addRect(10, screenheight/2, 10, screenheight, false, world);
+	b2Body* sta5 = platform->addRect(screenwidth -10, screenwidth / 3, 10, screenheight, false, world);
+	b2Body* body = platform->addRect(screenwidth / 2, screenheight-30 , screenwidth, 30, false, world);
+//	sta2->ApplyForce(10);
 	//addCircleToWorld();
 }
 

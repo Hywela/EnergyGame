@@ -26,7 +26,8 @@ b2Body * Platform::addRect(int x, int y, int w, int h, bool dyn, b2World *world)
 	b2FixtureDef fixturedef;
 	fixturedef.shape = &shape;
 	fixturedef.density = 1.0;
-	
+	fixturedef.friction = 0.0;
+	fixturedef.restitution = 0.8;
 	body->CreateFixture(&fixturedef);
 	body->SetUserData(0);
 	return body;

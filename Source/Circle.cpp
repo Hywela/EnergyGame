@@ -101,10 +101,13 @@ void Circle::addCircle(int x, int y, int w, int h, bool dyn, b2World *world){
 
 	b2FixtureDef fixturedef;
 	fixturedef.shape = &shape;
-	fixturedef.density = 1.0;
+	fixturedef.density = 0.0;
+	
 	fixturedef.friction = 0.0;
+	fixturedef.restitution = 0.0;
 	body->CreateFixture(&fixturedef);
 	body->SetUserData(&ground);
+	
 	
 }
 void Circle::MoveDistance(int distx, int disty) {
