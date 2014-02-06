@@ -1,8 +1,14 @@
+#include "Window.h"
 #pragma once
-class Input
-{
+class Input{
+private:
+	Window *window;
+	bool running;
+	SDL_Event e;
 public:
-	Input();
+	Input(Window *mainWindow);
 	~Input();
+
+	void inputLoop();
 };
 
