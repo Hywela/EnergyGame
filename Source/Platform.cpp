@@ -8,30 +8,6 @@ Platform::Platform()
 Platform::~Platform()
 {
 }
-b2Body * Platform::addRect(int x, int y, int w, int h, bool dyn, b2World *world)
-{
-	
-	b2BodyDef bodydef;
-	bodydef.position.Set(x*P2M, y*P2M);
-	if (dyn)
-		bodydef.type = b2_dynamicBody;
-	else 
-		bodydef.type = b2_staticBody;
-
-	b2Body* body = world->CreateBody(&bodydef);
-
-	b2PolygonShape shape;
-	shape.SetAsBox(P2M*w / 2, P2M*h / 2);
-
-	b2FixtureDef fixturedef;
-	fixturedef.shape = &shape;
-	fixturedef.density = 1.0;
-	fixturedef.friction = 0.0;
-	fixturedef.restitution = 0.8;
-	body->CreateFixture(&fixturedef);
-	body->SetUserData(0);
-	return body;
-}
 void Platform:: draw(b2Vec2* points, b2Vec2 center, float angle){
 	vector<float> vertices;
 	

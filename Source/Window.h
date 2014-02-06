@@ -6,18 +6,17 @@
 #include <gl\GLU.h>
 #include <SDL_image.h>
 #include <vector>
-#include "Box.h"
-#include "Player.h"
 #include <Box2D\Box2D.h>
-#include "Platform.h"
+
+#include "World.h"
 using namespace std;
 
 
 
 class Window {
 private:
-	b2World *world; // The world 
-	b2Body *addCircle;	// 
+
+	World *world;
 	int screenheight;
 	int screenwidth;
 	int flags;
@@ -30,9 +29,8 @@ private:
 	SDL_Window* window;
 	SDL_GLContext context;
 	SDL_Event e;
-	vector <Box*> boxes;
-	Player *player;
-	Platform *platform;
+	
+	
 public:
 	Window(int w = 800, int h = 600);
 	~Window();
@@ -45,7 +43,5 @@ public:
 	void RenderCube(float scalex = 1, float scaley = 1, float scalez = 1);
 	void CheckKeyEvent(SDL_Event e);
 	void SetupWorld();
-	void DoStuffWithShapes();
-	void addCircleToWorld();
-	void addPlatform();
+
 };

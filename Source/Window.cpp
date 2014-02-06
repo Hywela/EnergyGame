@@ -4,6 +4,7 @@
 Window::Window(int w, int h) {
 	screenheight = h;
 	screenwidth = w;
+
 	flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 	running = true;
 	mouseHeld = false;
@@ -25,10 +26,8 @@ Window::Window(int w, int h) {
 					break;
 				}
 				case SDL_MOUSEBUTTONDOWN: {
-					if (s)
-						platform->addRect(e.button.x, e.button.y, 20, 20, false, world);
-					else
-						player->addCircles(e.button.x, e.button.y, 20, 20, true, world);
+					world->addNewCircle(e.button.x, e.button.y, 0.5);
+
 					mouseHeld = true;
 					break;
 				}
@@ -56,7 +55,7 @@ Window::Window(int w, int h) {
 		}
 		int fps = (1000 / 30) - (timer - SDL_GetTicks());
 		
-		world->Step(1.0/30.0 ,8 ,3);  //update  dt:Number, velocityIterations:int, positionIterations:in // steps true the world
+		world->step();  //update  dt:Number, velocityIterations:int, positionIterations:in // steps true the world
 	//	player->Update();
 		
 		Render();
@@ -160,13 +159,10 @@ void Window::RenderGUI() {
 	glTranslatef(0, -screenheight, 0);
 	glMatrixMode(GL_MODELVIEW);
 
-	//Draw test boxes
-	for (int i = 0; i < boxes.size(); i++) {
-		boxes[i]->Render();
-	}
+
 
 	//Draw player
-		DoStuffWithShapes();
+		world->updateWorld();
 
 	// Disable GUI rendering:
 	glMatrixMode(GL_PROJECTION);
@@ -186,58 +182,8 @@ void Window::CheckKeyEvent(SDL_Event e) {
 
 void Window::SetupWorld() {
 
-	world = new b2World(b2Vec2(0.0, 9.81));
-	platform = new Platform(); 
-	world->SetGravity(b2Vec2 (100,0));
-	player = new Player(0, 0);
-	b2Body* sta1 = platform->addRect(100, 300, 50, 10, false, world);
-	b2Body* sta2 = platform->addRect(600, 300, 50, 10, false, world);
-	b2Body* sta3 = platform->addRect(screenwidth / 2, 0+10, screenwidth, 10, false, world);
-	b2Body* sta4 = platform->addRect(10, screenheight/2, 10, screenheight, false, world);
-	b2Body* sta5 = platform->addRect(screenwidth -10, screenwidth / 3, 10, screenheight, false, world);
-	b2Body* body = platform->addRect(screenwidth / 2, screenheight-30 , screenwidth, 30, false, world);
-//	sta2->ApplyForce(10);
-	//addCircleToWorld();
+	world = new World(screenwidth, screenheight);
+	world->setupWorld();
 }
 
-void Window::addCircleToWorld(){
-//Bodydef (postion, type)
-	
-	
 
-}
-void Window::DoStuffWithShapes(){
-	b2Body * B = world->GetBodyList();
-	while (B != NULL)
-	{
-		b2Fixture* F = B->GetFixtureList();
-		while (F != NULL)
-		{
-			switch (F->GetType())
-			{
-			case b2Shape::e_circle:
-			{
-				b2CircleShape* circle = (b2CircleShape*) F->GetShape();
-				/* Do stuff with a circle shape */
-				player->draw( B->GetWorldCenter(), B->GetAngle());
-				break;
-			}
-			case b2Shape::e_polygon:
-			{
-				b2PolygonShape* poly = (b2PolygonShape*) F->GetShape();
-				/* Do stuff with a polygon shape */
-				b2Vec2 points[4];
-				for (int i = 0; i < 4; i++){
-					points[i] = ((b2PolygonShape*) B->GetFixtureList()->GetShape())->GetVertex(i);
-				}
-				platform->draw(points, B->GetWorldCenter(), B->GetAngle());
-				break;
-			}
-				
-			}
-			F = F->GetNext();
-		}
-
-		B = B->GetNext();
-	}
-}
