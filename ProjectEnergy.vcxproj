@@ -11,34 +11,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Box.cpp" />
-    <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Circle.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\InputData.cpp" />
     <ClCompile Include="Source\InputQueue.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Platform.cpp" />
-    <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\Render.cpp" />
-    <ClCompile Include="Source\Sphere.cpp" />
-    <ClCompile Include="Source\test.cpp" />
     <ClCompile Include="Source\Window.cpp" />
+    <ClCompile Include="Source\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Box.h" />
-    <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Circle.h" />
     <ClInclude Include="Source\Consts.h" />
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\InputData.h" />
     <ClInclude Include="Source\InputQueue.h" />
     <ClInclude Include="Source\Platform.h" />
-    <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Render.h" />
-    <ClInclude Include="Source\SolidSphere.h" />
-    <ClInclude Include="Source\Sphere.h" />
     <ClInclude Include="Source\Window.h" />
+    <ClInclude Include="Source\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1950523D-860B-4A77-9B9B-705A3CB75F1D}</ProjectGuid>

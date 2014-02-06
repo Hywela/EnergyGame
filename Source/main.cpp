@@ -10,5 +10,6 @@ int main(int argc, char *argv[]) {
 	inputThread = new thread(&Input::inputLoop, Input(mainWindow));
 
 
+	mainWindow->mainLoop();
 	return 0;
 }
