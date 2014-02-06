@@ -24,13 +24,7 @@
     <ClCompile Include="Source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Input.cpp">
@@ -39,13 +33,7 @@
     <ClCompile Include="Source\Render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Box.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Circle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Sphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform.cpp">
@@ -62,13 +50,7 @@
     <ClInclude Include="Source\InputQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SolidSphere.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Input.h">
@@ -77,13 +59,7 @@
     <ClInclude Include="Source\Render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Box.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Circle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Sphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Consts.h">

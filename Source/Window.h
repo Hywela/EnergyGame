@@ -34,7 +34,7 @@ private:
 public:
 	Window(int w = 800, int h = 600);
 	~Window();
-
+	void mainLoop();
 	void SetupSDL();
 	void SetupOGL();
 	void Render();

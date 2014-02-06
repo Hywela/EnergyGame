@@ -14,58 +14,64 @@ Window::Window(int w, int h) {
 	SetupSDL();
 	SetupOGL();
 	SetupWorld();
-	bool s = true;
 	timer = SDL_GetTicks();
 	
+	
+}
+
+Window::~Window() {
+}
+
+void Window::mainLoop(){
+
 	while (running) {
 		while (SDL_PollEvent(&e)) {
 			switch (e.type) {
-				case SDL_KEYDOWN: {
-					s = !s;	// Switch between ball or square				
-				
-					break;
-				}
-				case SDL_MOUSEBUTTONDOWN: {
-					world->addNewCircle(e.button.x, e.button.y, 0.5);
+			case SDL_KEYDOWN: {
+								
 
-					mouseHeld = true;
-					break;
-				}
-				case SDL_MOUSEBUTTONUP: {
-					//cout << "Released button" << endl;
-						//					
-					cout << "Rotation (" << int(rotx) << ", " << int(roty) << ", " << int(rotz) << ")\n";
-					mouseHeld = false;
-					break;
-				}
-				case SDL_MOUSEMOTION: {
-					if (mouseHeld) {
-						if (e.motion.x != lastx) {
-							lastx = e.motion.x;
-							roty = int(roty + (e.motion.xrel / 10)) % 360;
-						}
-						if (e.motion.y != lasty) {
-							lasty = e.motion.y;
-							rotz = int(rotz + (e.motion.yrel / ((roty >= 160 || roty <= -160) ? 10 : -10))) % 360;
-						}
-					}
-					break;
-				}
+								  break;
+			}
+			case SDL_MOUSEBUTTONDOWN: {
+										  world->addNewCircle(e.button.x, e.button.y, 0.5);
+
+										  mouseHeld = true;
+										  break;
+			}
+			case SDL_MOUSEBUTTONUP: {
+										//cout << "Released button" << endl;
+										//					
+										cout << "Rotation (" << int(rotx) << ", " << int(roty) << ", " << int(rotz) << ")\n";
+										mouseHeld = false;
+										break;
+			}
+			case SDL_MOUSEMOTION: {
+									  if (mouseHeld) {
+										  if (e.motion.x != lastx) {
+											  lastx = e.motion.x;
+											  roty = int(roty + (e.motion.xrel / 10)) % 360;
+										  }
+										  if (e.motion.y != lasty) {
+											  lasty = e.motion.y;
+											  rotz = int(rotz + (e.motion.yrel / ((roty >= 160 || roty <= -160) ? 10 : -10))) % 360;
+										  }
+									  }
+									  break;
+			}
 			}
 		}
 		int fps = (1000 / 30) - (timer - SDL_GetTicks());
-		
+
 		world->step();  //update  dt:Number, velocityIterations:int, positionIterations:in // steps true the world
-	//	player->Update();
-		
+		//	player->Update();
+
 		Render();
 
 		SDL_Delay(fps);
 		timer = SDL_GetTicks();
 	}
-}
 
-Window::~Window() {
+
 }
 
 void Window::SetupSDL() {
