@@ -25,6 +25,7 @@ public:
 	b2Body* addCircle(int x, int y, float radius, bool dyn);
 	b2Body* addRect(int x, int y, int w, int h, bool dyn);
 	void applyForce(int x, int y);
+	void joinCircleJoints();
 
 };
 
