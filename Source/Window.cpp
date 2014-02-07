@@ -33,8 +33,8 @@ void Window::mainLoop(){
 								  break;
 			}
 			case SDL_MOUSEBUTTONDOWN: {
-										  world->addNewCircle(e.button.x, e.button.y, 0.5);
-
+										  //world->addNewCircle(e.button.x, e.button.y, 0.5);
+										  world->applyForce(e.button.x, e.button.y);
 										  mouseHeld = true;
 										  break;
 			}

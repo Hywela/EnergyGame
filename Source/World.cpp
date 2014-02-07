@@ -19,8 +19,8 @@ void World::setupWorld(){
 	world = new b2World(b2Vec2(0.0, 9.81));
 	platform = new Platform();
 	circle = new Circle();
-	world->SetGravity(b2Vec2(100, 0));
-	
+	world->SetGravity(b2Vec2(0, 0));
+	addNewCircle(100, 200, 0.5);
 	platforms->push_back(addRect(100, 300, 50, 10, false));
 	platforms->push_back(addRect(600, 300, 50, 10, false));
 	platforms->push_back(addRect(screenwidth / 2, 0 + 10, screenwidth, 10, false));
@@ -128,4 +128,24 @@ b2Body* World::addRect(int x, int y, int w, int h, bool dyn)
 	body->CreateFixture(&fixturedef);
 	body->SetUserData(0);
 	return body;
+}
+void World::applyForce(int x, int y){
+
+
+	
+
+
+
+
+	int ant = circles->size();
+	for (int i = 0; i < ant; i++){
+		b2Body * tempBody = circles->at(i);
+		b2Vec2 point = tempBody->GetPosition();
+		
+		b2Vec2 tempXY = tempBody->GetPosition();
+		b2Vec2 myForce(y - tempXY.y, x - tempXY.x);
+		
+
+			tempBody->ApplyForce(myForce, point, true);
+	}
 }
