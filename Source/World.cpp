@@ -20,10 +20,11 @@ void World::setupWorld(){
 	platform = new Platform();
 	circle = new Circle();
 	world->SetGravity(b2Vec2(0, 0));
-	addNewCircle(100, 200, 0.5);
-	addNewCircle(250, 250, 0.5);
-	//addNewCircle(90, 190, 0.5);
-	addNewCircle(120, 120, 0.5);
+	addNewCircle(200, 200, 0.5);
+	addNewCircle(200, 150, 0.25);
+	addNewCircle(250, 200, 0.25);
+	addNewCircle(200, 250, 0.25);
+	addNewCircle(150, 200, 0.25);
 	joinCircleJoints();
 	platforms->push_back(addRect(100, 300, 50, 10, false));
 	platforms->push_back(addRect(600, 300, 50, 10, false));
@@ -134,17 +135,20 @@ b2Body* World::addRect(int x, int y, int w, int h, bool dyn)
 	return body;
 }
 void World::applyForce(int x, int y){
-
+	//For all circles
 	int ant = circles->size();
 	for (int i = 0; i < ant; i++){
-		b2Body * tempBody = circles->at(i);
-		b2Vec2 point = tempBody->GetPosition();
-		
+		//Get handle
+		b2Body *tempBody = circles->at(i);
 		b2Vec2 tempXY = tempBody->GetPosition();
-		b2Vec2 myForce(y - tempXY.y, x - tempXY.x);
-		
+		tempXY *= M2P;
 
-			tempBody->ApplyForce(myForce, point, true);
+		//Calculate force
+		b2Vec2 mouseXY = b2Vec2(x, y);
+		b2Vec2 dist = mouseXY - tempXY;
+
+		//Apply force
+		tempBody->ApplyForce(-dist, tempXY, true);
 	}
 }
 void World::joinCircleJoints(){

@@ -7,9 +7,6 @@ Window::Window(int w, int h) {
 
 	flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 	running = true;
-	mouseHeld = false;
-	lastx = lasty = 0;
-	rotx = roty = rotz = 0;
 
 	SetupSDL();
 	SetupOGL();
@@ -27,44 +24,16 @@ void Window::mainLoop(){
 	while (running) {
 		while (SDL_PollEvent(&e)) {
 			switch (e.type) {
-			case SDL_KEYDOWN: {
-								
-
-								  break;
-			}
-			case SDL_MOUSEBUTTONDOWN: {
-										  //world->addNewCircle(e.button.x, e.button.y, 0.5);
-										  world->applyForce(e.button.x, e.button.y);
-										  mouseHeld = true;
-										  break;
-			}
-			case SDL_MOUSEBUTTONUP: {
-										//cout << "Released button" << endl;
-										//					
-										cout << "Rotation (" << int(rotx) << ", " << int(roty) << ", " << int(rotz) << ")\n";
-										mouseHeld = false;
-										break;
-			}
-			case SDL_MOUSEMOTION: {
-									  if (mouseHeld) {
-										  if (e.motion.x != lastx) {
-											  lastx = e.motion.x;
-											  roty = int(roty + (e.motion.xrel / 10)) % 360;
-										  }
-										  if (e.motion.y != lasty) {
-											  lasty = e.motion.y;
-											  rotz = int(rotz + (e.motion.yrel / ((roty >= 160 || roty <= -160) ? 10 : -10))) % 360;
-										  }
-									  }
-									  break;
-			}
+				case SDL_MOUSEBUTTONDOWN: {
+					//world->addNewCircle(e.button.x, e.button.y, 0.5);
+					world->applyForce(e.button.x, e.button.y);
+					break;
+				}
 			}
 		}
 		int fps = (1000 / 30) - (timer - SDL_GetTicks());
 
 		world->step();  //update  dt:Number, velocityIterations:int, positionIterations:in // steps true the world
-		//	player->Update();
-
 		Render();
 
 		SDL_Delay(fps);
@@ -125,36 +94,14 @@ void Window::Render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glLoadIdentity();
 
-	
 	//Redraw
-	RenderGUI();
-	RenderScene();
+	RenderOrtho();
 
 	//Present buffer
 	SDL_GL_SwapWindow(window);
 }
 
-void Window::RenderScene() {
-	//Project in 3D
-	glViewport(0, 0, screenwidth, screenheight);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(60.0f, (GLfloat) (screenwidth / screenheight), 0.1f, 100.0f);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glEnable(GL_LIGHTING);
-
-	//Camera pos
-	glTranslatef(0, 0, -6);
-	glRotatef(rotx, 1, 0, 0);
-	glRotatef(roty, 0, 1, 0);
-	glRotatef(rotz, 0, 0, 1);
-
-	//Restore light state
-	glDisable(GL_LIGHTING);
-}
-
-void Window::RenderGUI() {
+void Window::RenderOrtho() {
 	// Prepare for GUI rendering:
 	glMatrixMode(GL_PROJECTION);
 	glDisable(GL_DEPTH_TEST);
@@ -164,8 +111,6 @@ void Window::RenderGUI() {
 	glScalef(1, -1, 1);
 	glTranslatef(0, -screenheight, 0);
 	glMatrixMode(GL_MODELVIEW);
-
-
 
 	//Draw player
 		world->updateWorld();
@@ -187,7 +132,6 @@ void Window::CheckKeyEvent(SDL_Event e) {
 }
 
 void Window::SetupWorld() {
-
 	world = new World(screenwidth, screenheight);
 	world->setupWorld();
 }

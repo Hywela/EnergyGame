@@ -21,10 +21,7 @@ private:
 	int screenwidth;
 	int flags;
 	bool running;
-	bool mouseHeld;
-	int lastx, lasty;
 	int timer;
-	float rotx, roty, rotz;
 
 	SDL_Window* window;
 	SDL_GLContext context;
@@ -38,8 +35,7 @@ public:
 	void SetupSDL();
 	void SetupOGL();
 	void Render();
-	void RenderScene();
-	void RenderGUI();
+	void RenderOrtho();
 	void RenderCube(float scalex = 1, float scaley = 1, float scalez = 1);
 	void CheckKeyEvent(SDL_Event e);
 	void SetupWorld();
