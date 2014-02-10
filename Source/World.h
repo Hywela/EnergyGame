@@ -19,10 +19,12 @@ public:
 	~World();
 	void setupWorld();
 	void updateWorld();
-	void step();
+	void step(); 
 	void addNewCircle(int x, int y, float radius);
+
 	void addNewRect();
 	b2Body* addCircle(int x, int y, float radius, bool dyn);
+	b2Body* addMainChar(int x, int y, float radius, bool dyn);
 	b2Body* addRect(int x, int y, int w, int h, bool dyn);
 	void applyForce(int x, int y);
 	void joinCircleJoints();

@@ -19,11 +19,13 @@ void World::setupWorld(){
 	world = new b2World(b2Vec2(0.0, 9.81));
 	platform = new Platform();
 	circle = new Circle();
-	world->SetGravity(b2Vec2(0, 0));
-	addNewCircle(100, 200, 0.5);
-	addNewCircle(250, 250, 0.1);
-	//addNewCircle(90, 190, 0.5);
-	addNewCircle(120, 120, 0.1);
+	world->SetGravity(b2Vec2(0, 1));
+	circles->push_back(addMainChar(200, 200, 0.5, true));
+
+	addNewCircle(200, 150, 0.25);
+	addNewCircle(250, 200, 0.25);
+	addNewCircle(200, 250, 0.25);
+	addNewCircle(150, 200, 0.25);
 	joinCircleJoints();
 	platforms->push_back(addRect(100, 300, 50, 10, false));
 	platforms->push_back(addRect(600, 300, 50, 10, false));
@@ -31,8 +33,8 @@ void World::setupWorld(){
 	platforms->push_back(addRect(10, screenheight / 2, 10, screenheight, false));
 	platforms->push_back(addRect(screenwidth - 10, screenwidth / 3, 10, screenheight, false));
 	platforms->push_back(addRect(screenwidth / 2, screenheight - 30, screenwidth, 30, false));
-
 	
+
 
 }
 void World:: updateWorld(){
@@ -48,8 +50,9 @@ void World:: updateWorld(){
 			{
 									  b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
 									  /* Do stuff with a circle shape */
-									
+									  if (!F->IsSensor())
 									  circle->draw(B->GetWorldCenter(), B->GetAngle(), circleShape->m_radius);
+									  else {}
 									  break;
 			}
 			case b2Shape::e_polygon:
@@ -99,7 +102,7 @@ b2Body* World::addCircle(int x, int y, float radius, bool dyn){
 
 	b2FixtureDef fixturedef;
 	fixturedef.shape = &shape;
-	fixturedef.density = 1.0;
+	fixturedef.density = 0.0;
 
 	fixturedef.friction = 0.0;
 	fixturedef.restitution = 0.0;
@@ -108,7 +111,31 @@ b2Body* World::addCircle(int x, int y, float radius, bool dyn){
 
 	return body;
 }
+b2Body* World::addMainChar(int x, int y, float radius, bool dyn){
 
+	b2BodyDef bodydef;
+	bodydef.position.Set(x*P2M, y*P2M);
+	if (dyn)
+		bodydef.type = b2_dynamicBody;
+	b2Body* body = world->CreateBody(&bodydef);
+
+	b2CircleShape shape;
+
+	shape.m_radius = radius;
+	shape.m_p.Set(0, 0);
+
+	b2FixtureDef fixturedef;
+	fixturedef.shape = &shape;
+	fixturedef.density = 0.0;
+
+	fixturedef.friction = 0.0;
+	fixturedef.restitution = 0.0;
+	fixturedef.isSensor = true;
+	body->CreateFixture(&fixturedef);
+	//body->SetUserData(&ground);
+
+	return body;
+}
 b2Body* World::addRect(int x, int y, int w, int h, bool dyn)
 {
 
@@ -134,17 +161,20 @@ b2Body* World::addRect(int x, int y, int w, int h, bool dyn)
 	return body;
 }
 void World::applyForce(int x, int y){
-
+	//For all circles
 	int ant = circles->size();
-	for (int i = 0; i < 1; i++){
-		b2Body * tempBody = circles->at(i);
-		b2Vec2 point = tempBody->GetPosition();
-		b2Vec2 temp = { 0, 0 };
+	for (int i = 0; i < ant; i++){
+		//Get handle
+		b2Body *tempBody = circles->at(i);
 		b2Vec2 tempXY = tempBody->GetPosition();
-		b2Vec2 myForce( tempXY.y - y , tempXY.x - x);
-		
+		tempXY *= M2P;
 
-			tempBody->ApplyForce(myForce, point, true);
+		//Calculate force
+		b2Vec2 mouseXY = b2Vec2(x, y);
+		b2Vec2 dist = mouseXY - tempXY;
+
+		//Apply force
+		tempBody->ApplyForce(-dist, tempXY, true);
 	}
 }
 void World::joinCircleJoints(){
@@ -154,16 +184,10 @@ void World::joinCircleJoints(){
 	for (int i = 1; i < ant; i++){
 		b2Body * tempBody = circles->at(i);
 		b2DistanceJointDef  *join = new b2DistanceJointDef();
-
-	
-
-
-
 		join->Initialize(mainBody, tempBody, mainBody->GetPosition(), tempBody->GetPosition() );
 		join->collideConnected = true;
-	
 		world->CreateJoint(join);
-	
+		
 	}
 
 
