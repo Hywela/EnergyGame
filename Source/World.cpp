@@ -21,9 +21,9 @@ void World::setupWorld(){
 	circle = new Circle();
 	world->SetGravity(b2Vec2(0, 0));
 	addNewCircle(100, 200, 0.5);
-	addNewCircle(250, 250, 0.5);
+	addNewCircle(250, 250, 0.1);
 	//addNewCircle(90, 190, 0.5);
-	addNewCircle(120, 120, 0.5);
+	addNewCircle(120, 120, 0.1);
 	joinCircleJoints();
 	platforms->push_back(addRect(100, 300, 50, 10, false));
 	platforms->push_back(addRect(600, 300, 50, 10, false));
@@ -99,7 +99,7 @@ b2Body* World::addCircle(int x, int y, float radius, bool dyn){
 
 	b2FixtureDef fixturedef;
 	fixturedef.shape = &shape;
-	fixturedef.density = 0.0;
+	fixturedef.density = 1.0;
 
 	fixturedef.friction = 0.0;
 	fixturedef.restitution = 0.0;
@@ -136,12 +136,12 @@ b2Body* World::addRect(int x, int y, int w, int h, bool dyn)
 void World::applyForce(int x, int y){
 
 	int ant = circles->size();
-	for (int i = 0; i < ant; i++){
+	for (int i = 0; i < 1; i++){
 		b2Body * tempBody = circles->at(i);
 		b2Vec2 point = tempBody->GetPosition();
-		
+		b2Vec2 temp = { 0, 0 };
 		b2Vec2 tempXY = tempBody->GetPosition();
-		b2Vec2 myForce(y - tempXY.y, x - tempXY.x);
+		b2Vec2 myForce( tempXY.y - y , tempXY.x - x);
 		
 
 			tempBody->ApplyForce(myForce, point, true);
@@ -154,10 +154,16 @@ void World::joinCircleJoints(){
 	for (int i = 1; i < ant; i++){
 		b2Body * tempBody = circles->at(i);
 		b2DistanceJointDef  *join = new b2DistanceJointDef();
+
+	
+
+
+
 		join->Initialize(mainBody, tempBody, mainBody->GetPosition(), tempBody->GetPosition() );
 		join->collideConnected = true;
+	
 		world->CreateJoint(join);
-		
+	
 	}
 
 
