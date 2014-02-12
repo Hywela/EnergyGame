@@ -20,14 +20,14 @@ public:
 	void setupWorld();
 	void updateWorld();
 	void step(); 
-	void addNewCircle(int x, int y, float radius);
+	void addNewCircle(int x, int y, float radius, int grp = 1);
 
 	void addNewRect();
-	b2Body* addCircle(int x, int y, float radius, bool dyn);
-	b2Body* addMainChar(int x, int y, float radius, bool dyn);
-	b2Body* addRect(int x, int y, int w, int h, bool dyn);
+	b2Body* addCircle(int x, int y, float radius, bool dyn, int grp = 1);
+	b2Body* addMainChar(int x, int y, float radius, bool dyn, int grp = 1);
+	b2Body* addRect(int x, int y, int w, int h, bool dyn, int grp = 1);
 	void applyForce(int x, int y);
 	void joinCircleJoints();
-
+	void pullParticlesToCenter();
 };
 
