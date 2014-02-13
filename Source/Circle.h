@@ -20,7 +20,7 @@ const float MAX_FORCE = 20;
 class Circle {
 private:
 
-	vector <float> vertices;
+
 	
 
 

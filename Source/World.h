@@ -29,5 +29,6 @@ public:
 	void applyForce(int x, int y);
 	void joinCircleJoints();
 	void pullParticlesToCenter();
+	void updateChar();
 };
 

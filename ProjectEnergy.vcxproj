@@ -67,6 +67,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\EnergyGameDependencies\Box2D;C:\EnergyGameDependencies\glew\include\GL;C:\EnergyGameDependencies\SDL_image\include;C:\EnergyGameDependencies\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
