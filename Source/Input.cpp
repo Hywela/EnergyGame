@@ -21,6 +21,7 @@ void Input::inputLoop(){
 				}
 				case SDL_MOUSEBUTTONDOWN: {
 											  printf("%s\n", "Mouse down");
+											  window->applyForce(e.button.x, e.button.y);
 											  break;
 				}
 				case SDL_MOUSEBUTTONUP: {

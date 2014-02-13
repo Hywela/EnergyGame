@@ -22,7 +22,7 @@ void World::setupWorld(){
 	world->SetGravity(b2Vec2(0, 6));
 
 	//Create particles
-	int particleCount = 30; //Temporary
+	int particleCount = 50; //Temporary
 	float degreeStep = 360 / particleCount;
 	int posX = 400;
 	int posY = 300;
@@ -269,9 +269,9 @@ void World::pullParticlesToCenter() {
 		if (divider < 50 && tooQuick) {
 			tempBody->SetLinearVelocity(pull);
 		}
-		else if (divider < 10) {
-			pull.x *= 1.5;
-			pull.y *= 1.5;
+		else if (divider < 5) {
+			pull.x *= 1;
+			pull.y *= 1;
 			tempBody->SetLinearVelocity(pull);
 		}
 

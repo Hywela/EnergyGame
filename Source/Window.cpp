@@ -22,6 +22,7 @@ Window::~Window() {
 void Window::mainLoop(){
 
 	while (running) {
+		/*
 		while (SDL_PollEvent(&e)) {
 			switch (e.type) {
 				case SDL_MOUSEBUTTONDOWN: {
@@ -31,6 +32,7 @@ void Window::mainLoop(){
 				}
 			}
 		}
+		*/
 		int fps = (1000 / 30) - (timer - SDL_GetTicks());
 
 		world->step();  //update  dt:Number, velocityIterations:int, positionIterations:in // steps true the world
