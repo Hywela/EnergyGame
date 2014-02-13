@@ -31,8 +31,8 @@ void World::setupWorld(){
 	float pi = 3.14159265;
 
 	//Add central body part for joints
-	//circles->push_back(addMainChar(posX, posY, 0.5, true, 1));
-	addNewCircle(posX, posY, 0.5, -1);
+	circles->push_back(addMainChar(posX, posY, 0.3, true, 1));
+	//addNewCircle(posX, posY, 0.5, -1);
 
 	for (int d = 0; d < 360; d += degreeStep) {
 		float xTurn = cos(d * pi / 180.0F);
@@ -57,6 +57,8 @@ void World::setupWorld(){
 }
 void World:: updateWorld(){
 	b2Body * B = world->GetBodyList();
+
+		updateChar();
 	while (B != NULL)
 	{
 		b2Fixture* F = B->GetFixtureList();
@@ -66,11 +68,8 @@ void World:: updateWorld(){
 			{
 			case b2Shape::e_circle:
 			{
-									  b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
-									  /* Do stuff with a circle shape */
-									  if (!F->IsSensor())
-									  circle->draw(B->GetWorldCenter(), B->GetAngle(), circleShape->m_radius);
-									  else {}
+									  									  /* Do stuff with a circle shape */
+							
 									  break;
 			}
 			case b2Shape::e_polygon:
@@ -94,9 +93,25 @@ void World:: updateWorld(){
 
 	//Pull particles
 	pullParticlesToCenter();
+	
+}
+
+void World::updateChar(){
+
+
+
+	for (int i = 0; i < circles->size(); i++){
+		b2Fixture* F = 	circles->at(i)->GetFixtureList();
+		b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
+		
+			circle->draw(circles->at(i)->GetWorldCenter(), circles->at(i)->GetAngle(), circleShape->m_radius);
+
+	
+	}
+
 }
 void World::step(){
-	world->Step(1.0 / 30.0, 8, 3);
+	world->Step(1.0 / 32.0, 8, 3);
 }
 
 void World::addNewCircle(int x, int y, float radius, int grp){
@@ -124,7 +139,7 @@ b2Body* World::addCircle(int x, int y, float radius, bool dyn, int grp){
 
 	fixturedef.friction = 0.0;
 	fixturedef.restitution = 0.0;
-
+	fixturedef.isSensor = true;
 	fixturedef.filter.groupIndex = grp;
 	body->CreateFixture(&fixturedef);
 	//body->SetUserData(&ground);
@@ -150,7 +165,6 @@ b2Body* World::addMainChar(int x, int y, float radius, bool dyn, int grp){
 
 	fixturedef.friction = 0.0;
 	fixturedef.restitution = 0.0;
-	fixturedef.isSensor = true;
 
 	fixturedef.filter.groupIndex = grp;
 	body->CreateFixture(&fixturedef);
@@ -177,7 +191,7 @@ b2Body* World::addRect(int x, int y, int w, int h, bool dyn, int grp)
 	fixturedef.shape = &shape;
 	fixturedef.density = 1.0;
 	fixturedef.friction = 0.0;
-	fixturedef.restitution = 0.8;
+	fixturedef.restitution = 0.0;
 
 	fixturedef.filter.groupIndex = grp;
 	body->CreateFixture(&fixturedef);
@@ -198,7 +212,7 @@ void World::applyForce(int x, int y){
 		b2Vec2 dist = mouseXY - tempXY;
 
 		//Calculate force
-		const float SPEED = 50; //TODO: Move this into the class
+		const float SPEED = 40; //TODO: Move this into the class
 		float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
 		float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
 		float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
@@ -253,7 +267,7 @@ void World::pullParticlesToCenter() {
 
 		//Calculate breakforce to keep you in the field even if you come in shitty fast
 		b2Vec2 pull = tempBody->GetLinearVelocity();
-		int maxForceClose = 20;
+		int maxForceClose = 8;
 		bool tooQuick = false;
 
 		if (pull.x > maxForceClose || pull.x <-maxForceClose) {

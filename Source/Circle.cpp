@@ -12,6 +12,7 @@ Circle::~Circle() {
 }
 
 void Circle::draw( b2Vec2 center, float angle, float radius){
+	vector <float> vertices;
 	vertices.clear();
 
 	vertices.push_back(0);
