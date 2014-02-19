@@ -39,5 +39,5 @@ public:
 	void RenderCube(float scalex = 1, float scaley = 1, float scalez = 1);
 	void CheckKeyEvent(SDL_Event e);
 	void SetupWorld();
-
+	World* GetWorld();
 };

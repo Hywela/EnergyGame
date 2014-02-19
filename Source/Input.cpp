@@ -13,6 +13,7 @@ Input::~Input(){
 
 void Input::inputLoop(){
 	while (running){
+		/*
 		while (SDL_PollEvent(&e)) {
 			switch (e.type) {
 				case SDL_KEYDOWN: {
@@ -21,7 +22,7 @@ void Input::inputLoop(){
 				}
 				case SDL_MOUSEBUTTONDOWN: {
 											  printf("%s\n", "Mouse down");
-											  window->applyForce(e.button.x, e.button.y);
+											  window->GetWorld()->applyForce(e.button.x, e.button.y);
 											  break;
 				}
 				case SDL_MOUSEBUTTONUP: {
@@ -34,5 +35,6 @@ void Input::inputLoop(){
 				}
 			}
 		}
+		*/
 	}
 }

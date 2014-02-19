@@ -39,10 +39,13 @@ void World::setupWorld(){
 		float yTurn = sin(d * pi / 180.0F);
 		int dX = (xTurn * fieldRadius);
 		int dY = (yTurn * fieldRadius);
+		float roll = (1 + (rand() % 100)) / 100.0;
+		dX *= roll;
+		dY *= roll;
 		addNewCircle(posX + dX, posY + dY, circleRadius, -1);
 	}
 
-	//joinCircleJoints();
+	joinCircleJoints();
 
 	int platformGroup = 1;
 	platforms->push_back(addRect(100, 300, 50, 10, false, platformGroup));
@@ -92,8 +95,15 @@ void World:: updateWorld(){
 	}
 
 	//Pull particles
-	pullParticlesToCenter();
-	
+	//pullParticlesToCenter();
+
+	//Center camera at center of the particle field
+	b2Vec2 windowCenter = b2Vec2(screenwidth / 2, screenheight / 2);
+	b2Vec2 fieldCenter = circles->at(0)->GetPosition();
+	fieldCenter *= M2P;
+	b2Vec2 cameraCenter = fieldCenter - windowCenter;
+	cameraCenter *= P2M;
+	world->ShiftOrigin(cameraCenter);
 }
 
 void World::updateChar(){
@@ -234,8 +244,8 @@ void World::joinCircleJoints(){
 		b2DistanceJointDef  *join = new b2DistanceJointDef();
 		join->Initialize(mainBody, tempBody, mainBody->GetPosition(), tempBody->GetPosition() );
 		join->collideConnected = true;
+		join->type = e_ropeJoint; //b2JointType(x);
 		world->CreateJoint(join);
-		
 	}
 
 
