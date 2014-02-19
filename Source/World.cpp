@@ -8,6 +8,8 @@ World::World(int screenwidth, int screenheight)
 	this->screenheight = screenheight;
 	platforms = new vector<b2Body*>;
 	circles = new vector<b2Body*>;
+	joints = new vector<b2Joint*>;
+	isFired = new vector<bool>;
 }
 
 
@@ -22,7 +24,7 @@ void World::setupWorld(){
 	world->SetGravity(b2Vec2(0, 6));
 
 	//Create particles
-	int particleCount = 50; //Temporary
+	int particleCount = 60; //Temporary
 	float degreeStep = 360 / particleCount;
 	int posX = 400;
 	int posY = 300;
@@ -39,7 +41,9 @@ void World::setupWorld(){
 		float yTurn = sin(d * pi / 180.0F);
 		int dX = (xTurn * fieldRadius);
 		int dY = (yTurn * fieldRadius);
-		float roll = (1 + (rand() % 100)) / 100.0;
+		int minRoll = 30;
+		int maxRoll = 100;
+		float roll = (minRoll + (rand() % (maxRoll - minRoll))) / 100.0;
 		dX *= roll;
 		dY *= roll;
 		addNewCircle(posX + dX, posY + dY, circleRadius, -1);
@@ -209,46 +213,58 @@ b2Body* World::addRect(int x, int y, int w, int h, bool dyn, int grp)
 	return body;
 }
 void World::applyForce(int x, int y){
-	//Move particles towards center
-	int ant = circles->size();
-	for (int i = 0; i < ant; i++) {
-		//Get handle
-		b2Body *tempBody = circles->at(i);
-		b2Vec2 tempXY = tempBody->GetPosition();
-		tempXY *= M2P;
+	//Pop off closest particles
+	bool couldFire = shootParticle(x, y);
 
-		//Calculate direction
-		b2Vec2 mouseXY = b2Vec2(x, y);
-		b2Vec2 dist = mouseXY - tempXY;
+	if (couldFire) {
+		//Push particles away from mouse
+		int ant = circles->size();
+		for (int i = 0; i < ant; i++) {
+			if (!i || !isFired->at(i - 1)) {
+				//Get handle
+				b2Body *tempBody = circles->at(i);
+				b2Vec2 tempXY = tempBody->GetPosition();
+				tempXY *= M2P;
 
-		//Calculate force
-		const float SPEED = 40; //TODO: Move this into the class
-		float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
-		float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
-		float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
-		float xGravityForce = 3; //Force to counteract friction
-		float yGravityForce = 6; //Force to counteract gravity
-		b2Vec2 direction = b2Vec2((dist.x / divider) * xGravityForce, (dist.y / divider) * yGravityForce);
-		direction *= SPEED; //Apply base speed of the object
+				//Calculate direction
+				b2Vec2 mouseXY = b2Vec2(x, y);
+				b2Vec2 dist = mouseXY - tempXY;
 
-		//Apply force
-		tempBody->ApplyForce(-direction, tempXY, true);
+				//Calculate force
+				const float SPEED = 40; //TODO: Move this into the class
+				float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
+				float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
+				float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
+				float xGravityForce = 3; //Force to counteract friction
+				float yGravityForce = 6; //Force to counteract gravity
+				b2Vec2 direction = b2Vec2((dist.x / divider) * xGravityForce, (dist.y / divider) * yGravityForce);
+				direction *= SPEED; //Apply base speed of the object
+
+				//Apply force
+				tempBody->ApplyForce(-direction, tempXY, true);
+			}
+		}
 	}
 }
 void World::joinCircleJoints(){
+	b2Body *mainBody = circles->at(0);
 
+	//Joint all particles
 	int ant = circles->size();
-	b2Body * mainBody = circles->at(0);
-	for (int i = 1; i < ant; i++){
+	for (int i = 1; i < ant; i++) {
 		b2Body * tempBody = circles->at(i);
+
+		//Initialize join settings
 		b2DistanceJointDef  *join = new b2DistanceJointDef();
-		join->Initialize(mainBody, tempBody, mainBody->GetPosition(), tempBody->GetPosition() );
+		join->Initialize(mainBody, tempBody, mainBody->GetPosition(), tempBody->GetPosition());
 		join->collideConnected = true;
 		join->type = e_ropeJoint; //b2JointType(x);
-		world->CreateJoint(join);
+
+		//Add joint
+		b2Joint *newJoint = world->CreateJoint(join);
+		joints->push_back(newJoint);
+		isFired->push_back(false);
 	}
-
-
 }
 
 void World::pullParticlesToCenter() {
@@ -302,4 +318,77 @@ void World::pullParticlesToCenter() {
 		//Apply force
 		tempBody->ApplyForce(direction, tempXY, true);
 	}
+}
+
+bool World::shootParticle(int x, int y) {
+	//Get field position
+	b2Body *mainBody = circles->at(0);
+	b2Vec2 mainXY = mainBody->GetPosition();
+	mainXY *= M2P;
+
+	//Calculate shoot direction
+	b2Vec2 mouseXY = b2Vec2(x, y);
+	b2Vec2 dist = mouseXY - mainXY;
+
+	//Calculate force
+	const float SPEED = 40; //TODO: Move this into the class
+	float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
+	float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
+	float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
+	float xGravityForce = 1; //Force to counteract friction
+	float yGravityForce = 1; //Force to counteract gravity
+	b2Vec2 direction = b2Vec2(dist.x / divider, dist.y / divider);
+	direction *= SPEED; //Apply base speed of the object
+
+	int closestParticle = 0;
+	int closestTotDist = 0;
+	int particlesLeft = 0;
+
+	//Find closest particle
+	int ant = circles->size();
+	for (int i = 1; i < ant; i++) {
+		//Get handle
+		b2Body *tempBody = circles->at(i);
+		b2Vec2 tempXY = tempBody->GetPosition();
+		tempXY *= M2P;
+
+		//Calculate particle distance
+		b2Vec2 parDist = mouseXY - tempXY;
+		int parTotDist = ((parDist.x < 0) ? -parDist.x : parDist.x) + ((parDist.y < 0) ? -parDist.y : parDist.y);
+
+		//Make sure not popped
+		if (!isFired->at(i - 1)) {
+			particlesLeft++;
+
+			//If first or closer
+			if (!closestParticle || parTotDist < closestTotDist) {
+				closestParticle = i;
+				closestTotDist = parTotDist;
+			}
+		}
+	}
+
+	//If particle found
+	if (closestParticle) {
+		//Pop off
+		int jointId = closestParticle - 1;
+
+		b2Joint *popJoint = joints->at(jointId);
+		joints->at(jointId) = joints->at(0);
+		isFired->at(jointId) = true;
+		world->DestroyJoint(popJoint);
+
+		//Apply force
+		b2Body *parBody = circles->at(closestParticle);
+		b2Vec2 parXY = parBody->GetPosition();
+		parXY *= M2P;
+		parBody->ApplyForce(direction, parXY, true);
+
+		cout << "Particles left: " << particlesLeft - 1 << "!\n";
+	}
+	else {
+		cout << "No particles left!\n";
+	}
+
+	return closestParticle;
 }
