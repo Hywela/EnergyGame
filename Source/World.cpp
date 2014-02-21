@@ -98,7 +98,13 @@ void World:: updateWorld(){
 
 void World::updateChar(){
 
+	b2Fixture* F = circles->at(0)->GetFixtureList();
+	b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
 
+	b2Vec2 pos = circles->at(0)->GetWorldCenter();
+	gluLookAt(0, 0, 0,
+		0.0f, 0.0f, -1.0f,
+		0.0f, 1.0f, 0.0f);
 
 	for (int i = 0; i < circles->size(); i++){
 		b2Fixture* F = 	circles->at(i)->GetFixtureList();
