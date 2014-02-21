@@ -25,12 +25,12 @@ void Window::mainLoop(){
 		while (SDL_PollEvent(&e)) {
 			switch (e.type) {
 				case SDL_MOUSEBUTTONDOWN: {
-					//world->addNewCircle(e.button.x, e.button.y, 0.5);
 					world->applyForce(e.button.x, e.button.y);
 					break;
 				}
 			}
 		}
+
 		int fps = (1000 / 30) - (timer - SDL_GetTicks());
 
 		world->step();  //update  dt:Number, velocityIterations:int, positionIterations:in // steps true the world
@@ -136,4 +136,6 @@ void Window::SetupWorld() {
 	world->setupWorld();
 }
 
-
+World* Window::GetWorld() {
+	return world;
+}

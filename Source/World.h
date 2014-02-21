@@ -1,7 +1,7 @@
 #pragma once
 #include "Circle.h"
 #include "Platform.h"
-
+#include <random>
 
 class World
 {
@@ -12,6 +12,8 @@ private:
 	Circle *circle;
 	vector <b2Body*> *platforms;
 	vector <b2Body*> *circles;
+	vector <b2Joint*> *joints;
+	vector <bool> *isFired;
 	int  screenwidth , screenheight;
 
 public:
@@ -30,5 +32,6 @@ public:
 	void joinCircleJoints();
 	void pullParticlesToCenter();
 	void updateChar();
+	bool shootParticle(int x, int y);
 };
 
