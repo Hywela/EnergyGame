@@ -3,6 +3,10 @@
 #include "Platform.h"
 #include <random>
 
+const b2Vec3 COLOR_SOLID = b2Vec3(0.7, 0.7, 0.7);
+const b2Vec3 COLOR_UNLIT = b2Vec3(0.7, 0, 0);
+const b2Vec3 COLOR_LIT = b2Vec3(0, 1, 0);
+
 class World
 {
 private:
@@ -14,6 +18,9 @@ private:
 	vector <b2Body*> *circles;
 	vector <b2Joint*> *joints;
 	vector <bool> *isFired;
+	vector <b2Vec3> *circleColors;
+	vector <b2Vec3> *platformColors;
+
 	int  screenwidth , screenheight;
 
 public:
@@ -32,6 +39,7 @@ public:
 	void joinCircleJoints();
 	void pullParticlesToCenter();
 	void updateChar();
+	void updatePlatforms();
 	bool shootParticle(int x, int y);
 };
 

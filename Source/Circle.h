@@ -28,7 +28,7 @@ public:
 	Circle();
 	~Circle();
 
-	void draw(b2Vec2 center, float angle,  float radius);
+	void draw(b2Vec2 center, float angle, float radius, b2Vec3 color = b2Vec3(1, 1, 1));
 	
 
 	

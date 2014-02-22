@@ -23,6 +23,6 @@ public:
 	Platform();
 	~Platform();
 	
-	void draw(b2Vec2* points, b2Vec2 center, float angle);
+	void draw(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color = b2Vec3(1, 1, 1));
 };
 

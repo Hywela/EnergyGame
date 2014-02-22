@@ -10,6 +10,8 @@ World::World(int screenwidth, int screenheight)
 	circles = new vector<b2Body*>;
 	joints = new vector<b2Joint*>;
 	isFired = new vector<bool>;
+	circleColors = new vector<b2Vec3>;
+	platformColors = new vector<b2Vec3>;
 }
 
 
@@ -35,8 +37,10 @@ void World::setupWorld(){
 	//Add central body part for joints
 	circles->push_back(addMainChar(posX, posY, 0.3, true, 1));
 	//addNewCircle(posX, posY, 0.5, -1);
+	b2Vec3 mainColor = b2Vec3(1, 1, 1);
+	circleColors->push_back(mainColor);
 
-	for (int d = 0; d < 360; d += degreeStep) {
+	for (float d = 0; d < 360; d += degreeStep) {
 		float xTurn = cos(d * pi / 180.0F);
 		float yTurn = sin(d * pi / 180.0F);
 		int dX = (xTurn * fieldRadius);
@@ -47,56 +51,50 @@ void World::setupWorld(){
 		dX *= roll;
 		dY *= roll;
 		addNewCircle(posX + dX, posY + dY, circleRadius, -1);
+
+		//Add random color
+		int minColor = 1;
+		int maxColor = 100;
+		float rollR = (minColor + (rand() % (maxColor - minColor))) / 100.0;
+		float rollG = (minColor + (rand() % (maxColor - minColor))) / 100.0;
+		float rollB = (minColor + (rand() % (maxColor - minColor))) / 100.0;
+		b2Vec3 newColor = b2Vec3(rollR, rollG, rollB);
+		circleColors->push_back(newColor);
 	}
 
 	joinCircleJoints();
 
 	int platformGroup = 1;
-	platforms->push_back(addRect(100, 300, 50, 10, false, platformGroup));
-	platforms->push_back(addRect(600, 300, 50, 10, false, platformGroup));
-	platforms->push_back(addRect(screenwidth / 2, 0 + 10, screenwidth, 10, false, platformGroup));
-	platforms->push_back(addRect(10, screenheight / 2, 10, screenheight, false, platformGroup));
-	platforms->push_back(addRect(screenwidth - 10, screenwidth / 3, 10, screenheight, false, platformGroup));
-	platforms->push_back(addRect(screenwidth / 2, screenheight - 30, screenwidth, 30, false, platformGroup));
-	
+	int halfW = screenwidth / 2;
+	int halfH = screenheight / 2;
 
+	//Add platforms
+	platforms->push_back(addRect(halfW - (halfW / 2), halfH, 80, 30, false, platformGroup));
+	platformColors->push_back(COLOR_UNLIT);
+
+	platforms->push_back(addRect(halfW + (halfW / 2), halfH, 80, 30, false, platformGroup));
+	platformColors->push_back(COLOR_UNLIT);
+
+	//Add border around (not lightable)
+	platforms->push_back(addRect(halfW, 0, screenwidth, 10, false, platformGroup));
+	platformColors->push_back(COLOR_SOLID);
+
+	platforms->push_back(addRect(screenwidth, halfH, 10, screenheight, false, platformGroup));
+	platformColors->push_back(COLOR_SOLID);
+
+	platforms->push_back(addRect(halfW, screenheight, screenwidth, 10, false, platformGroup));
+	platformColors->push_back(COLOR_SOLID);
+
+	platforms->push_back(addRect(0, halfH, 10, screenheight, false, platformGroup));
+	platformColors->push_back(COLOR_SOLID);
 
 }
-void World:: updateWorld(){
-	b2Body * B = world->GetBodyList();
+void World::updateWorld(){
+	//Update world
+	updatePlatforms();
 
-		updateChar();
-	while (B != NULL)
-	{
-		b2Fixture* F = B->GetFixtureList();
-		while (F != NULL)
-		{
-			switch (F->GetType())
-			{
-			case b2Shape::e_circle:
-			{
-									  									  /* Do stuff with a circle shape */
-							
-									  break;
-			}
-			case b2Shape::e_polygon:
-			{
-									   b2PolygonShape* poly = (b2PolygonShape*) F->GetShape();
-									   /* Do stuff with a polygon shape */
-									   b2Vec2 points[4];
-									   for (int i = 0; i < 4; i++){
-										   points[i] = ((b2PolygonShape*) B->GetFixtureList()->GetShape())->GetVertex(i);
-									   }
-									   platform->draw(points, B->GetWorldCenter(), B->GetAngle());
-									   break;
-			}
-
-			}
-			F = F->GetNext();
-		}
-
-		B = B->GetNext();
-	}
+	//Update charcter
+	updateChar();
 
 	//Pull particles
 	//pullParticlesToCenter();
@@ -111,19 +109,75 @@ void World:: updateWorld(){
 }
 
 void World::updateChar(){
-
-
-
 	for (int i = 0; i < circles->size(); i++){
 		b2Fixture* F = 	circles->at(i)->GetFixtureList();
 		b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
-		
-			circle->draw(circles->at(i)->GetWorldCenter(), circles->at(i)->GetAngle(), circleShape->m_radius);
-
 	
+		circle->draw(circles->at(i)->GetWorldCenter(), circles->at(i)->GetAngle(), circleShape->m_radius, circleColors->at(i));
 	}
-
 }
+
+void World::updatePlatforms(){
+	b2Body *B = world->GetBodyList();
+	int colorId = platforms->size() - 1;
+
+	while (B != NULL) {
+		b2Fixture* F = B->GetFixtureList();
+
+		while (F != NULL) {
+			switch (F->GetType()) {
+				case b2Shape::e_polygon: {
+					b2PolygonShape* poly = (b2PolygonShape*) F->GetShape();
+
+					b2Vec2 points[4];
+					for (int i = 0; i < 4; i++){
+						points[i] = poly->GetVertex(i);
+					}
+
+					//Check if platform is unlit
+					b2Vec3 curColor = platformColors->at(colorId);
+					if (curColor.x == COLOR_UNLIT.x && curColor.y == COLOR_UNLIT.y && curColor.z == COLOR_UNLIT.z) {
+						b2Body *platBody = platforms->at(colorId);
+						b2Vec2 platPos = platBody->GetPosition();
+						b2Vec2 x1 = platPos + points[0];
+						b2Vec2 x2 = platPos + points[2];
+						platPos *= M2P;
+						x1 *= M2P;
+						x2 *= M2P;
+
+						//Check if any particles collide
+						for (int i = 1; i < circles->size(); i++) {
+							if (isFired->at(i - 1)) {
+								//Get handle
+								b2Body *parBody = circles->at(i);
+								b2Vec2 parXY = parBody->GetPosition();
+								parXY *= M2P;
+
+								if (parXY.x >= x1.x && parXY.x <= x2.x) {
+									if (parXY.y >= x1.y && parXY.y <= x2.y) {
+										//Light platform
+										curColor = COLOR_LIT;
+										platformColors->at(colorId) = COLOR_LIT;
+									}
+								}
+							}
+						}
+					}
+
+					platform->draw(points, B->GetWorldCenter(), B->GetAngle(), curColor);
+					
+					colorId--;
+					break;
+				}
+			}
+
+			F = F->GetNext();
+		}
+
+		B = B->GetNext();
+	}
+}
+
 void World::step(){
 	world->Step(1.0 / 32.0, 8, 3);
 }
@@ -331,7 +385,7 @@ bool World::shootParticle(int x, int y) {
 	b2Vec2 dist = mouseXY - mainXY;
 
 	//Calculate force
-	const float SPEED = 40; //TODO: Move this into the class
+	const float SPEED = 400; //TODO: Move this into the class
 	float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
 	float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
 	float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
@@ -382,6 +436,8 @@ bool World::shootParticle(int x, int y) {
 		b2Body *parBody = circles->at(closestParticle);
 		b2Vec2 parXY = parBody->GetPosition();
 		parXY *= M2P;
+
+		parBody->SetLinearVelocity(b2Vec2(0, 0));
 		parBody->ApplyForce(direction, parXY, true);
 
 		cout << "Particles left: " << particlesLeft - 1 << "!\n";
