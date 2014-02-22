@@ -20,13 +20,67 @@ World::~World()
 }
 
 void World::setupWorld(){
+	//Create world objects
 	world = new b2World(b2Vec2(0, 0)); //9.81
 	platform = new Platform();
 	circle = new Circle();
 	world->SetGravity(b2Vec2(0, 6));
 
-	//Create particles
-	int particleCount = 60; //Temporary
+	//Load level
+	char buffer[64];
+	string dataText, argText;
+	string levelFile = "Levels/Level_2.txt";
+	ifstream lvl(levelFile);
+	int phase = 0;
+
+	//Helper variables for loading levels
+	int particleCount, x, y, w, h, group;
+	string dynamic, type;
+
+	//Load level
+	while (!lvl.eof()) {
+		//Read to buffer
+		lvl >> buffer;
+		argText = buffer;
+		dataText = buffer;
+		dataText.erase(std::remove(dataText.begin(), dataText.end(), ','), dataText.end());
+
+		if (dataText.find("Particles:") != -1) {
+			//Store next read (particle data)
+			lvl >> particleCount;
+		}
+		else if (dataText.find("type") != -1) {
+			//Done with description line, start phase 1
+			phase = 1;
+		}
+		else if (phase) {
+			//Read platform data
+			switch(phase) {
+				case 1: {x = atoi(dataText.c_str()); break;}
+				case 2: {y = atoi(dataText.c_str()); break;}
+				case 3: {w = atoi(dataText.c_str()); break;}
+				case 4: {h = atoi(dataText.c_str()); break;}
+				case 5: {dynamic = dataText; break;}
+				case 6: {group = atoi(dataText.c_str()); break;}
+				case 7: {
+					type = dataText;
+					bool thisDynamic = ((dynamic.find("true") != -1) ? true : false);
+					b2Vec3 thisColor = ((type.find("solid") != -1) ? COLOR_SOLID : COLOR_UNLIT);
+					
+					//All data collected, create platform
+					platforms->push_back(addRect(x, y, w, h, thisDynamic, group));
+					platformColors->push_back(thisColor);
+
+					//Reset phase and look for more platforms
+					phase = 0;
+					break;
+				}
+			}
+			phase++;
+		}
+	}
+
+	//Helper variables for creating particles
 	float degreeStep = 360 / particleCount;
 	int posX = 400;
 	int posY = 300;
@@ -36,10 +90,10 @@ void World::setupWorld(){
 
 	//Add central body part for joints
 	circles->push_back(addMainChar(posX, posY, 0.3, true, 1));
-	//addNewCircle(posX, posY, 0.5, -1);
 	b2Vec3 mainColor = b2Vec3(1, 1, 1);
 	circleColors->push_back(mainColor);
 
+	//Create particles
 	for (float d = 0; d < 360; d += degreeStep) {
 		float xTurn = cos(d * pi / 180.0F);
 		float yTurn = sin(d * pi / 180.0F);
@@ -62,32 +116,8 @@ void World::setupWorld(){
 		circleColors->push_back(newColor);
 	}
 
+	//Create joints
 	joinCircleJoints();
-
-	int platformGroup = 1;
-	int halfW = screenwidth / 2;
-	int halfH = screenheight / 2;
-
-	//Add platforms
-	platforms->push_back(addRect(halfW - (halfW / 2), halfH, 80, 30, false, platformGroup));
-	platformColors->push_back(COLOR_UNLIT);
-
-	platforms->push_back(addRect(halfW + (halfW / 2), halfH, 80, 30, false, platformGroup));
-	platformColors->push_back(COLOR_UNLIT);
-
-	//Add border around (not lightable)
-	platforms->push_back(addRect(halfW, 0, screenwidth, 10, false, platformGroup));
-	platformColors->push_back(COLOR_SOLID);
-
-	platforms->push_back(addRect(screenwidth, halfH, 10, screenheight, false, platformGroup));
-	platformColors->push_back(COLOR_SOLID);
-
-	platforms->push_back(addRect(halfW, screenheight, screenwidth, 10, false, platformGroup));
-	platformColors->push_back(COLOR_SOLID);
-
-	platforms->push_back(addRect(0, halfH, 10, screenheight, false, platformGroup));
-	platformColors->push_back(COLOR_SOLID);
-
 }
 void World::updateWorld(){
 	//Update world

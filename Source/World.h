@@ -2,6 +2,7 @@
 #include "Circle.h"
 #include "Platform.h"
 #include <random>
+#include <fstream>
 
 const b2Vec3 COLOR_SOLID = b2Vec3(0.7, 0.7, 0.7);
 const b2Vec3 COLOR_UNLIT = b2Vec3(0.7, 0, 0);
