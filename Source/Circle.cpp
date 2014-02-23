@@ -1,14 +1,13 @@
 #include "Circle.h"
-int ground = 0;
-const float M2P = 30;
-const float P2M = 1 / M2P;
+
+
+
 Circle::Circle() {
 
-
-	
 }
 
 Circle::~Circle() {
+
 }
 
 void Circle::draw(b2Vec2 center, float angle, float radius, b2Vec3 color){
@@ -36,8 +35,8 @@ void Circle::draw(b2Vec2 center, float angle, float radius, b2Vec3 color){
 	}
 
 	//Move to position of the object
-	glTranslatef(center.x*M2P, center.y*M2P, 0);
-	glRotatef(angle*180.0 / M_PI, 0, 0, 1);
+	glTranslatef(center.x * M2P, center.y * M2P, 0);
+	glRotatef(angle * 180.0 / M_PI, 0, 0, 1);
 
 	//Enable required buffers
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -48,14 +47,14 @@ void Circle::draw(b2Vec2 center, float angle, float radius, b2Vec3 color){
 	glColorPointer(3, GL_FLOAT, 0, &colors.front());
 
 	//draw the Cube
-	glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size()/2);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size() / 2);
 
 	//restore the state GL back
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 
 	//Move back
-	glTranslatef(-center.x*M2P, -center.y*M2P, 0);
+	glTranslatef(-center.x * M2P, -center.y * M2P, 0);
 }
 
 

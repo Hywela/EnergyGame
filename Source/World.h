@@ -3,16 +3,21 @@
 #include "Platform.h"
 #include <random>
 #include <fstream>
+#include "Consts.h"
+using namespace std;
+
+
 
 const b2Vec3 COLOR_SOLID = b2Vec3(0.7, 0.7, 0.7);
 const b2Vec3 COLOR_UNLIT = b2Vec3(0.7, 0, 0);
 const b2Vec3 COLOR_LIT = b2Vec3(0, 1, 0);
 
-class World
-{
+
+
+class World {
 private:
 	Circle *circleObject;
-	b2World *world; // The world 
+	b2World *world;
 	Platform *platform;
 	Circle *circle;
 	vector <b2Body*> *platforms;
@@ -21,17 +26,17 @@ private:
 	vector <bool> *isFired;
 	vector <b2Vec3> *circleColors;
 	vector <b2Vec3> *platformColors;
-
-	int  screenwidth , screenheight;
+	int screenwidth, screenheight;
+	int score, scoreAviable;
 
 public:
 	World(int screenwidth, int screenheight);
 	~World();
+
 	void setupWorld();
 	void updateWorld();
 	void step(); 
 	void addNewCircle(int x, int y, float radius, int grp = 1);
-
 	void addNewRect();
 	b2Body* addCircle(int x, int y, float radius, bool dyn, int grp = 1);
 	b2Body* addMainChar(int x, int y, float radius, bool dyn, int grp = 1);

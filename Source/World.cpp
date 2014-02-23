@@ -2,10 +2,10 @@
 
 
 
-World::World(int screenwidth, int screenheight)
-{
+World::World(int screenwidth, int screenheight) {
 	this->screenwidth = screenwidth;
 	this->screenheight = screenheight;
+
 	platforms = new vector<b2Body*>;
 	circles = new vector<b2Body*>;
 	joints = new vector<b2Joint*>;
@@ -14,12 +14,11 @@ World::World(int screenwidth, int screenheight)
 	platformColors = new vector<b2Vec3>;
 }
 
+World::~World() {
 
-World::~World()
-{
 }
 
-void World::setupWorld(){
+void World::setupWorld() {
 	//Create world objects
 	world = new b2World(b2Vec2(0, 0)); //9.81
 	platform = new Platform();
@@ -36,6 +35,8 @@ void World::setupWorld(){
 	//Helper variables for loading levels
 	int particleCount, x, y, w, h, group;
 	string dynamic, type;
+	score = 0;
+	scoreAviable = 0;
 
 	//Load level
 	while (!lvl.eof()) {
@@ -66,6 +67,7 @@ void World::setupWorld(){
 					type = dataText;
 					bool thisDynamic = ((dynamic.find("true") != -1) ? true : false);
 					b2Vec3 thisColor = ((type.find("solid") != -1) ? COLOR_SOLID : COLOR_UNLIT);
+					scoreAviable += ((type.find("solid") != -1) ? 0 : 1);
 					
 					//All data collected, create platform
 					platforms->push_back(addRect(x, y, w, h, thisDynamic, group));
@@ -79,6 +81,8 @@ void World::setupWorld(){
 			phase++;
 		}
 	}
+
+	cout << "World loaded!\nObjective: Light up " << scoreAviable << " platforms. You get " << particleCount << " particles!\n";
 
 	//Helper variables for creating particles
 	float degreeStep = 360 / particleCount;
@@ -119,7 +123,8 @@ void World::setupWorld(){
 	//Create joints
 	joinCircleJoints();
 }
-void World::updateWorld(){
+
+void World::updateWorld() {
 	//Update world
 	updatePlatforms();
 
@@ -138,8 +143,8 @@ void World::updateWorld(){
 	world->ShiftOrigin(cameraCenter);
 }
 
-void World::updateChar(){
-	for (int i = 0; i < circles->size(); i++){
+void World::updateChar() {
+	for (int i = 0; i < circles->size(); i++) {
 		b2Fixture* F = 	circles->at(i)->GetFixtureList();
 		b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
 	
@@ -147,7 +152,7 @@ void World::updateChar(){
 	}
 }
 
-void World::updatePlatforms(){
+void World::updatePlatforms() {
 	b2Body *B = world->GetBodyList();
 	int colorId = platforms->size() - 1;
 
@@ -160,7 +165,7 @@ void World::updatePlatforms(){
 					b2PolygonShape* poly = (b2PolygonShape*) F->GetShape();
 
 					b2Vec2 points[4];
-					for (int i = 0; i < 4; i++){
+					for (int i = 0; i < 4; i++) {
 						points[i] = poly->GetVertex(i);
 					}
 
@@ -188,6 +193,11 @@ void World::updatePlatforms(){
 										//Light platform
 										curColor = COLOR_LIT;
 										platformColors->at(colorId) = COLOR_LIT;
+										score++;
+										cout << "You have lit (" << score << " / " << scoreAviable << ") platforms!\n";
+										if (score == scoreAviable) {
+											cout << "Congratulations! You won!\n";
+										}
 									}
 								}
 							}
@@ -208,22 +218,24 @@ void World::updatePlatforms(){
 	}
 }
 
-void World::step(){
+void World::step() {
 	world->Step(1.0 / 32.0, 8, 3);
 }
 
-void World::addNewCircle(int x, int y, float radius, int grp){
+void World::addNewCircle(int x, int y, float radius, int grp) {
 	circles->push_back(addCircle(x, y, radius, true, grp));
 }
-void World::addNewRect(){
+
+void World::addNewRect() {
 
 }
-b2Body* World::addCircle(int x, int y, float radius, bool dyn, int grp){
 
+b2Body* World::addCircle(int x, int y, float radius, bool dyn, int grp) {
 	b2BodyDef bodydef;
-	bodydef.position.Set(x*P2M, y*P2M);
-	if (dyn)
+	bodydef.position.Set(x * P2M, y * P2M);
+	if (dyn) {
 		bodydef.type = b2_dynamicBody;
+	}
 	b2Body* body = world->CreateBody(&bodydef);
 
 	b2CircleShape shape;
@@ -244,12 +256,13 @@ b2Body* World::addCircle(int x, int y, float radius, bool dyn, int grp){
 
 	return body;
 }
-b2Body* World::addMainChar(int x, int y, float radius, bool dyn, int grp){
 
+b2Body* World::addMainChar(int x, int y, float radius, bool dyn, int grp) {
 	b2BodyDef bodydef;
-	bodydef.position.Set(x*P2M, y*P2M);
-	if (dyn)
+	bodydef.position.Set(x * P2M, y * P2M);
+	if (dyn) {
 		bodydef.type = b2_dynamicBody;
+	}
 	b2Body* body = world->CreateBody(&bodydef);
 
 	b2CircleShape shape;
@@ -270,20 +283,20 @@ b2Body* World::addMainChar(int x, int y, float radius, bool dyn, int grp){
 
 	return body;
 }
-b2Body* World::addRect(int x, int y, int w, int h, bool dyn, int grp)
-{
 
+b2Body* World::addRect(int x, int y, int w, int h, bool dyn, int grp) {
 	b2BodyDef bodydef;
-	bodydef.position.Set(x*P2M, y*P2M);
-	if (dyn)
+	bodydef.position.Set(x * P2M, y * P2M);
+	if (dyn) {
 		bodydef.type = b2_dynamicBody;
-	else
+	}
+	else {
 		bodydef.type = b2_staticBody;
-
+	}
 	b2Body* body = world->CreateBody(&bodydef);
 
 	b2PolygonShape shape;
-	shape.SetAsBox(P2M*w / 2, P2M*h / 2);
+	shape.SetAsBox(P2M * w / 2, P2M * h / 2);
 
 	b2FixtureDef fixturedef;
 	fixturedef.shape = &shape;
@@ -294,9 +307,11 @@ b2Body* World::addRect(int x, int y, int w, int h, bool dyn, int grp)
 	fixturedef.filter.groupIndex = grp;
 	body->CreateFixture(&fixturedef);
 	body->SetUserData(0);
+
 	return body;
 }
-void World::applyForce(int x, int y){
+
+void World::applyForce(int x, int y) {
 	//Pop off closest particles
 	bool couldFire = shootParticle(x, y);
 
@@ -330,7 +345,8 @@ void World::applyForce(int x, int y){
 		}
 	}
 }
-void World::joinCircleJoints(){
+
+void World::joinCircleJoints() {
 	b2Body *mainBody = circles->at(0);
 
 	//Joint all particles
