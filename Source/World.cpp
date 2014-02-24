@@ -54,10 +54,10 @@ void World::setupWorld(){
 	int platformGroup = 1;
 	platforms->push_back(addRect(100, 300, 50, 10, false, platformGroup));
 	platforms->push_back(addRect(600, 300, 50, 10, false, platformGroup));
-	platforms->push_back(addRect(screenwidth / 2, 0 + 10, screenwidth, 10, false, platformGroup));
-	platforms->push_back(addRect(10, screenheight / 2, 10, screenheight, false, platformGroup));
-	platforms->push_back(addRect(screenwidth - 10, screenwidth / 3, 10, screenheight, false, platformGroup));
-	platforms->push_back(addRect(screenwidth / 2, screenheight - 30, screenwidth, 30, false, platformGroup));
+	//platforms->push_back(addRect(screenwidth / 2, 0 + 10, screenwidth, 10, false, platformGroup));
+	//platforms->push_back(addRect(10, screenheight / 2, 10, screenheight, false, platformGroup));
+	//platforms->push_back(addRect(screenwidth - 10, screenwidth / 3, 10, screenheight, false, platformGroup));
+	//platforms->push_back(addRect(screenwidth / 2, screenheight - 30, screenwidth, 30, false, platformGroup));
 	
 
 
