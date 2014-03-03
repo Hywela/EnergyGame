@@ -7,22 +7,20 @@
 #include <Box2D\Box2D.h>
 #define _USE_MATH_DEFINES // for C++
 #include <cmath>
-
 #define _USE_MATH_DEFINES // for C
 #include <math.h>
-
-
+#include "Consts.h"
 using namespace std;
-const float M2P = 30;
-const float P2M = 1 / M2P;
-class Platform
-{
+
+
+
+class Platform {
 private:
-	vector <float> colors;
+
 public:
 	Platform();
 	~Platform();
 	
-	void draw(b2Vec2* points, b2Vec2 center, float angle);
+	void draw(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color = b2Vec3(1, 1, 1));
 };
 

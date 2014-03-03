@@ -1,6 +1,8 @@
 #pragma once
-class InputData
-{
+
+
+
+class InputData {
 public:
 	InputData();
 	~InputData();

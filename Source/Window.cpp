@@ -1,6 +1,7 @@
 #include "Window.h"
 
 
+
 Window::Window(int w, int h) {
 	screenheight = h;
 	screenwidth = w;
@@ -12,15 +13,13 @@ Window::Window(int w, int h) {
 	SetupOGL();
 	SetupWorld();
 	timer = SDL_GetTicks();
-	
-	
 }
 
 Window::~Window() {
+
 }
 
-void Window::mainLoop(){
-
+void Window::mainLoop() {
 	while (running) {
 		while (SDL_PollEvent(&e)) {
 			switch (e.type) {
@@ -39,8 +38,6 @@ void Window::mainLoop(){
 		SDL_Delay(fps);
 		timer = SDL_GetTicks();
 	}
-
-
 }
 
 void Window::SetupSDL() {
@@ -102,7 +99,7 @@ void Window::Render() {
 }
 
 void Window::RenderOrtho() {
-	// Prepare for GUI rendering:
+	// Prepare for ortho rendering:
 	glMatrixMode(GL_PROJECTION);
 	glDisable(GL_DEPTH_TEST);
 	glPushMatrix();
@@ -113,7 +110,7 @@ void Window::RenderOrtho() {
 	glMatrixMode(GL_MODELVIEW);
 
 	//Draw player
-		world->updateWorld();
+	world->updateWorld();
 
 	// Disable GUI rendering:
 	glMatrixMode(GL_PROJECTION);
