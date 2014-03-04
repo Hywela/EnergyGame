@@ -2,14 +2,14 @@
 #include <queue>
 #include <mutex>
 #include "InputData.h"
-
 using namespace std;
 
-class InputQueue{
+
+
+class InputQueue {
 private:
 	queue <InputData> items;
 	mutex accessMutex;
-
 
 public:
 	InputQueue();
@@ -19,4 +19,3 @@ public:
 	int getSize();
 	void clear();
 };
-
