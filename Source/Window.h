@@ -17,8 +17,11 @@ private:
 	World *world;
 	int screenheight;
 	int screenwidth;
+	int maxWidth, maxHeight;
+	int minWidth, minHeight;
 	int flags;
 	bool running;
+	bool isFullscreen;
 	int timer;
 	SDL_Window* window;
 	SDL_GLContext context;
