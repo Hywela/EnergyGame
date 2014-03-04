@@ -7,6 +7,7 @@
 #include <SDL_image.h>
 #include <vector>
 #include <Box2D\Box2D.h>
+
 #include "World.h"
 using namespace std;
 
@@ -25,8 +26,8 @@ private:
 	SDL_Window* window;
 	SDL_GLContext context;
 	SDL_Event e;
-	
-	
+
+
 public:
 	Window(int w = 800, int h = 600);
 	~Window();
@@ -38,5 +39,5 @@ public:
 	void RenderCube(float scalex = 1, float scaley = 1, float scalez = 1);
 	void CheckKeyEvent(SDL_Event e);
 	void SetupWorld();
-	SDL_Window* getSDLWindow();
+
 };

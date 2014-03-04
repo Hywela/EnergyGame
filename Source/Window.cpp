@@ -12,8 +12,8 @@ Window::Window(int w, int h) {
 	SetupOGL();
 	SetupWorld();
 	timer = SDL_GetTicks();
-	
-	
+
+
 }
 
 Window::~Window() {
@@ -22,18 +22,17 @@ Window::~Window() {
 void Window::mainLoop(){
 
 	while (running) {
-		
+		/*
 		while (SDL_PollEvent(&e)) {
-			switch (e.type) {
-				case SDL_MOUSEBUTTONDOWN: {
-					//world->addNewCircle(e.button.x, e.button.y, 0.5);
-					world->applyForce(e.button.x, e.button.y);
-					break;
-				}
-			}
+		switch (e.type) {
+		case SDL_MOUSEBUTTONDOWN: {
+		//world->addNewCircle(e.button.x, e.button.y, 0.5);
+		world->applyForce(e.button.x, e.button.y);
+		break;
 		}
-
-
+		}
+		}
+		*/
 		int fps = (1000 / 30) - (timer - SDL_GetTicks());
 
 		world->step();  //update  dt:Number, velocityIterations:int, positionIterations:in // steps true the world
@@ -116,7 +115,7 @@ void Window::RenderOrtho() {
 	glMatrixMode(GL_MODELVIEW);
 
 	//Draw player
-		world->updateWorld();
+	world->updateWorld();
 
 	// Disable GUI rendering:
 	glMatrixMode(GL_PROJECTION);
@@ -127,10 +126,10 @@ void Window::RenderOrtho() {
 
 void Window::CheckKeyEvent(SDL_Event e) {
 	switch (e.key.keysym.sym) {
-		case SDLK_ESCAPE: {
-			running = false;
-			break;
-		}
+	case SDLK_ESCAPE: {
+						  running = false;
+						  break;
+	}
 	}
 }
 
