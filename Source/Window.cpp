@@ -18,7 +18,10 @@ Window::Window(int w, int h) {
 Window::~Window() {
 
 }
+void Window:: threading(){
 
+	
+}
 void Window::mainLoop() {
 	while (running) {
 		while (SDL_PollEvent(&e)) {
@@ -130,6 +133,8 @@ void Window::CheckKeyEvent(SDL_Event e) {
 
 void Window::SetupWorld() {
 	world = new World(screenwidth, screenheight);
+	//worldSimulation = new thread(&World::setupWorld, world->setupWorld());
+
 	world->setupWorld();
 }
 

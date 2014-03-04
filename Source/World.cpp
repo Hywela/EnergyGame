@@ -294,7 +294,7 @@ b2Body* World::addRect(int x, int y, int w, int h, bool dyn, int grp) {
 		bodydef.type = b2_staticBody;
 	}
 	b2Body* body = world->CreateBody(&bodydef);
-
+	
 	b2PolygonShape shape;
 	shape.SetAsBox(P2M * w / 2, P2M * h / 2);
 
