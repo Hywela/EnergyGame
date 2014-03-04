@@ -5,9 +5,12 @@
 Window::Window(int w, int h) {
 	screenheight = h;
 	screenwidth = w;
+	minWidth = w;
+	minHeight = h;
 
-	flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+	flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
 	running = true;
+	isFullscreen = false;
 
 	SetupSDL();
 	SetupOGL();
@@ -26,6 +29,15 @@ void Window::mainLoop() {
 	while (running) {
 		while (SDL_PollEvent(&e)) {
 			switch (e.type) {
+				case SDL_KEYDOWN: {
+					if (e.key.keysym.sym == SDLK_q) {
+						running = false;
+					}
+					else if (e.key.keysym.sym == SDLK_TAB) {
+						//ToggleFullscreen();
+					}
+					break;
+				}
 				case SDL_MOUSEBUTTONDOWN: {
 					world->applyForce(e.button.x, e.button.y);
 					break;
@@ -47,6 +59,12 @@ void Window::SetupSDL() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		cout << "Couldnt init SDL2! SDL_Error: " << SDL_GetError() << endl;
 	}
+
+	SDL_Rect screenSize = SDL_Rect();
+	SDL_GetDisplayBounds(0, &screenSize);
+	cout << "Screen resolution is (" << screenSize.w << "x" << screenSize.h << ")\n";
+	maxWidth = screenSize.w;
+	maxHeight = screenSize.h;
 
 	window = SDL_CreateWindow("First SDL2 OGL App", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenwidth, screenheight, flags);
 	context = SDL_GL_CreateContext(window);

@@ -1,4 +1,4 @@
-Particles: 30
+Particles: 20
 
 x,	y,	w,	h,	dynamic,	group,	type
 

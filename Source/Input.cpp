@@ -13,6 +13,7 @@ Input::~Input() {
 
 void Input::inputLoop() {
 	while (running) {
+		/*
 		while (SDL_PollEvent(&e)) {
 			switch (e.type) {
 				case SDL_KEYDOWN: {
@@ -34,5 +35,6 @@ void Input::inputLoop() {
 				}
 			}
 		}
+		*/
 	}
 }
