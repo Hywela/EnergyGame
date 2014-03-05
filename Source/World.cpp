@@ -23,7 +23,7 @@ void World::setupWorld() {
 	world = new b2World(b2Vec2(0, 0)); //9.81
 	platform = new Platform();
 	circle = new Circle();
-	world->SetGravity(b2Vec2(0, 6));
+	world->SetGravity(b2Vec2(0, 12));
 
 	//Load level
 	char buffer[64];
@@ -330,7 +330,7 @@ void World::applyForce(int x, int y) {
 				b2Vec2 dist = mouseXY - tempXY;
 
 				//Calculate force
-				const float SPEED = 40; //TODO: Move this into the class
+				const float SPEED = 70; //TODO: Move this into the class
 				float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
 				float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
 				float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
