@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Circle.cpp" />
+    <ClCompile Include="Source\Consts.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\InputData.cpp" />
     <ClCompile Include="Source\InputQueue.cpp" />
