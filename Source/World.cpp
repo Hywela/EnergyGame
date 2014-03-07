@@ -2,7 +2,7 @@
 
 
 
-World::World(int screenwidth, int screenheight) {
+World::World(int screenwidth, int screenheight, InputQueue *inQueue) {
 	this->screenwidth = screenwidth;
 	this->screenheight = screenheight;
 
@@ -14,6 +14,7 @@ World::World(int screenwidth, int screenheight) {
 	platformColors = new vector<b2Vec3>;
 	puzzles = new vector<vector<PuzzleData>>;
 	puzzleDoor = NULL;
+	inputQueue = inQueue;
 
 	winmsg = false;
 	cameraSpeed = CAMERA_SPEED;
@@ -220,6 +221,7 @@ void World::updatePlatforms() {
 }
 
 void World::step() {
+	checkForInput();
 	world->Step(1.0 / 32.0, 8, 3);
 }
 
@@ -788,6 +790,18 @@ void World::spawnPuzzle(int puzzleId) {
 
 		if (tmp.color.x == COLOR_UNLIT.x && tmp.color.y == COLOR_UNLIT.y && tmp.color.z == COLOR_UNLIT.z) {
 			tasksTotal++;
+		}
+	}
+}
+
+void World::checkForInput(){
+	if (inputQueue->getSize() > 0){
+		InputData input = inputQueue->pop();
+		switch (input.getType()) {
+			case 0: {	//type 0 == mouse click
+				applyForce(input.getX(), input.getY());
+				break;
+			}
 		}
 	}
 }

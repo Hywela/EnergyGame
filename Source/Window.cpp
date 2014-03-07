@@ -3,6 +3,7 @@
 
 
 Window::Window(int w, int h) {
+	inQueue = new InputQueue();
 	screenheight = h;
 	screenwidth = w;
 	minWidth = w;
@@ -36,7 +37,11 @@ void Window::mainLoop() {
 					break;
 				}
 				case SDL_MOUSEBUTTONDOWN: {
-					world->applyForce(e.button.x, e.button.y);
+					InputData click;
+					click.mouseClick(e.button.x, e.button.y);
+					inQueue->push(click);
+
+					//world->applyForce(e.button.x, e.button.y);
 					break;
 				}
 			}
@@ -147,7 +152,7 @@ void Window::CheckKeyEvent(SDL_Event e) {
 }
 
 void Window::SetupWorld() {
-	world = new World(screenwidth, screenheight);
+	world = new World(screenwidth, screenheight, inQueue);
 	world->setupWorld();
 }
 

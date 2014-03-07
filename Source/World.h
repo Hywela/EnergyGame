@@ -5,6 +5,8 @@
 #include <fstream>
 #include <Windows.h>
 #include "Consts.h"
+#include "InputData.h"
+#include "InputQueue.h"
 using namespace std;
 
 
@@ -47,9 +49,10 @@ private:
 	b2Body* puzzleDoor;
 	int doorId;
 	int tasksTotal, tasksDone;
+	InputQueue *inputQueue;
 
 public:
-	World(int screenwidth, int screenheight);
+	World(int screenwidth, int screenheight, InputQueue *inQueue);
 	~World();
 
 	void setupWorld();
@@ -73,4 +76,5 @@ public:
 	void spawnRandomWalls();
 	void loadPuzzles(string file);
 	void spawnPuzzle(int puzzleId);
+	void checkForInput();
 };
