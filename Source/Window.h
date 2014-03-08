@@ -8,8 +8,8 @@
 #include <vector>
 #include <Box2D\Box2D.h>
 #include "World.h"
-#include <thread>
 #include "InputData.h"
+#include "InputQueue.h"
 using namespace std;
 
 
@@ -17,7 +17,6 @@ using namespace std;
 class Window {
 private:
 	World *world;
-	InputData *worldQue;
 	int screenheight;
 	int screenwidth;
 	int maxWidth, maxHeight;
@@ -29,12 +28,12 @@ private:
 	SDL_Window* window;
 	SDL_GLContext context;
 	SDL_Event e;
-	thread *worldSimulation;
+	InputQueue *inQueue;
 	
 public:
 	Window(int w = 800, int h = 600);
 	~Window();
-	void threading();
+
 	void mainLoop();
 	void SetupSDL();
 	void SetupOGL();

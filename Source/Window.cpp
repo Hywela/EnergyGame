@@ -3,11 +3,12 @@
 
 
 Window::Window(int w, int h) {
+	inQueue = new InputQueue();
 	screenheight = h;
 	screenwidth = w;
 	minWidth = w;
 	minHeight = h;
-	worldQue = new InputData();
+
 	flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
 	running = true;
 	isFullscreen = false;
@@ -21,10 +22,7 @@ Window::Window(int w, int h) {
 Window::~Window() {
 
 }
-void Window:: threading(){
 
-	
-}
 void Window::mainLoop() {
 	while (running) {
 		while (SDL_PollEvent(&e)) {
@@ -39,7 +37,11 @@ void Window::mainLoop() {
 					break;
 				}
 				case SDL_MOUSEBUTTONDOWN: {
-					world->applyForce(e.button.x, e.button.y);
+					InputData click;
+					click.mouseClick(e.button.x, e.button.y);
+					inQueue->push(click);
+
+					//world->applyForce(e.button.x, e.button.y);
 					break;
 				}
 			}
@@ -150,8 +152,7 @@ void Window::CheckKeyEvent(SDL_Event e) {
 }
 
 void Window::SetupWorld() {
-
-	world = new World(screenwidth, screenheight);
+	world = new World(screenwidth, screenheight, inQueue);
 	world->setupWorld();
 }
 
