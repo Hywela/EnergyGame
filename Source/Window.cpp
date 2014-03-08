@@ -7,7 +7,7 @@ Window::Window(int w, int h) {
 	screenwidth = w;
 	minWidth = w;
 	minHeight = h;
-
+	worldQue = new InputData();
 	flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
 	running = true;
 	isFullscreen = false;
@@ -150,9 +150,8 @@ void Window::CheckKeyEvent(SDL_Event e) {
 }
 
 void Window::SetupWorld() {
-	world = new World(screenwidth, screenheight);
-	//worldSimulation = new thread(&World::setupWorld, world->setupWorld());
 
+	world = new World(screenwidth, screenheight);
 	world->setupWorld();
 }
 

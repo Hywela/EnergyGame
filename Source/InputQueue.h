@@ -8,14 +8,14 @@ using namespace std;
 
 class InputQueue {
 private:
-	queue <InputData> items;
+	queue <int> items;
 	mutex accessMutex;
 
 public:
 	InputQueue();
 	~InputQueue();
-	void push(InputData item);
-	InputData pop();
+	void push(int item);
+	int pop();
 	int getSize();
 	void clear();
 };

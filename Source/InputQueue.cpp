@@ -10,7 +10,7 @@ InputQueue::~InputQueue() {
 
 }
 
-void InputQueue::push(InputData item) {
+void InputQueue::push(int item) {
 	//Add item at the back
 	lock_guard<mutex> locker(accessMutex);
 	items.push(item);
@@ -18,8 +18,8 @@ void InputQueue::push(InputData item) {
 
 //Remove item from the stack
 //Return value to let the user know if an item was poped of the stack
-InputData InputQueue::pop() {
-	InputData itemPoped; 
+int InputQueue::pop() {
+	int itemPoped; 
 	lock_guard<mutex> locker(accessMutex);
 
 	//Check to see if there is items left on the stack
@@ -44,7 +44,7 @@ void InputQueue::clear() {
 	lock_guard<mutex> locker(accessMutex);
 
 	//Make empty queue
-	queue<InputData> empty;
+	queue<int> empty;
 
 	//Swap current the cuurently used stack with the new empty one
 	swap(items, empty);

@@ -1,8 +1,8 @@
 #pragma once
+#include "World.h"
 
 
-
-class InputData {
+class InputData{
 public:
 	InputData();
 	~InputData();

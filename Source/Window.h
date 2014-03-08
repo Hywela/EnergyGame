@@ -9,6 +9,7 @@
 #include <Box2D\Box2D.h>
 #include "World.h"
 #include <thread>
+#include "InputData.h"
 using namespace std;
 
 
@@ -16,6 +17,7 @@ using namespace std;
 class Window {
 private:
 	World *world;
+	InputData *worldQue;
 	int screenheight;
 	int screenwidth;
 	int maxWidth, maxHeight;
