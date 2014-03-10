@@ -8,6 +8,8 @@
 #include <vector>
 #include <Box2D\Box2D.h>
 #include "World.h"
+#include "InputData.h"
+#include "InputQueue.h"
 using namespace std;
 
 
@@ -26,6 +28,7 @@ private:
 	SDL_Window* window;
 	SDL_GLContext context;
 	SDL_Event e;
+	InputQueue *inQueue;
 	
 public:
 	Window(int w = 800, int h = 600);
