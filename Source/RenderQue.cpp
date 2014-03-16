@@ -1,16 +1,16 @@
-#include "InputQueue.h"
+#include "RenderQue.h"
 
 
 
-InputQueue::InputQueue() {
-
-}
-
-InputQueue::~InputQueue() {
+RenderQue::RenderQue() {
 
 }
 
-void InputQueue::push(InputData item) {
+RenderQue::~RenderQue() {
+
+}
+
+void RenderQue::push(RenderData item) {
 	//Add item at the back
 	lock_guard<mutex> locker(accessMutex);
 	items.push(item);
@@ -18,8 +18,8 @@ void InputQueue::push(InputData item) {
 
 //Remove item from the stack
 //Return value to let the user know if an item was poped of the stack
-InputData InputQueue::pop() {
-	InputData itemPoped;
+RenderData RenderQue::pop() {
+	RenderData itemPoped;
 	lock_guard<mutex> locker(accessMutex);
 	//Check to see if there is items left on the stack
 	if (items.size() > 0) {
@@ -32,18 +32,18 @@ InputData InputQueue::pop() {
 }
 
 //return the current size of the stack
-int InputQueue::getSize() {
+int RenderQue::getSize() {
 	lock_guard<mutex> locker(accessMutex);
 	int size = items.size();
 	return size;
 }
 
 //Clear the queue
-void InputQueue::clear() {
+void RenderQue::clear() {
 	lock_guard<mutex> locker(accessMutex);
 
 	//Make empty queue
-	queue<InputData> empty;
+	queue<RenderData> empty;
 
 	//Swap current the cuurently used stack with the new empty one
 	swap(items, empty);

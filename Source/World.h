@@ -7,6 +7,9 @@
 #include "Consts.h"
 #include "InputData.h"
 #include "InputQueue.h"
+#include "RenderData.h"
+#include "RenderQue.h"
+#include "Render.h"
 using namespace std;
 
 
@@ -31,8 +34,7 @@ class World {
 private:
 	//Circle *circleObject;
 	b2World *world;
-	Platform *platform;
-	Circle *circle;
+	
 	vector <b2Body*> *platforms;
 	vector <b2Body*> *circles;
 	vector <b2Joint*> *joints;
@@ -50,11 +52,14 @@ private:
 	int doorId;
 	int tasksTotal, tasksDone;
 	InputQueue *inputQueue;
+	RenderQue *renderQueue;
+
+
 
 public:
-	World(int screenwidth, int screenheight, InputQueue *inQueue);
+	World(int screenWidth, int screenHeight, InputQueue *inQueue, RenderQue *renderQue);
 	~World();
-
+	void SetupSDL();
 	void setupWorld();
 	void updateWorld();
 	void step(); 

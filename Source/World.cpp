@@ -1,11 +1,11 @@
 #include "World.h"
+#include <GL/freeglut.h>
 
 
-
-World::World(int screenwidth, int screenheight, InputQueue *inQueue) {
-	this->screenwidth = screenwidth;
-	this->screenheight = screenheight;
-
+World::World(int screenWidth, int screenHight, InputQueue *inQueue, RenderQue *renderQue) {
+	screenwidth = screenWidth;
+	screenheight = screenHight;
+	renderQueue = renderQue;
 	platforms = new vector<b2Body*>;
 	circles = new vector<b2Body*>;
 	joints = new vector<b2Joint*>;
@@ -22,6 +22,10 @@ World::World(int screenwidth, int screenheight, InputQueue *inQueue) {
 	spawnX = 0;
 	spawnY = 0;
 	tasksDone = tasksTotal = 0;
+	
+	setupWorld();
+	b2ContactListener *test;
+	test = new b2ContactListener();
 }
 
 World::~World() {
@@ -31,8 +35,7 @@ World::~World() {
 void World::setupWorld() {
 	//Create world objects
 	world = new b2World(b2Vec2(0, 0)); //9.81
-	platform = new Platform();
-	circle = new Circle();
+
 	world->SetGravity(b2Vec2(0, 0));
 
 	//Load world
@@ -89,15 +92,20 @@ void World::setupWorld() {
 	world->ShiftOrigin(cameraCenter);
 
 	//Give objective
-	cout << "World loaded!\nObjective: Light up " << scoreAviable << " platforms. You get " << particles << " particles!\n";
+	//cout << "World loaded!\nObjective: Light up " << scoreAviable << " platforms. You get " << particles << " particles!\n";
 }
 
 void World::updateWorld() {
 	//Update world
+	RenderData update(2);
+	renderQueue->push(update);
 	updatePlatforms();
 
 	//Update charcter
 	updateChar();
+	// Tells the render that new input to the render stack is inc, and to wait til the world is done outputing information 
+	// to send it to the renderer.
+	renderQueue->push(update);
 
 	//Update UI
 	if (!winmsg && score == scoreAviable) {
@@ -135,11 +143,15 @@ void World::updateWorld() {
 }
 
 void World::updateChar() {
-	for (int i = 0; i < circles->size(); i++) {
+	for (int i = 1; i < circles->size(); i++) {
 		b2Fixture* F = 	circles->at(i)->GetFixtureList();
 		b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
-	
-		circle->draw(circles->at(i)->GetWorldCenter(), circles->at(i)->GetAngle(), circleShape->m_radius, circleColors->at(i));
+		int type = 1;
+		//circle->draw(circles->at(i)->GetWorldCenter(), circles->at(i)->GetAngle(), circleShape->m_radius, circleColors->at(i));
+		RenderData circle(type,circles->at(i)->GetWorldCenter(), circles->at(i)->GetAngle(), circleShape->m_radius, circleColors->at(i));
+		renderQueue->push(circle);
+		//ren = Render::get();
+		//ren->drawCircle(circles->at(i)->GetWorldCenter(), circles->at(i)->GetAngle(), circleShape->m_radius, circleColors->at(i));
 	}
 }
 
@@ -185,9 +197,9 @@ void World::updatePlatforms() {
 										curColor = COLOR_LIT;
 										platformColors->at(colorId) = COLOR_LIT;
 										score++;
-										cout << "You have lit (" << score << " / " << scoreAviable << ") platforms!\n";
+									//	cout << "You have lit (" << score << " / " << scoreAviable << ") platforms!\n";
 										if (score == scoreAviable) {
-											cout << "Congratulations! You won!\n";
+									//		cout << "Congratulations! You won!\n";
 										}
 										if (tasksTotal) {
 											tasksDone++;
@@ -204,10 +216,11 @@ void World::updatePlatforms() {
 							}
 						}
 					}
-
-					platform->draw(points, B->GetWorldCenter(), B->GetAngle(), curColor);
 					
-
+					int a = 0;
+				//ren->drawSquare(points, B->GetWorldCenter(), B->GetAngle(), curColor); // wont work since thread world will be running it
+					RenderData platform(a, points, B->GetWorldCenter(), B->GetAngle(), curColor);
+					renderQueue->push(platform);
 					colorId--;
 					break;
 				}
@@ -221,8 +234,9 @@ void World::updatePlatforms() {
 }
 
 void World::step() {
-	checkForInput();
+	//checkForInput();
 	world->Step(1.0 / 32.0, 8, 3);
+
 }
 
 void World::addNewCircle(int x, int y, float radius, int grp) {
@@ -251,7 +265,7 @@ b2Body* World::addCircle(int x, int y, float radius, bool dyn, int grp) {
 	fixturedef.density = 0.0;
 
 	fixturedef.friction = 0.0;
-	fixturedef.restitution = 0.0;
+	fixturedef.restitution = 0.7;
 	fixturedef.isSensor = true;
 	fixturedef.filter.groupIndex = grp;
 	body->CreateFixture(&fixturedef);
@@ -516,10 +530,10 @@ bool World::shootParticle(int x, int y) {
 		parBody->SetLinearVelocity(b2Vec2(0, 0));
 		parBody->ApplyForce(direction, parXY, true);
 
-		cout << "Particles left: " << particlesLeft - 1 << "!\n";
+	//	cout << "Particles left: " << particlesLeft - 1 << "!\n";
 	}
 	else {
-		cout << "No particles left!\n";
+//		cout << "No particles left!\n";
 	}
 
 	return closestParticle;
@@ -584,7 +598,7 @@ void World::loadWorld(string file) {
 		}
 	}
 
-	cout << "World loaded!\nObjective: Light up " << scoreAviable << " platforms. You get " << particleCount << " particles!\n";
+//	cout << "World loaded!\nObjective: Light up " << scoreAviable << " platforms. You get " << particleCount << " particles!\n";
 }
 
 void World::spawnCharacter()
@@ -795,13 +809,30 @@ void World::spawnPuzzle(int puzzleId) {
 }
 
 void World::checkForInput(){
+	bool exit = false;
+	while (!exit){
+	
 	if (inputQueue->getSize() > 0){
-		InputData input = inputQueue->pop();
+		InputData input = inputQueue->pop();	
+		//printf("pop item : %i", input.getType());
+	
 		switch (input.getType()) {
 			case 0: {	//type 0 == mouse click
 				applyForce(input.getX(), input.getY());
 				break;
 			}
+			case 1: {	//type 1 = step
+					
+					step();
+					
+						break;
+			}
+			case 2: {	//type 2 = update world
+						updateWorld();	
+						break;
+			}
 		}
+	}
+
 	}
 }
