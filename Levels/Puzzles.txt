@@ -1,11 +1,10 @@
 x,	y,	w,	h,	dynamic,	group,	type,	door
 
 puzzle 1:
-cameraspeed: 0
-timelimit: 0
+5,	150,	10,	300,	false,		1,	solid,	true
+5,	450,	10,	300,	false,		1,	solid,	false
 795,	150,	10,	300,	false,		1,	solid,	false
 795,	450,	10,	300,	false,		1,	solid,	true
-5,	300,	10,	600,	false,		1,	solid,	false
 
 50,	50,	50,	50,	false,		1,	unlit,	false
 750,	50,	50,	50,	false,		1,	unlit,	false
@@ -14,7 +13,9 @@ timelimit: 0
 
 
 puzzle 2:
-50,	300,	80,	80,	false,		1,	unlit,	false
-600,	200,	80,	50,	false,		1,	unlit,	false
-900,	500,	20,	20,	false,		1,	unlit,	false
-1500,	400,	50,	30,	false,		1,	unlit,	false
+5,	150,	10,	300,	false,		1,	solid,	true
+5,	450,	10,	300,	false,		1,	solid,	false
+795,	150,	10,	300,	false,		1,	solid,	false
+795,	450,	10,	300,	false,		1,	solid,	true
+
+400,	150,	50,	50,	false,		1,	unlit,	false

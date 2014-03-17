@@ -7,10 +7,10 @@
 int main(int argc, char *argv[]) {
 
 
-	Window *mainWindow = new Window(1366, 786); //new Window(1366, 786);
+	Window *mainWindow = new Window(1920, 1080); //new Window(1366, 786);
 
 	//thread *inputThread;
-//	inputThread = new thread(&Input::inputLoop, Input(mainWindow));
+	//inputThread = new thread(&Input::inputLoop, Input(mainWindow));
 
 	mainWindow->mainLoop();
 	return 0;

@@ -4,82 +4,99 @@
 #include <random>
 #include <fstream>
 #include <Windows.h>
+#include <freeglut\freeglut.h>
 #include "Consts.h"
 #include "InputData.h"
 #include "InputQueue.h"
 #include "RenderData.h"
 #include "RenderQue.h"
 #include "Render.h"
+#include "Puzzle.h"
+#include "Particle.h"
 using namespace std;
 
 
 
-const b2Vec3 COLOR_SOLID = b2Vec3(0.7, 0.7, 0.7);
-const b2Vec3 COLOR_UNLIT = b2Vec3(0.7, 0, 0);
-const b2Vec3 COLOR_LIT = b2Vec3(0, 1, 0);
-const b2Vec3 COLOR_BLACK = b2Vec3(0.1, 0.1, 0.1);
 const int ROOF = 0;
 const int FLOOR = 600;
 const int WALLSIZE = 10;
-const float CAMERA_SPEED = 3;
-struct PuzzleData {
-	int x, y, w, h, group;
-	bool dynamic, door;
-	b2Vec3 color;
-	int cameraSpeed, timeLimit;
-};
+const float START_CAMERASPEED = 5;
+const float CAMERASPEED_INCREASE = 0;
+const int START_WALLS = 10;
+const int WALL_INCREASE = 4;
+const int WALL_DISTANCE = 100;
+const int START_PARTICLES = 20;
 
 
 class World {
 private:
-	//Circle *circleObject;
+	//Main world objects
 	b2World *world;
-	
-	vector <b2Body*> *platforms;
-	vector <b2Body*> *circles;
-	vector <b2Joint*> *joints;
-	vector <bool> *isFired;
-	vector <b2Vec3> *circleColors;
-	vector <b2Vec3> *platformColors;
+	Platform *platform;
+	Circle *circle;
 	int screenwidth, screenheight;
-	int score, scoreAviable;
-	bool winmsg;
-	float cameraSpeed;
-	int particles;
-	int spawnX, spawnY;
-	vector <vector <PuzzleData>> *puzzles;
-	b2Body* puzzleDoor;
-	int doorId;
-	int tasksTotal, tasksDone;
+
+	//Camera variables
+	int spawnX;
+	int camOffX, camOffY;
+	float cameraSpeed, newSpeed;
+
+	//Puzzle variables
+	vector <b2Body*> *platforms;
+	vector <Puzzle*> *puzzles;
+	vector <b2Vec3> *platformColors;
+	int puzzleId;
+	bool inProgress;
+	int puzzlesSolved;
+
+	//Player variables
+	b2Body *playerBody;
+	b2Vec3 playerColor;
+	vector <Particle*> *particles;
+	int numParticles;
+	bool lost;
+
+	//Random wall variables
+	int spawnCooldown;
+	int numWalls;
+
 	InputQueue *inputQueue;
 	RenderQue *renderQueue;
-
-
 
 public:
 	World(int screenWidth, int screenHeight, InputQueue *inQueue, RenderQue *renderQue);
 	~World();
-	void SetupSDL();
+	void checkForInput();
+
+	//Main world functions
 	void setupWorld();
-	void updateWorld();
-	void step(); 
-	void addNewCircle(int x, int y, float radius, int grp = 1);
-	void addNewRect();
+	void step();
 	b2Body* addCircle(int x, int y, float radius, bool dyn, int grp = 1);
 	b2Body* addMainChar(int x, int y, float radius, bool dyn, int grp = 1);
 	b2Body* addRect(int x, int y, int w, int h, bool dyn, int grp = 1);
 	b2Body* addInvisibleWall(int x, int y, int w, int h, bool dyn, int grp = 1);
-	void applyForce(int x, int y);
-	void joinCircleJoints();
-	void pullParticlesToCenter();
-	void updateChar();
+
+	//Update functions
+	void updateWorld();
 	void updatePlatforms();
-	bool shootParticle(int x, int y);
-	void loadWorld(string file);
-	void spawnCharacter();
-	void cleanWalls();
-	void spawnRandomWalls();
+	void updateChar();
+
+	//Puzzle functions
 	void loadPuzzles(string file);
 	void spawnPuzzle(int puzzleId);
-	void checkForInput();
+	bool startPuzzle();
+	bool endPuzzle();
+	void spawnGroundParticles(int n, b2Vec2 pos, int r);
+	void setPuzzle(int id);
+
+	//Player functions
+	void applyForce(int x, int y);
+	void joinCircleJoints();
+	int shootParticle(int x, int y);
+	void spawnCharacter();
+
+	//Random wall functions
+	void cleanWalls();
+	void cleanParticles();
+	void spawnRandomWalls();
 };

@@ -4,7 +4,7 @@
 #include <glew.h>
 #include <gl\GL.h>
 #include <gl\GLU.h>
-#include <GL\freeglut.h>
+#include <freeglut\freeglut.h>
 #include <Box2D\Box2D.h>
 #include "InputQueue.h"
 #include "InputData.h"
