@@ -46,7 +46,7 @@ public:
 		}
 		return instance;
 	}*/
-	void mainLoop(string fps);
+	void mainLoop(string fps = "", string puz = "", string par = "");
 	void setContext(SDL_Window* window, SDL_GLContext context);
 	void initiaze(int h, int w, InputQueue *que);
 	void renderLoop(RenderQue *renQue, InputQueue *que);

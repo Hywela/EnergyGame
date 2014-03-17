@@ -376,6 +376,7 @@ void World::updateChar() {
 				tempParticle->setJoint(newJoint);
 
 				//printf("Picked up particle!\n");
+				numParticles++;
 			}
 		}
 	}
@@ -668,6 +669,10 @@ void World::setPuzzle(int id) {
 	}
 }
 
+int World::getPuzzlesSolved() {
+	return puzzlesSolved;
+}
+
 
 
 //Player functions
@@ -817,6 +822,9 @@ int World::shootParticle(int x, int y) {
 		//printf("No particles left!\n");
 	}
 
+	//Update particles left
+	numParticles = particlesLeft - 1;
+
 	return closestParticle;
 }
 
@@ -847,6 +855,10 @@ void World::spawnCharacter() {
 		particles->push_back(new Particle());
 		particles->back()->setBody(newBody);
 	}
+}
+
+int World::getParticlesLeft() {
+	return numParticles;
 }
 
 

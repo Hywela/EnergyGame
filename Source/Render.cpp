@@ -20,15 +20,15 @@ Render::Render(int h, int w, InputQueue *que ,RenderQue *rque){
 	setUpSDL(flags);
 	setUpOGL();
 }
+
 //not sure if i need it TODO:::
 void Render::setQue(InputQueue *que){
 	inQueue = que;
 }
-void Render::mainLoop(string fps){
-//	while (!shutDown){
-		//renderThis();
 
-	
+void Render::mainLoop(string fps, string puz, string par){
+//	while (!shutDown){
+	//renderThis();
 	bool end = false;
 
 			while (!end){
@@ -54,7 +54,6 @@ void Render::mainLoop(string fps){
 								renderThis();
 								render();
 								startRendering();		
-
 							}
 							else if (renderNow){
 								glEnable(GL_TEXTURE_2D);
@@ -62,7 +61,21 @@ void Render::mainLoop(string fps){
 
 								glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-								renderText(font, 255, 255, 255, 100, 40, 0, fps);
+								int textX = 20;
+								int textY = 20;
+
+								if (fps != "") {
+									renderText(font, 255, 255, 255, textX, textY, 0, fps);
+									textY += 50;
+								}
+								if (puz != "") {
+									renderText(font, 255, 255, 255, textX, textY, 0, puz);
+									textY += 50;
+								}
+								if (par != "") {
+									renderText(font, 255, 255, 255, textX, textY, 0, par);
+									textY += 50;
+								}
 
 								glDisable(GL_TEXTURE_2D);
 								glDisable(GL_BLEND);
@@ -74,10 +87,11 @@ void Render::mainLoop(string fps){
 							break;
 				}
 					
-				}
-				}
+		}
+	}
 
 }
+
 void Render::render() {
 	//Clear buffer
 	glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -85,6 +99,7 @@ void Render::render() {
 	glLoadIdentity();
 
 }
+
 void Render::setUpOGL() {
 	// Show some information about the OpenGL verion and graphics card (for debugging)
 	cout << ::glGetString(GL_VENDOR) << endl;
@@ -144,6 +159,7 @@ void Render::renderOrtho() {
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
 }
+
 void Render::setUpSDL(int flags) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		cout << "Couldnt init SDL2! SDL_Error: " << SDL_GetError() << endl;
@@ -158,9 +174,11 @@ void Render::setUpSDL(int flags) {
 	window = SDL_CreateWindow("First SDL2 OGL App", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenwidth, screenheight, flags);
 	context = SDL_GL_CreateContext(window);
 }
+
 void Render::renderThis(){
 	renderNow = !renderNow;
 }
+
 void Render::drawSquare(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color) {
 	vector <float> vertices;
 	vector <float> colors;
@@ -195,6 +213,7 @@ void Render::drawSquare(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color
 	//Move back
 	glTranslatef(-center.x * M2P, -center.y * M2P, 0);
 }
+
 void Render::startRendering(){
 	glMatrixMode(GL_PROJECTION);
 	glDisable(GL_DEPTH_TEST);
@@ -205,6 +224,7 @@ void Render::startRendering(){
 	glTranslatef(0, -screenheight, 0);
 	glMatrixMode(GL_MODELVIEW);
 }
+
 void Render::endRendering(){
 	// Disable GUI rendering:
 	glMatrixMode(GL_PROJECTION);
@@ -212,6 +232,7 @@ void Render::endRendering(){
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
 }
+
 void Render::drawCircle(b2Vec2 center, float angle, float radius, b2Vec3 color){
 	vector <float> vertices;
 	vector <float> colors;
@@ -258,6 +279,7 @@ void Render::drawCircle(b2Vec2 center, float angle, float radius, b2Vec3 color){
 	//Move back
 	glTranslatef(-center.x * M2P, -center.y * M2P, 0);
 }
+
 /*
 RenderQue* Render::getQue(){
 
@@ -272,6 +294,7 @@ RenderQue* Render::getQue(){
 Render::~Render()
 {
 }
+
 //Render *Render::instance;
 void Render::renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G, const GLubyte& B,
 	const double& X, const double& Y, const double& Z, const std::string& Text)

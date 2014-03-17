@@ -88,12 +88,14 @@ public:
 	bool endPuzzle();
 	void spawnGroundParticles(int n, b2Vec2 pos, int r);
 	void setPuzzle(int id);
+	int getPuzzlesSolved();
 
 	//Player functions
 	void applyForce(int x, int y);
 	void joinCircleJoints();
 	int shootParticle(int x, int y);
 	void spawnCharacter();
+	int getParticlesLeft();
 
 	//Random wall functions
 	void cleanWalls();
