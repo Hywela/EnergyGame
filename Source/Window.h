@@ -10,6 +10,7 @@
 #include "World.h"
 #include "InputData.h"
 #include "InputQueue.h"
+#include <SDL_ttf.h>
 using namespace std;
 
 
@@ -29,6 +30,7 @@ private:
 	SDL_GLContext context;
 	SDL_Event e;
 	InputQueue *inQueue;
+	SDL_Renderer *ren;
 	
 public:
 	Window(int w = 800, int h = 600);
@@ -43,4 +45,6 @@ public:
 	void CheckKeyEvent(SDL_Event e);
 	void SetupWorld();
 	World* GetWorld();
+	SDL_Texture* RenderText(string message, string fontFile, SDL_Color color, int fontSize);
+	void textRenderTest();
 };

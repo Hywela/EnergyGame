@@ -51,6 +51,7 @@ void Window::mainLoop() {
 
 		world->step();  //update  dt:Number, velocityIterations:int, positionIterations:in // steps true the world
 		Render();
+		textRenderTest();
 
 		SDL_Delay(fps);
 		timer = SDL_GetTicks();
@@ -61,6 +62,20 @@ void Window::SetupSDL() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		cout << "Couldnt init SDL2! SDL_Error: " << SDL_GetError() << endl;
 	}
+
+	//SDL_TTF INIT
+	if (TTF_Init() == -1){
+		std::cout << TTF_GetError() << std::endl;
+	}
+
+	//SDL renderer setup
+	ren = nullptr;
+	ren = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	if (ren == nullptr){
+		std::cout << SDL_GetError() << std::endl;
+	}
+
+
 
 	SDL_Rect screenSize = SDL_Rect();
 	SDL_GetDisplayBounds(0, &screenSize);
@@ -158,4 +173,37 @@ void Window::SetupWorld() {
 
 World* Window::GetWorld() {
 	return world;
+}
+
+SDL_Texture* Window::RenderText(string message, string fontFile, SDL_Color color, int fontSize){
+	//Open the font
+	TTF_Font *font = nullptr;
+	font = TTF_OpenFont(fontFile.c_str(), fontSize);
+	if (font == nullptr)
+		throw std::runtime_error("Failed to load font: " + fontFile + TTF_GetError());
+
+	//Render the message to an SDL_Surface, as that's what TTF_RenderText_X returns
+	SDL_Surface *surf = TTF_RenderText_Blended(font, message.c_str(), color);
+	SDL_Texture *texture = SDL_CreateTextureFromSurface(ren, surf);
+	//Clean up unneeded stuff
+	SDL_FreeSurface(surf);
+	TTF_CloseFont(font);
+
+	return texture;
+}
+
+void Window::textRenderTest(){
+	SDL_Texture *image = nullptr;
+	try {
+		SDL_Color color = { 255, 255, 255 };
+		image = RenderText("TTF fonts are cool!", "Fonts/sample.ttf", color, 64);
+	}
+	catch (const std::runtime_error &e){
+		std::cout << e.what() << std::endl;
+	}
+
+	SDL_RenderClear(ren);
+	SDL_RenderCopy(ren, image, NULL, NULL);
+	SDL_RenderPresent(ren);
+
 }
