@@ -30,7 +30,10 @@ World::World(int screenwidth, int screenheight, InputQueue *inQueue, RenderQue *
 
 	//Set random seed based on time
 	time_t t = time(0);
-	tm *now = localtime(&t);
+
+	tm *now = new tm();
+	localtime_s(now, &t);
+
 	int h = now->tm_hour;
 	int m = now->tm_min;
 	int s = now->tm_sec;
