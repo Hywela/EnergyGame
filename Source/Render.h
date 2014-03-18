@@ -1,21 +1,67 @@
 #pragma once
 #include "Render.h"
-#include "freeglut/freeglut.h"
+#include <SDL.h>
+#include <glew.h>
+#include <gl\GL.h>
+#include <gl\GLU.h>
+#include <freeglut\freeglut.h>
 #include <Box2D\Box2D.h>
-#include <stdio.h>
-#include <stdarg.h>
+#include "InputQueue.h"
+#include "InputData.h"
+#include <iostream>
+#include "Consts.h"
+#include "RenderQue.h"
+#include <string>
+#include <Windows.h>
+#include "SDL_ttf.h"
+#include <string>
+/**
+	Render.h 
+	Class for sending data to the renderer and interacting with the renderer.
+	Gets information data from world.h/.cpp (what to draw)
+	Que based class.
+												-Kristoffer
+**/
+class Render  {
+private:
 
-
-
-class Render : public b2Draw {
+	TTF_Font *font;
+	static Render *instance;
+	InputQueue *inQueue;
+	int screenwidth;
+	int screenheight;
+	SDL_Window* window;
+	SDL_GLContext context;
+	int maxWidth, maxHeight;
+	int minWidth, minHeight;
+	RenderQue *renderQueue;
+	bool renderNow;
+	bool shutDown;
 public:
-	void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color);
-	void DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color);
-	void DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color);
-	void DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color);
-	void DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color);
-	void DrawTransform(const b2Transform& xf);
-	void DrawPoint(const b2Vec2& p, float32 size, const b2Color& color);
-	void DrawAABB(b2AABB* aabb, const b2Color& color);
+	Render(int h, int w, InputQueue *que, RenderQue *rque);
+	~Render();
+	/*static Render* get(){
+		if (!instance) {
+			instance = new Render();
+		}
+		return instance;
+	}*/
+	void mainLoop(string fps = "", string puz = "", string par = "");
+	void setContext(SDL_Window* window, SDL_GLContext context);
+	void initiaze(int h, int w, InputQueue *que);
+	void renderLoop(RenderQue *renQue, InputQueue *que);
+	void render();
+	void drawCircle(b2Vec2 center, float angle, float radius, b2Vec3 color);
+	void drawSquare(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color);
+	void setUpOGL();
+	void renderOrtho();
+	void setQue(InputQueue *que);
+	void setUpSDL(int flags);
+	RenderQue* getQue();
+	void renderThis();
+	void renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G, const GLubyte& B,
+		const double& X, const double& Y, const double& Z, const std::string& Text);
+	void startRendering();
+	void endRendering();
 };
 
