@@ -4,7 +4,6 @@
 #include <glew.h>
 #include <gl\GL.h>
 #include <gl\GLU.h>
-#include <freeglut\freeglut.h>
 #include <Box2D\Box2D.h>
 #include "InputQueue.h"
 #include "InputData.h"
@@ -24,7 +23,6 @@
 **/
 class Render  {
 private:
-
 	TTF_Font *font;
 	static Render *instance;
 	InputQueue *inQueue;
