@@ -24,6 +24,7 @@
 **/
 class Render  {
 private:
+	typedef void(Render::*keyFunc)();
 
 	TTF_Font *font;
 	static Render *instance;
@@ -37,15 +38,20 @@ private:
 	RenderQue *renderQueue;
 	bool renderNow;
 	bool shutDown;
+	//MainMenue
+	TTF_Font *menueFont;
+	struct button{
+		int posX;
+		int posY;
+		string tekst;
+	};
+	vector<button> *menueObjects;
 public:
+	keyFunc t = NULL;
 	Render(int h, int w, InputQueue *que, RenderQue *rque);
 	~Render();
-	/*static Render* get(){
-		if (!instance) {
-			instance = new Render();
-		}
-		return instance;
-	}*/
+	
+	void (Render::*loop)();
 	void mainLoop(string fps = "", string puz = "", string par = "");
 	void setContext(SDL_Window* window, SDL_GLContext context);
 	void initiaze(int h, int w, InputQueue *que);
@@ -63,5 +69,8 @@ public:
 		const double& X, const double& Y, const double& Z, const std::string& Text);
 	void startRendering();
 	void endRendering();
+	void mainMenue();
+	void pushBackMenueObj(int posX,int posY, string tekst);
+	int menueMouseHoverCheck(int x, int y);
 };
 

@@ -6,8 +6,11 @@ void Render::setContext(SDL_Window* window, SDL_GLContext context){
 	
 }
 Render::Render(int h, int w, InputQueue *que ,RenderQue *rque){
+	loop = &Render::mainMenue;
+	menueObjects = new 	vector<button>;
 	TTF_Init();
 	font = TTF_OpenFont("./Font/COMICATE.ttf", 42);
+	menueFont = TTF_OpenFont("./Font/COMICATE.ttf", 42);
 	screenheight = h;
 	screenwidth = w;
 	minWidth = w;
@@ -19,6 +22,7 @@ Render::Render(int h, int w, InputQueue *que ,RenderQue *rque){
 	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
 	setUpSDL(flags);
 	setUpOGL();
+
 }
 
 //not sure if i need it TODO:::
@@ -294,7 +298,22 @@ RenderQue* Render::getQue(){
 Render::~Render()
 {
 }
+void Render::mainMenue(){
+	render();
+	startRendering();
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
 
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+	for (int i = 0; i < menueObjects->size(); i++){
+		renderText(menueFont, 255, 255, 255, menueObjects->at(i).posX, menueObjects->at(i).posY, 0, menueObjects->at(i).tekst);
+	}
+
+	endRendering();
+	SDL_GL_SwapWindow(window);
+}
 //Render *Render::instance;
 void Render::renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G, const GLubyte& B,
 	const double& X, const double& Y, const double& Z, const std::string& Text)
@@ -325,4 +344,20 @@ void Render::renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G
 	/*Clean up.*/
 	glDeleteTextures(1, &Texture);
 	SDL_FreeSurface(Message);
+}
+void Render::pushBackMenueObj(int posX, int posY, string tekst){
+	button but;
+	but.posX = posX;
+	but.posY = posY;
+	but.tekst = tekst;
+	menueObjects->push_back(but);
+}
+int Render::menueMouseHoverCheck(int x, int y){
+	for (int i = 0; i < menueObjects->size(); i++){
+		if (menueObjects->at(i).posX <= x && menueObjects->at(i).posY >= y){
+				return i;
+				
+		}
+	}
+	return NULL;
 }
