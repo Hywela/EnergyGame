@@ -51,12 +51,15 @@ void Init::OpenGL()
 
 void Init::SDL()
 {
+	SDL_Rect screenSize = SDL_Rect();
+
+	-SDL_GetDisplayBounds(0, &screenSize);
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
 		std::cout << "Couldnt init SDL2! SDL_Error: " << SDL_GetError() << std::endl;
 	}
 
-	window		= SDL_CreateWindow("First SDL2 OGL App", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, flags);
+	window		= SDL_CreateWindow("Energy Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, flags);
 	glContext	= SDL_GL_CreateContext(window);
 };
 int Init::getScreenHeight(){

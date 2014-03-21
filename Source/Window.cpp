@@ -117,7 +117,7 @@ void Window::menueLoop(){
 	ren->mainMenue();
 }
 void Window::startWorld() {
-	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenWidth(), inQueue, renderQueue);
+	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenHeight(), inQueue, renderQueue);
 	worldSimulation = new thread(&World::checkForInput, world);
 	//world->setupWorld();
 }
