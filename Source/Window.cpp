@@ -97,7 +97,7 @@ void Window::gameLeftMouseClick() {
 	inQueue->push(click);
 }
 void Window::menueLeftMouseClick() {
-	switch (ren->menueMouseHoverCheck(e.button.x, e.button.y)) {
+	switch (ren->menueMouseClickCheck(e.button.x, e.button.y)) {
 	case 1: {
 				cout << "play clicked";
 				leftMouseClick = &Window::gameLeftMouseClick;
@@ -107,9 +107,15 @@ void Window::menueLeftMouseClick() {
 	}
 	case 2: {
 				cout << "2";
+				ren->setCameraDirectionX(10);
 	break;
 	}
-	default:{
+	case 3: {
+				cout << "3";
+				
+				break;
+	}
+	default:{ren->setCameraDirectionX(-10);
 	break;
 		}
 	}
