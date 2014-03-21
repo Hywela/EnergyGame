@@ -1,11 +1,9 @@
 #include "Render.h"
 
-void Render::setContext(SDL_Window* window, SDL_GLContext context){
-	this->window = window;
-	this->context = context;
-	
-}
-Render::Render(int h, int w, InputQueue *que ,RenderQue *rque){
+Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
+	this->init = init;
+	init->SDL();
+	init->OpenGL();
 	cameraX = 0;
 	cameraY = 0;
 	loop = &Render::mainMenue;
@@ -13,17 +11,12 @@ Render::Render(int h, int w, InputQueue *que ,RenderQue *rque){
 	TTF_Init();
 	font = TTF_OpenFont("./Font/COMICATE.ttf", 42);
 	menueFont = TTF_OpenFont("./Font/COMICATE.ttf", 42);
-	screenheight = h;
-	screenwidth = w;
-	minWidth = w;
-	minHeight = h;
+	screenHeight = init->getScreenHeight();
+	screenWidth = init->getScreenWidth();
 	renderQueue = rque;
 	renderNow = false;
 	shutDown = false;
 	inQueue = que;
-	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
-	setUpSDL(flags);
-	setUpOGL();
 
 }
 
@@ -87,7 +80,7 @@ void Render::mainLoop(string fps, string puz, string par){
 								glDisable(GL_BLEND);
 								renderThis();
 								endRendering();
-								SDL_GL_SwapWindow(window);
+								SDL_GL_SwapWindow(init->window);
 								end = true;
 							}
 							break;
@@ -105,50 +98,6 @@ void Render::render() {
 	glLoadIdentity();
 	//gluLookAt(0, 50,0,   0,0,0,   0,1,0);
 }
-
-void Render::setUpOGL() {
-	// Show some information about the OpenGL verion and graphics card (for debugging)
-	cout << ::glGetString(GL_VENDOR) << endl;
-	cout << ::glGetString(GL_RENDERER) << endl;
-	cout << ::glGetString(GL_VERSION) << endl;
-	glViewport(0, 0, screenwidth, screenheight);
-	gluPerspective(0.0f, (GLfloat) (screenwidth / screenheight), 5.0f, 100);
-	//Initialize clear color
-	glClearColor(0.f, 0.f, 0.f, 1.f);
-	
-	//Initialize the depth buffer stuff
-	glClearDepth(1.0f);                             // Depth Buffer Setup
-	glEnable(GL_DEPTH_TEST);                        // Enables Depth Testing
-	glDepthFunc(GL_LEQUAL);                         // The Type Of Depth Test To Do
-
-	//glShadeModel(GL_SMOOTH);                        // Enable Smooth Shading
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);          // Really Nice Perspective 
-
-	//Initialize the lights
-	GLfloat LightAmbient[] = { 0.3f, 0.3f, 0.3f, 1.0f };  // Ambient Light Values
-	GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 1.0f };  // Diffuse Light Values
-	GLfloat LightPosition[] = { 0.0f, 0.0f, 0.0f, 1.0f }; // Light Position
-	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);      // Setup The Ambient Light
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);      // Setup The Diffuse Light
-	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);    // Position The Light
-	glEnable(GL_LIGHT1);
-
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	
-	GLenum glewError = glewInit();
-	if (glewError != GLEW_OK)
-	{
-		std::cout << "Error happened when starting Glew." << std::endl;
-	}
-	if (glewIsSupported("GL_VERSION_3_3"))
-		printf("Ready for OpenGL 3.3\n");
-	else {
-		printf("OpenGL 3.3 not supported\n");
-		exit(1);
-	}
-}
-
 void Render::renderOrtho() {
 
 	// Prepare for ortho rendering:
@@ -157,9 +106,9 @@ void Render::renderOrtho() {
 	glDisable(GL_DEPTH_TEST);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0, screenwidth, 0, screenheight);
+	gluOrtho2D(0, screenWidth, 0, screenHeight);
 	glScalef(1, -1, 1);
-	glTranslatef(0, -screenheight, 0);
+	glTranslatef(0, -screenHeight, 0);
 	glMatrixMode(GL_MODELVIEW);
 	//world->checkForInput();
 	//Draw player
@@ -174,20 +123,6 @@ void Render::renderOrtho() {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void Render::setUpSDL(int flags) {
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-		cout << "Couldnt init SDL2! SDL_Error: " << SDL_GetError() << endl;
-	}
-
-	SDL_Rect screenSize = SDL_Rect();
-	SDL_GetDisplayBounds(0, &screenSize);
-	cout << "Screen resolution is (" << screenSize.w << "x" << screenSize.h << ")\n";
-	maxWidth = screenSize.w;
-	maxHeight = screenSize.h;
-
-	window = SDL_CreateWindow("First SDL2 OGL App", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenwidth, screenheight, flags);
-	context = SDL_GL_CreateContext(window);
-}
 
 void Render::renderThis(){
 	renderNow = !renderNow;
@@ -199,9 +134,9 @@ void Render::startRendering(){
 	glDisable(GL_DEPTH_TEST);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(cameraX, screenwidth, cameraY, screenheight);
+	gluOrtho2D(cameraX, screenWidth, cameraY, screenHeight);
 	glScalef(1, -1, 1);
-	glTranslatef(0, -screenheight, 0);
+	glTranslatef(0, -screenHeight, 0);
 	glMatrixMode(GL_MODELVIEW);
 
 }
@@ -244,7 +179,7 @@ void Render::mainMenue(){
 	}
 
 	endRendering();
-	SDL_GL_SwapWindow(window);
+	SDL_GL_SwapWindow(init->window);
 	/*
 	GLfloat lightpos[] = { 0.5, 1.0, 1., 0.0 };
 	glUseProgram(*shader->GetShaderProgram());
@@ -312,4 +247,7 @@ void Render::menueMouseHoverCheck(int x, int y){
 }
 void Render::setCameraDirectionX(int offsett){
 	cameraX += offsett;
+}
+Init* Render::getInit(){
+	return init;
 }

@@ -13,7 +13,7 @@
 #include <string>
 #include <Windows.h>
 #include "SDL_ttf.h"
-
+#include "Init.h"
 /**
 	Render.h 
 	Class for sending data to the renderer and interacting with the renderer.
@@ -23,13 +23,12 @@
 **/
 class Render  {
 private:
+	Init *init;
 	TTF_Font *font;
 	static Render *instance;
 	InputQueue *inQueue;
-	int screenwidth;
-	int screenheight;
-	SDL_Window* window;
-	SDL_GLContext context;
+	int screenWidth;
+	int screenHeight;
 	int maxWidth, maxHeight;
 	int minWidth, minHeight;
 	RenderQue *renderQueue;
@@ -50,7 +49,7 @@ private:
 	vector<button> *menueObjects;
 public:
 	//constructor
-	Render(int h, int w, InputQueue *que, RenderQue *rque);
+	Render(Init *init, InputQueue *que, RenderQue *rque);
 	~Render();
 	//Loops //call for rendering 
 	void (Render::*loop)();
@@ -58,7 +57,6 @@ public:
 	void renderLoop(RenderQue *renQue, InputQueue *que);
 	void mainMenue();
 	//init
-	void setContext(SDL_Window* window, SDL_GLContext context);
 	void initiaze(int h, int w, InputQueue *que);
 	void setUpOGL();
 	void setUpSDL(int flags);
@@ -80,5 +78,7 @@ public:
 	int menueMouseClickCheck(int x, int y);
 	void menueMouseHoverCheck(int x, int y);
 	void setCameraDirectionX(int offsett);
+
+	Init* getInit();
 };
 

@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Circle.cpp" />
     <ClCompile Include="Source\Consts.cpp" />
+    <ClCompile Include="Source\Init.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\InputData.cpp" />
     <ClCompile Include="Source\InputQueue.cpp" />
@@ -30,6 +31,7 @@
     <ClInclude Include="Source\Circle.h" />
     <ClInclude Include="Source\Consts.h" />
     <ClInclude Include="Source\FileReader.h" />
+    <ClInclude Include="Source\Init.h" />
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\InputData.h" />
     <ClInclude Include="Source\InputQueue.h" />

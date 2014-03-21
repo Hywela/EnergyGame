@@ -5,19 +5,12 @@
 Window::Window(int w, int h) {
 	inQueue = new InputQueue();
 	renderQueue = new RenderQue();
-	screenheight = h;
-	screenwidth = w;
-	minWidth = w;
-	minHeight = h;
-	//getf = &Window::menueLoop;
-	inGame = false;
-	flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
 	running = true;
 	isFullscreen = false;
 	leftMouseClick = &Window::menueLeftMouseClick;
 	loopType = &Window::menueLoop;
-	
-	ren = new Render(screenheight, screenwidth, inQueue, renderQueue);
+	 int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
+	ren = new Render(new Init(w, h, flags), inQueue, renderQueue);
 
 	//SetupOGL();
 	//render = new thread(&Render::mainLoop, new Render(screenheight, screenwidth, inQueue ,renderQueue));
@@ -124,7 +117,7 @@ void Window::menueLoop(){
 	ren->mainMenue();
 }
 void Window::startWorld() {
-	world = new World(screenwidth, screenheight, inQueue, renderQueue);
+	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenWidth(), inQueue, renderQueue);
 	worldSimulation = new thread(&World::checkForInput, world);
 	//world->setupWorld();
 }
