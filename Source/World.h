@@ -13,6 +13,7 @@
 #include "Render.h"
 #include "Puzzle.h"
 #include "Particle.h"
+#include "VBO.h"
 using namespace std;
 
 
@@ -30,6 +31,8 @@ const int START_PARTICLES = 20;
 
 class World {
 private:
+	VBO *squareVBO;
+
 	//Main world objects
 	b2World *world;
 	Platform *platform;
@@ -64,7 +67,7 @@ private:
 	RenderQue *renderQueue;
 
 public:
-	World(int screenWidth, int screenHeight, InputQueue *inQueue, RenderQue *renderQue);
+	World(int screenWidth, int screenHeight, InputQueue *inQueue, RenderQue *renderQue, VBO *square);
 	~World();
 	void checkForInput();
 

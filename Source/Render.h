@@ -14,6 +14,7 @@
 #include <Windows.h>
 #include "SDL_ttf.h"
 #include "Init.h"
+#include "VBO.h"
 /**
 	Render.h 
 	Class for sending data to the renderer and interacting with the renderer.
@@ -47,6 +48,7 @@ private:
 		b2Vec3 color;
 	};
 	vector<button> *menueObjects;
+	VBO *squareVBO;
 public:
 	//constructor
 	Render(Init *init, InputQueue *que, RenderQue *rque);
@@ -80,5 +82,6 @@ public:
 	void setCameraDirectionX(int offsett);
 	void zerOutCamera();
 	Init* getInit();
+	VBO* getVBO();
 };
 

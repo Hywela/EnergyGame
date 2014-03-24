@@ -17,7 +17,7 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	renderNow = false;
 	shutDown = false;
 	inQueue = que;
-
+	squareVBO = new VBO();
 }
 
 //not sure if i need it TODO:::
@@ -31,12 +31,12 @@ void Render::mainLoop(string fps, string puz, string par){
 	bool end = false;
 
 			while (!end){
-				RenderData input = renderQueue->pop();
+			/*	RenderData input = renderQueue->pop();
 				//printf("pop item : %i", input.getType());
 
 				switch (input.getType()) {
 				case 0: {	//type 0 == mouse click
-							input.test();
+							//input.test();
 							//drawSquare(input.points,input.getCenter(), input.getAngle(), input.getColor());
 							break;
 				}
@@ -48,17 +48,24 @@ void Render::mainLoop(string fps, string puz, string par){
 				}
 
 				case 2: {	//type 0 == mouse click
-						
-							if (!renderNow){
+						*/
+							
 								renderThis();
 								render();
 								startRendering();		
-							}
-							else if (renderNow){
+						
+						
 								glEnable(GL_TEXTURE_2D);
 								glEnable(GL_BLEND);
 
 								glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+								while (!squareVBO->isInUse()){
+									cout << "   ss  "<<squareVBO->isInUse();
+									squareVBO->setInUse(true);
+									if (squareVBO->isInUse())
+									squareVBO->draw();
+								}
+									squareVBO->setInUse(false);
 
 								int textX = 20;
 								int textY = 20;
@@ -82,11 +89,8 @@ void Render::mainLoop(string fps, string puz, string par){
 								endRendering();
 								SDL_GL_SwapWindow(init->window);
 								end = true;
-							}
-							break;
-				}
-					
-		}
+			
+		
 	}
 
 }
@@ -162,6 +166,11 @@ RenderQue* Render::getQue(){
 }*/
 Render::~Render()
 {
+	delete init;
+	delete menueFont;
+	delete font;
+	delete renderQueue;
+	delete inQueue;
 }
 void Render::mainMenue(){
 	
@@ -231,6 +240,7 @@ void Render::pushBackMenueObj(int posX, int posY, string tekst){
 int Render::menueMouseClickCheck(int x, int y){
 	for (int i = 0; i < menueObjects->size(); i++){
 		if (menueObjects->at(i).posX <= x && menueObjects->at(i).posY >= y){
+			cout << i;
 				return i;
 				
 		}
@@ -241,7 +251,7 @@ void Render::menueMouseHoverCheck(int x, int y){
 	for (int i = 0; i < menueObjects->size(); i++){
 		if (menueObjects->at(i).posX <= x && menueObjects->at(i).posY >= y){
 
-
+		
 		}
 	}
 }
@@ -255,4 +265,7 @@ void Render::zerOutCamera(){
 }
 Init* Render::getInit(){
 	return init;
+}
+VBO* Render::getVBO(){
+	return squareVBO;
 }

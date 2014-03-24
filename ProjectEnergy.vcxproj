@@ -24,6 +24,7 @@
     <ClCompile Include="Source\Render.cpp" />
     <ClCompile Include="Source\RenderData.cpp" />
     <ClCompile Include="Source\RenderQue.cpp" />
+    <ClCompile Include="Source\VBO.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="Source\World.cpp" />
   </ItemGroup>
@@ -42,6 +43,7 @@
     <ClInclude Include="Source\Render.h" />
     <ClInclude Include="Source\RenderData.h" />
     <ClInclude Include="Source\RenderQue.h" />
+    <ClInclude Include="Source\VBO.h" />
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\World.h" />
   </ItemGroup>

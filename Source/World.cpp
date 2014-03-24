@@ -2,11 +2,11 @@
 
 
 
-World::World(int screenwidth, int screenheight, InputQueue *inQueue, RenderQue *renderQue) {
+World::World(int screenwidth, int screenheight, InputQueue *inQueue, RenderQue *renderQue, VBO *square) {
 	//Initialize world variables
 	this->screenwidth = screenwidth;
 	this->screenheight = screenheight;
-
+	squareVBO = square;
 	//Initialize camera variables
 	spawnX = 0;
 	cameraSpeed = START_CAMERASPEED;
@@ -337,8 +337,8 @@ void World::updateChar() {
 	int type = 1;
 
 	//Draw player body
-	RenderData circle(type, playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
-	renderQueue->push(circle);
+//	RenderData circle(type, playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
+//	renderQueue->push(circle);
 
 	//Update all particles
 	int ant = particles->size();
@@ -393,6 +393,9 @@ void World::updatePlatforms() {
 		b2Fixture* F = B->GetFixtureList();
 
 		while (F != NULL) {
+			while (!squareVBO->isInUse()){
+			squareVBO->setInUse(true);
+			squareVBO->clear();
 			switch (F->GetType()) {
 				case b2Shape::e_polygon: {
 					b2PolygonShape* poly = (b2PolygonShape*) F->GetShape();
@@ -440,8 +443,8 @@ void World::updatePlatforms() {
 
 					//Draw platform
 					int a = 0;
-					RenderData platform(a, points, B->GetWorldCenter(), B->GetAngle(), curColor);
-					renderQueue->push(platform);
+					squareVBO->pushBack( points, B->GetWorldCenter(), B->GetAngle(), curColor);
+					//renderQueue->push(platform);
 
 					colorId--;
 					break;
@@ -449,8 +452,9 @@ void World::updatePlatforms() {
 			}
 
 			F = F->GetNext();
+			}
 		}
-
+		squareVBO->setInUse(false);
 		B = B->GetNext();
 	}
 }

@@ -105,11 +105,13 @@ void Window::menueLeftMouseClick() {
 	break;
 	}
 	case 3: {
-				cout << "3";
+
+				delete ren;
+				exit(0);
 				
 				break;
 	}
-	default:{ren->setCameraDirectionX(-10);
+	default:{
 	break;
 		}
 	}
@@ -118,7 +120,7 @@ void Window::menueLoop(){
 	ren->mainMenue();
 }
 void Window::startWorld() {
-	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenHeight(), inQueue, renderQueue);
+	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenHeight(), inQueue, renderQueue, ren->getVBO());
 	worldSimulation = new thread(&World::checkForInput, world);
 	//world->setupWorld();
 }
