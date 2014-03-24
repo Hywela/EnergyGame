@@ -826,7 +826,7 @@ int World::shootParticle(int x, int y) {
 	}
 
 	//Update particles left
-	numParticles = particlesLeft - 1;
+	numParticles = ((particlesLeft) ? particlesLeft - 1 : particlesLeft);
 
 	return closestParticle;
 }
