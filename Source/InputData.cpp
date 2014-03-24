@@ -28,6 +28,8 @@ int InputData::getType(){
 	return clickType;
 }
 
+
+
 int InputData::getX(){
 	return clickX;
 }

@@ -1,126 +1,253 @@
 #include "Render.h"
 
+Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
+	this->init = init;
+	init->SDL();
+	init->OpenGL();
+	cameraX = 0;
+	cameraY = 0;
+	loop = &Render::mainMenue;
+	menueObjects = new 	vector<button>;
+	TTF_Init();
+	font = TTF_OpenFont("./Font/COMICATE.ttf", 42);
+	menueFont = TTF_OpenFont("./Font/COMICATE.ttf", 42);
+	screenHeight = init->getScreenHeight();
+	screenWidth = init->getScreenWidth();
+	renderQueue = rque;
+	renderNow = false;
+	shutDown = false;
+	inQueue = que;
 
-
-void Render::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
-	glColor3f(color.r, color.g, color.b);
-	glBegin(GL_LINE_LOOP);
-	for (int32 i = 0; i < vertexCount; ++i) {
-		glVertex2f(vertices[i].x, vertices[i].y);
-	}
-	glEnd();
 }
 
-void Render::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
+//not sure if i need it TODO:::
+void Render::setQue(InputQueue *que){
+	inQueue = que;
+}
+
+void Render::mainLoop(string fps, string puz, string par){
+//	while (!shutDown){
+	//renderThis();
+	bool end = false;
+
+			while (!end){
+				RenderData input = renderQueue->pop();
+				//printf("pop item : %i", input.getType());
+
+				switch (input.getType()) {
+				case 0: {	//type 0 == mouse click
+							input.test();
+							//drawSquare(input.points,input.getCenter(), input.getAngle(), input.getColor());
+							break;
+				}
+
+				case 1: {	//type 0 == mouse click
+							input.circle();
+						//	drawCircle(input.getCenter(), input.getAngle(), input.getRadius(), input.getColor());
+							break;
+				}
+
+				case 2: {	//type 0 == mouse click
+						
+							if (!renderNow){
+								renderThis();
+								render();
+								startRendering();		
+							}
+							else if (renderNow){
+								glEnable(GL_TEXTURE_2D);
+								glEnable(GL_BLEND);
+
+								glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+								int textX = 20;
+								int textY = 20;
+
+								if (fps != "") {
+									renderText(font, 255, 255, 255, textX, textY, 0, fps);
+									textY += 50;
+								}
+								if (puz != "") {
+									renderText(font, 255, 255, 255, textX, textY, 0, puz);
+									textY += 50;
+								}
+								if (par != "") {
+									renderText(font, 255, 255, 255, textX, textY, 0, par);
+									textY += 50;
+								}
+
+								glDisable(GL_TEXTURE_2D);
+								glDisable(GL_BLEND);
+								renderThis();
+								endRendering();
+								SDL_GL_SwapWindow(init->window);
+								end = true;
+							}
+							break;
+				}
+					
+		}
+	}
+
+}
+
+void Render::render() {
+	//Clear buffer
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glLoadIdentity();
+	//gluLookAt(0, 50,0,   0,0,0,   0,1,0);
+}
+void Render::renderOrtho() {
+
+	// Prepare for ortho rendering:
+	glMatrixMode(GL_PROJECTION);
+	
+	glDisable(GL_DEPTH_TEST);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, screenWidth, 0, screenHeight);
+	glScalef(1, -1, 1);
+	glTranslatef(0, -screenHeight, 0);
+	glMatrixMode(GL_MODELVIEW);
+	//world->checkForInput();
+	//Draw player
+
+	InputData updateWorld(2);
+	inQueue->push(updateWorld);
+
+	// Disable GUI rendering:
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glEnable(GL_DEPTH_TEST);
+	glMatrixMode(GL_MODELVIEW);
+}
+
+
+void Render::renderThis(){
+	renderNow = !renderNow;
+}
+
+
+void Render::startRendering(){
+	glMatrixMode(GL_PROJECTION);
+	glDisable(GL_DEPTH_TEST);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(cameraX, screenWidth, cameraY, screenHeight);
+	glScalef(1, -1, 1);
+	glTranslatef(0, -screenHeight, 0);
+	glMatrixMode(GL_MODELVIEW);
+
+}
+
+void Render::endRendering(){
+	// Disable GUI rendering:
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glEnable(GL_DEPTH_TEST);
+	glMatrixMode(GL_MODELVIEW);
+}
+
+/*
+RenderQue* Render::getQue(){
+
+	return renderQueue;
+}
+//Render::Render()
+{
+	
+	printf("\n Constructor Called");
+
+}*/
+Render::~Render()
+{
+}
+void Render::mainMenue(){
+	
+
+	render();
+	startRendering();
+	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
+
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4f(0.5f * color.r, 0.5f * color.g, 0.5f * color.b, 0.5f);
-	glBegin(GL_TRIANGLE_FAN);
-	for (int32 i = 0; i < vertexCount; ++i) {
-		glVertex2f(vertices[i].x, vertices[i].y);
+	
+
+	for (int i = 0; i < menueObjects->size(); i++){
+		renderText(menueFont, 255, 255, 255, menueObjects->at(i).posX, menueObjects->at(i).posY, 0, menueObjects->at(i).tekst);
 	}
-	glEnd();
-	glDisable(GL_BLEND);
 
-	glColor4f(color.r, color.g, color.b, 1.0f);
-	glBegin(GL_LINE_LOOP);
-	for (int32 i = 0; i < vertexCount; ++i) {
-		glVertex2f(vertices[i].x, vertices[i].y);
+	endRendering();
+	SDL_GL_SwapWindow(init->window);
+	/*
+	GLfloat lightpos[] = { 0.5, 1.0, 1., 0.0 };
+	glUseProgram(*shader->GetShaderProgram());
+	GLint LightPos = glGetUniformLocation(*shader->GetShaderProgram(), "LightPos");
+	glProgramUniform3f(*shader->GetShaderProgram(), LightPos, lightpos[0], lightpos[1], lightpos[2]);
+	if (mUniformTexture != -1) {
+		glUniform1i(mUniformTexture, 0);
 	}
-	glEnd();
+	glUseProgram(0);*/
 }
+//Render *Render::instance;
+void Render::renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G, const GLubyte& B,
+	const double& X, const double& Y, const double& Z, const std::string& Text)
+{
+	/*Create some variables.*/
+	SDL_Color Color = { R, G, B };
+	SDL_Surface *Message = TTF_RenderText_Blended(const_cast<TTF_Font*>(Font), Text.c_str(), Color);
+	unsigned Texture = 0;
 
-void Render::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color) {
-	const float32 k_segments = 16.0f;
-	const float32 k_increment = 2.0f * b2_pi / k_segments;
-	float32 theta = 0.0f;
-	glColor3f(color.r, color.g, color.b);
-	glBegin(GL_LINE_LOOP);
-	for (int32 i = 0; i < k_segments; ++i) {
-		b2Vec2 v = center + radius * b2Vec2(cosf(theta), sinf(theta));
-		glVertex2f(v.x, v.y);
-		theta += k_increment;
+	/*Generate an OpenGL 2D texture from the SDL_Surface*.*/
+	glGenTextures(1, &Texture);
+	glBindTexture(GL_TEXTURE_2D, Texture);
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Message->w, Message->h, 0, GL_BGRA,
+		GL_UNSIGNED_BYTE, Message->pixels);
+
+	/*Draw this texture on a quad with the given xyz coordinates.*/
+	glBegin(GL_QUADS);
+	glTexCoord2d(0, 0); glVertex3d(X, Y, Z);
+	glTexCoord2d(1, 0); glVertex3d(X + Message->w, Y, Z);
+	glTexCoord2d(1, 1); glVertex3d(X + Message->w, Y + Message->h, Z);
+	glTexCoord2d(0, 1); glVertex3d(X, Y + Message->h, Z);
+	glEnd();
+
+	/*Clean up.*/
+	glDeleteTextures(1, &Texture);
+	SDL_FreeSurface(Message);
+}
+void Render::pushBackMenueObj(int posX, int posY, string tekst){
+	button but;
+	but.posX = posX;
+	but.posY = posY;
+	but.tekst = tekst;
+	menueObjects->push_back(but);
+}
+int Render::menueMouseClickCheck(int x, int y){
+	for (int i = 0; i < menueObjects->size(); i++){
+		if (menueObjects->at(i).posX <= x && menueObjects->at(i).posY >= y){
+				return i;
+				
+		}
 	}
-	glEnd();
+	return NULL;
 }
+void Render::menueMouseHoverCheck(int x, int y){
+	for (int i = 0; i < menueObjects->size(); i++){
+		if (menueObjects->at(i).posX <= x && menueObjects->at(i).posY >= y){
 
-void Render::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color) {
-	const float32 k_segments = 16.0f;
-	const float32 k_increment = 2.0f * b2_pi / k_segments;
-	float32 theta = 0.0f;
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4f(0.5f * color.r, 0.5f * color.g, 0.5f * color.b, 0.5f);
-	glBegin(GL_TRIANGLE_FAN);
-	for (int32 i = 0; i < k_segments; ++i) {
-		b2Vec2 v = center + radius * b2Vec2(cosf(theta), sinf(theta));
-		glVertex2f(v.x, v.y);
-		theta += k_increment;
+
+		}
 	}
-	glEnd();
-	glDisable(GL_BLEND);
-
-	theta = 0.0f;
-	glColor4f(color.r, color.g, color.b, 1.0f);
-	glBegin(GL_LINE_LOOP);
-	for (int32 i = 0; i < k_segments; ++i) {
-		b2Vec2 v = center + radius * b2Vec2(cosf(theta), sinf(theta));
-		glVertex2f(v.x, v.y);
-		theta += k_increment;
-	}
-	glEnd();
-
-	b2Vec2 p = center + radius * axis;
-	glBegin(GL_LINES);
-	glVertex2f(center.x, center.y);
-	glVertex2f(p.x, p.y);
-	glEnd();
 }
-
-void Render::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) {
-	glColor3f(color.r, color.g, color.b);
-	glBegin(GL_LINES);
-	glVertex2f(p1.x, p1.y);
-	glVertex2f(p2.x, p2.y);
-	glEnd();
+void Render::setCameraDirectionX(int offsett){
+	cameraX += offsett;
 }
-
-void Render::DrawTransform(const b2Transform& xf) {
-	b2Vec2 p1 = xf.p, p2;
-	const float32 k_axisScale = 0.4f;
-	glBegin(GL_LINES);
-
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex2f(p1.x, p1.y);
-	p2 = p1 + k_axisScale * xf.q.GetXAxis();
-	glVertex2f(p2.x, p2.y);
-
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex2f(p1.x, p1.y);
-	p2 = p1 + k_axisScale * xf.q.GetYAxis();
-	glVertex2f(p2.x, p2.y);
-
-	glEnd();
+Init* Render::getInit(){
+	return init;
 }
-
-void Render::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) {
-	glPointSize(size);
-	glBegin(GL_POINTS);
-	glColor3f(color.r, color.g, color.b);
-	glVertex2f(p.x, p.y);
-	glEnd();
-	glPointSize(1.0f);
-}
-
-void Render::DrawAABB(b2AABB* aabb, const b2Color& c) {
-	glColor3f(c.r, c.g, c.b);
-	glBegin(GL_LINE_LOOP);
-	glVertex2f(aabb->lowerBound.x, aabb->lowerBound.y);
-	glVertex2f(aabb->upperBound.x, aabb->lowerBound.y);
-	glVertex2f(aabb->upperBound.x, aabb->upperBound.y);
-	glVertex2f(aabb->lowerBound.x, aabb->upperBound.y);
-	glEnd();
-}
-
-
-
