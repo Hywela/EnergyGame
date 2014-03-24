@@ -1,24 +1,23 @@
 #include "Render.h"
 
-void Render::setContext(SDL_Window* window, SDL_GLContext context){
-	this->window = window;
-	this->context = context;
-	
-}
-Render::Render(int h, int w, InputQueue *que ,RenderQue *rque){
+Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
+	this->init = init;
+	init->SDL();
+	init->OpenGL();
+	cameraX = 0;
+	cameraY = 0;
+	loop = &Render::mainMenue;
+	menueObjects = new 	vector<button>;
 	TTF_Init();
-	font = TTF_OpenFont("./Font/CaviarDreams.ttf", 42);
-	screenheight = h;
-	screenwidth = w;
-	minWidth = w;
-	minHeight = h;
+	font = TTF_OpenFont("./Font/COMICATE.ttf", 42);
+	menueFont = TTF_OpenFont("./Font/COMICATE.ttf", 42);
+	screenHeight = init->getScreenHeight();
+	screenWidth = init->getScreenWidth();
 	renderQueue = rque;
 	renderNow = false;
 	shutDown = false;
 	inQueue = que;
-	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
-	setUpSDL(flags);
-	setUpOGL();
+
 }
 
 //not sure if i need it TODO:::
@@ -81,7 +80,7 @@ void Render::mainLoop(string fps, string puz, string par){
 								glDisable(GL_BLEND);
 								renderThis();
 								endRendering();
-								SDL_GL_SwapWindow(window);
+								SDL_GL_SwapWindow(init->window);
 								end = true;
 							}
 							break;
@@ -97,59 +96,23 @@ void Render::render() {
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glLoadIdentity();
-
+	//gluLookAt(0, 50,0,   0,0,0,   0,1,0);
 }
-
-void Render::setUpOGL() {
-	// Show some information about the OpenGL verion and graphics card (for debugging)
-	cout << ::glGetString(GL_VENDOR) << endl;
-	cout << ::glGetString(GL_RENDERER) << endl;
-	cout << ::glGetString(GL_VERSION) << endl;
-
-	//Initialize clear color
-	glClearColor(0.f, 0.f, 0.f, 1.f);
-
-	//Initialize the depth buffer stuff
-	glClearDepth(1.0f);                             // Depth Buffer Setup
-	glEnable(GL_DEPTH_TEST);                        // Enables Depth Testing
-	glDepthFunc(GL_LEQUAL);                         // The Type Of Depth Test To Do
-
-	glShadeModel(GL_SMOOTH);                        // Enable Smooth Shading
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);          // Really Nice Perspective 
-
-	//Initialize the lights
-	GLfloat LightAmbient[] = { 0.3f, 0.3f, 0.3f, 1.0f };  // Ambient Light Values
-	GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 1.0f };  // Diffuse Light Values
-	GLfloat LightPosition[] = { 0.0f, 0.0f, 0.0f, 1.0f }; // Light Position
-	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);      // Setup The Ambient Light
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);      // Setup The Diffuse Light
-	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);    // Position The Light
-	glEnable(GL_LIGHT1);
-
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	
-	//Check for error
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		printf("Error initializing OpenGL! %s\n", gluErrorString(error));
-	}
-}
-
 void Render::renderOrtho() {
 
 	// Prepare for ortho rendering:
 	glMatrixMode(GL_PROJECTION);
+	
 	glDisable(GL_DEPTH_TEST);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0, screenwidth, 0, screenheight);
+	gluOrtho2D(0, screenWidth, 0, screenHeight);
 	glScalef(1, -1, 1);
-	glTranslatef(0, -screenheight, 0);
+	glTranslatef(0, -screenHeight, 0);
 	glMatrixMode(GL_MODELVIEW);
 	//world->checkForInput();
 	//Draw player
-	
+
 	InputData updateWorld(2);
 	inQueue->push(updateWorld);
 
@@ -160,69 +123,22 @@ void Render::renderOrtho() {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void Render::setUpSDL(int flags) {
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-		cout << "Couldnt init SDL2! SDL_Error: " << SDL_GetError() << endl;
-	}
-
-	SDL_Rect screenSize = SDL_Rect();
-	SDL_GetDisplayBounds(0, &screenSize);
-	cout << "Screen resolution is (" << screenSize.w << "x" << screenSize.h << ")\n";
-	maxWidth = screenSize.w;
-	maxHeight = screenSize.h;
-
-	window = SDL_CreateWindow("First SDL2 OGL App", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenwidth, screenheight, flags);
-	context = SDL_GL_CreateContext(window);
-}
 
 void Render::renderThis(){
 	renderNow = !renderNow;
 }
 
-void Render::drawSquare(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color) {
-	vector <float> vertices;
-	vector <float> colors;
-
-	//Create rectangle vertices
-	for (int i = 0; i < 4; i++) {
-		vertices.push_back(points[i].x * M2P);
-		vertices.push_back(points[i].y * M2P);
-		colors.push_back(color.x);
-		colors.push_back(color.y);
-		colors.push_back(color.z);
-	}
-
-	//Move to position of the object
-	glTranslatef(center.x * M2P, center.y * M2P, 0);
-	glRotatef(angle * 180.0 / M_PI, 0, 0, 1);
-
-	//Enable required buffers
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-
-	glVertexPointer(2, GL_FLOAT, 0, &vertices.front());
-	glColorPointer(3, GL_FLOAT, 0, &colors.front());
-
-	//draw the Cube
-	glDrawArrays(GL_QUADS, 0, vertices.size() / 2);
-
-	//restore the state GL back
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
-
-	//Move back
-	glTranslatef(-center.x * M2P, -center.y * M2P, 0);
-}
 
 void Render::startRendering(){
 	glMatrixMode(GL_PROJECTION);
 	glDisable(GL_DEPTH_TEST);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0, screenwidth, 0, screenheight);
+	gluOrtho2D(cameraX, screenWidth, cameraY, screenHeight);
 	glScalef(1, -1, 1);
-	glTranslatef(0, -screenheight, 0);
+	glTranslatef(0, -screenHeight, 0);
 	glMatrixMode(GL_MODELVIEW);
+
 }
 
 void Render::endRendering(){
@@ -231,53 +147,6 @@ void Render::endRendering(){
 	glPopMatrix();
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
-}
-
-void Render::drawCircle(b2Vec2 center, float angle, float radius, b2Vec3 color){
-	vector <float> vertices;
-	vector <float> colors;
-
-	//Push central point
-	vertices.push_back(0);
-	vertices.push_back(0);
-	colors.push_back(color.x);
-	colors.push_back(color.y);
-	colors.push_back(color.z);
-
-	//Creat points for circle (fan around center)
-	for (float i = 0.0; i <= 360; i += 360.0 / 30) {
-		float thisX = (cos(i * M_PI / 180.0) * (radius)) * M2P;
-		float thisY = (sin(i * M_PI / 180.0) * (radius)) * M2P;
-
-		//Center
-		vertices.push_back(thisX);
-		vertices.push_back(thisY);
-		colors.push_back(color.x);
-		colors.push_back(color.y);
-		colors.push_back(color.z);
-	}
-
-	//Move to position of the object
-	glTranslatef(center.x * M2P, center.y * M2P, 0);
-	glRotatef(angle * 180.0 / M_PI, 0, 0, 1);
-
-	//Enable required buffers
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-
-	//Fill buffers with draw data
-	glVertexPointer(2, GL_FLOAT, 0, &vertices.front());
-	glColorPointer(3, GL_FLOAT, 0, &colors.front());
-
-	//draw the Cube
-	glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size() / 2);
-
-	//restore the state GL back
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
-
-	//Move back
-	glTranslatef(-center.x * M2P, -center.y * M2P, 0);
 }
 
 /*
@@ -294,7 +163,33 @@ RenderQue* Render::getQue(){
 Render::~Render()
 {
 }
+void Render::mainMenue(){
+	
 
+	render();
+	startRendering();
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+
+	for (int i = 0; i < menueObjects->size(); i++){
+		renderText(menueFont, 255, 255, 255, menueObjects->at(i).posX, menueObjects->at(i).posY, 0, menueObjects->at(i).tekst);
+	}
+
+	endRendering();
+	SDL_GL_SwapWindow(init->window);
+	/*
+	GLfloat lightpos[] = { 0.5, 1.0, 1., 0.0 };
+	glUseProgram(*shader->GetShaderProgram());
+	GLint LightPos = glGetUniformLocation(*shader->GetShaderProgram(), "LightPos");
+	glProgramUniform3f(*shader->GetShaderProgram(), LightPos, lightpos[0], lightpos[1], lightpos[2]);
+	if (mUniformTexture != -1) {
+		glUniform1i(mUniformTexture, 0);
+	}
+	glUseProgram(0);*/
+}
 //Render *Render::instance;
 void Render::renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G, const GLubyte& B,
 	const double& X, const double& Y, const double& Z, const std::string& Text)
@@ -325,4 +220,34 @@ void Render::renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G
 	/*Clean up.*/
 	glDeleteTextures(1, &Texture);
 	SDL_FreeSurface(Message);
+}
+void Render::pushBackMenueObj(int posX, int posY, string tekst){
+	button but;
+	but.posX = posX;
+	but.posY = posY;
+	but.tekst = tekst;
+	menueObjects->push_back(but);
+}
+int Render::menueMouseClickCheck(int x, int y){
+	for (int i = 0; i < menueObjects->size(); i++){
+		if (menueObjects->at(i).posX <= x && menueObjects->at(i).posY >= y){
+				return i;
+				
+		}
+	}
+	return NULL;
+}
+void Render::menueMouseHoverCheck(int x, int y){
+	for (int i = 0; i < menueObjects->size(); i++){
+		if (menueObjects->at(i).posX <= x && menueObjects->at(i).posY >= y){
+
+
+		}
+	}
+}
+void Render::setCameraDirectionX(int offsett){
+	cameraX += offsett;
+}
+Init* Render::getInit(){
+	return init;
 }

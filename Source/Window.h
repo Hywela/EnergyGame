@@ -13,36 +13,38 @@
 #include "RenderData.h"
 #include "RenderQue.h"
 #include "Render.h"
+#include "Init.h"
 using namespace std;
 
 
+	
 
 class Window {
 private:
 	World *world;
-	int screenheight;
-	int screenwidth;
-	int maxWidth, maxHeight;
-	int minWidth, minHeight;
-	int flags;
 	bool running;
 	bool isFullscreen;
 	int timer;
-	SDL_Window* window;
-	SDL_GLContext context;
 	SDL_Event e;
 	InputQueue *inQueue;
 	RenderQue *renderQueue;
 	thread *worldSimulation;
-	thread *render;
 	Render *ren;
-
 	
 public:
 	Window(int w = 800, int h = 600);
 	~Window();
-
+	void (Window::*leftMouseClick)();
+	void (Window::*loopType)();
+	void checkForMouseInput();
+	void startWorld();
+	void gameLoop();
+	void menueLoop();
 	void mainLoop();
 	void setupWorld();
+	void gameLeftMouseClick();
+	void menueLeftMouseClick();
+	void buildMenue();
+	
 
 };
