@@ -10,7 +10,7 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	menueObjects = new 	vector<button>;
 	TTF_Init();
 	font = TTF_OpenFont("./Font/COMICATE.ttf", 42);
-	menueFont = TTF_OpenFont("./Font/COMICATE.ttf", 42);
+	menueFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
 	screenHeight = init->getScreenHeight();
 	screenWidth = init->getScreenWidth();
 	renderQueue = rque;
@@ -175,7 +175,7 @@ void Render::mainMenue(){
 	
 
 	for (int i = 0; i < menueObjects->size(); i++){
-		renderText(menueFont, 255, 255, 255, menueObjects->at(i).posX, menueObjects->at(i).posY, 0, menueObjects->at(i).tekst);
+		renderText(menueFont, 0, 255, 255, menueObjects->at(i).posX, menueObjects->at(i).posY, 0, menueObjects->at(i).tekst);
 	}
 
 	endRendering();
@@ -247,6 +247,11 @@ void Render::menueMouseHoverCheck(int x, int y){
 }
 void Render::setCameraDirectionX(int offsett){
 	cameraX += offsett;
+	screenWidth += offsett;
+}
+void Render::zerOutCamera(){
+	cameraX = 0;
+	screenWidth = 1920;
 }
 Init* Render::getInit(){
 	return init;

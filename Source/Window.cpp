@@ -2,7 +2,7 @@
 
 
 
-Window::Window(int w, int h) {
+Window::Window() {
 	inQueue = new InputQueue();
 	renderQueue = new RenderQue();
 	running = true;
@@ -10,7 +10,7 @@ Window::Window(int w, int h) {
 	leftMouseClick = &Window::menueLeftMouseClick;
 	loopType = &Window::menueLoop;
 	 int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
-	ren = new Render(new Init(w, h, flags), inQueue, renderQueue);
+	ren = new Render(new Init( flags), inQueue, renderQueue);
 
 	//SetupOGL();
 	//render = new thread(&Render::mainLoop, new Render(screenheight, screenwidth, inQueue ,renderQueue));
@@ -93,6 +93,7 @@ void Window::menueLeftMouseClick() {
 	switch (ren->menueMouseClickCheck(e.button.x, e.button.y)) {
 	case 1: {
 				cout << "play clicked";
+				ren->zerOutCamera();
 				leftMouseClick = &Window::gameLeftMouseClick;
 				loopType = &Window::gameLoop;
 				startWorld();
@@ -122,8 +123,12 @@ void Window::startWorld() {
 	//world->setupWorld();
 }
 void Window::buildMenue(){
-	ren->pushBackMenueObj(50, 50, "Play");
-	ren->pushBackMenueObj(50, 100, "Settings");
-	ren->pushBackMenueObj(50, 150, "Quit");
+	int fontSizeOffsett = 150;
+	int screenW = ren->getInit()->getScreenWidth()/3;
+	int screenH = ren->getInit()->getScreenHeight() / 20 + fontSizeOffsett;
+	ren->pushBackMenueObj(screenW, screenH*0.5, "Play");
+	ren->pushBackMenueObj(screenW, screenH*1, "Settings");
+	ren->pushBackMenueObj(screenW, screenH*1.5, "Quit");
+	
 }
 

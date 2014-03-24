@@ -16,7 +16,7 @@ public:
 	SDL_Window* window;
 	SDL_GLContext glContext;
 
-	Init(int screenWidth, int screenHeight, Uint32 flags);
+	Init( Uint32 flags);
 	void OpenGL();
 	void SDL();
 	int getScreenHeight();
