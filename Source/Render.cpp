@@ -28,33 +28,10 @@ void Render::setQue(InputQueue *que){
 void Render::mainLoop(string fps, string puz, string par){
 //	while (!shutDown){
 	//renderThis();
-	bool end = false;
-
-			while (!end){
-				RenderData input = renderQueue->pop();
-				//printf("pop item : %i", input.getType());
-
-				switch (input.getType()) {
-				case 0: {	//type 0 == mouse click
-							input.test();
-							//drawSquare(input.points,input.getCenter(), input.getAngle(), input.getColor());
-							break;
-				}
-
-				case 1: {	//type 0 == mouse click
-							input.circle();
-						//	drawCircle(input.getCenter(), input.getAngle(), input.getRadius(), input.getColor());
-							break;
-				}
-
-				case 2: {	//type 0 == mouse click
-						
-							if (!renderNow){
-								renderThis();
-								render();
-								startRendering();		
-							}
-							else if (renderNow){
+	
+				
+								
+							
 								glEnable(GL_TEXTURE_2D);
 								glEnable(GL_BLEND);
 
@@ -81,13 +58,7 @@ void Render::mainLoop(string fps, string puz, string par){
 								renderThis();
 								endRendering();
 								SDL_GL_SwapWindow(init->window);
-								end = true;
-							}
-							break;
-				}
-					
-		}
-	}
+		
 
 }
 

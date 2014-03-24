@@ -65,18 +65,6 @@ void Window::checkForMouseInput(){
 }
 
 void Window::gameLoop() {
-
-	//Fps test start
-	fps_frames++;
-	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
-	{
-		fps_lasttime = SDL_GetTicks();
-		fps_current = fps_frames;
-		fps_frames = 0;
-	}
-	int fps = fps_current;
-	//Fps test end
-
 	//int fps = (1000 / 30) - (timer - SDL_GetTicks());
 	int puzzlesSolved = 0;
 	int particlesLeft = 0;
@@ -86,24 +74,39 @@ void Window::gameLoop() {
 	string parStr = "";
 
 	if (world) {
-		fpsStr = "FPS: " + to_string(fps);
+		fpsStr = "FPS: " + to_string(fps_current);
 		puzStr = "Solved: " + to_string(world->getPuzzlesSolved());
 		parStr = "Particles: " + to_string(world->getParticlesLeft());
 	}
-	InputData step(1);
+	//InputData step(1);
 	//cout <<"\n fps: " <<fps;
-	inQueue->push(step); //world->checkForInput();
-
-	InputData updateWorld(2);
-	inQueue->push(updateWorld);
+	//inQueue->push(step); //world->checkForInput();
+	world->step();
+	//InputData updateWorld(2);
+	//inQueue->push(updateWorld);
+	ren->render();
+	ren->startRendering();
+	world->updateWorld();
 	ren->mainLoop(fpsStr, puzStr, parStr);
-	SDL_Delay(fps);
-	timer = SDL_GetTicks();
+	//1SDL_Delay(fps);
+	//timer = SDL_GetTicks();
+
+	//Fps test start
+	fps_frames++;
+	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
+	{
+		fps_lasttime = SDL_GetTicks();
+		fps_current = fps_frames;
+		fps_frames = 0;
+	}
+	//Fps test end
+
 }
 void Window::gameLeftMouseClick() {
-	InputData click;
-	click.mouseClick(e.button.x, e.button.y);
-	inQueue->push(click);
+	//InputData click;
+	//click.mouseClick(e.button.x, e.button.y);
+	//inQueue->push(click);
+	world->applyForce(e.button.x, e.button.y);
 }
 void Window::menueLeftMouseClick() {
 	switch (ren->menueMouseClickCheck(e.button.x, e.button.y)) {
@@ -135,7 +138,7 @@ void Window::menueLoop(){
 }
 void Window::startWorld() {
 	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenHeight(), inQueue, renderQueue);
-	worldSimulation = new thread(&World::checkForInput, world);
+	//worldSimulation = new thread(&World::checkForInput, world);
 	//world->setupWorld();
 }
 void Window::buildMenue(){

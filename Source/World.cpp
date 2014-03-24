@@ -337,12 +337,13 @@ void World::updateChar() {
 	int type = 1;
 
 	//Draw player body
-	RenderData circle(type, playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
-	renderQueue->push(circle);
+	Circle circ;
+	circ.draw( playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
+	//renderQueue->push(circle);
 
 	//Update all particles
 	int ant = particles->size();
-	for (int i = 0; i < ant; i++) {
+	for (int i = 1; i < ant; i++) {
 		Particle *tempParticle = particles->at(i);
 		b2Body *tempBody = tempParticle->getBody();
 		b2Vec3 tempColor = tempParticle->getColor();
@@ -350,8 +351,8 @@ void World::updateChar() {
 		b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
 	
 		//Draw circle body
-		RenderData circle(type, tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
-		renderQueue->push(circle);
+		circ.draw(tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
+		//renderQueue->push(circle);
 
 		//Update particle
 		tempParticle->update();
@@ -440,8 +441,9 @@ void World::updatePlatforms() {
 
 					//Draw platform
 					int a = 0;
-					RenderData platform(a, points, B->GetWorldCenter(), B->GetAngle(), curColor);
-					renderQueue->push(platform);
+					Platform platform;
+					platform.draw( points, B->GetWorldCenter(), B->GetAngle(), curColor);
+					//renderQueue->push(platform);
 
 					colorId--;
 					break;
