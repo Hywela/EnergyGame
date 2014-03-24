@@ -247,6 +247,11 @@ void Render::menueMouseHoverCheck(int x, int y){
 }
 void Render::setCameraDirectionX(int offsett){
 	cameraX += offsett;
+	screenWidth += offsett;
+}
+void Render::zerOutCamera(){
+	cameraX = 0;
+	screenWidth = 1920;
 }
 Init* Render::getInit(){
 	return init;

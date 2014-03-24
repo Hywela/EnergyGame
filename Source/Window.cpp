@@ -93,6 +93,7 @@ void Window::menueLeftMouseClick() {
 	switch (ren->menueMouseClickCheck(e.button.x, e.button.y)) {
 	case 1: {
 				cout << "play clicked";
+				ren->zerOutCamera();
 				leftMouseClick = &Window::gameLeftMouseClick;
 				loopType = &Window::gameLoop;
 				startWorld();

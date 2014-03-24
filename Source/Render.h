@@ -78,7 +78,7 @@ public:
 	int menueMouseClickCheck(int x, int y);
 	void menueMouseHoverCheck(int x, int y);
 	void setCameraDirectionX(int offsett);
-
+	void zerOutCamera();
 	Init* getInit();
 };
 
