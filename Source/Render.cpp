@@ -7,7 +7,7 @@ void Render::setContext(SDL_Window* window, SDL_GLContext context){
 }
 Render::Render(int h, int w, InputQueue *que ,RenderQue *rque){
 	TTF_Init();
-	font = TTF_OpenFont("./Font/COMICATE.ttf", 42);
+	font = TTF_OpenFont("./Font/CaviarDreams.ttf", 42);
 	screenheight = h;
 	screenwidth = w;
 	minWidth = w;
