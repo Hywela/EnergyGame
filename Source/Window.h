@@ -30,6 +30,11 @@ private:
 	RenderQue *renderQueue;
 	thread *worldSimulation;
 	Render *ren;
+
+	//FPS test variables
+	Uint32 fps_lasttime;
+	Uint32 fps_current;
+	Uint32 fps_frames;
 	
 public:
 	Window();

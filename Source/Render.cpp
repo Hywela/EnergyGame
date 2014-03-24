@@ -9,7 +9,7 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	loop = &Render::mainMenue;
 	menueObjects = new 	vector<button>;
 	TTF_Init();
-	font = TTF_OpenFont("./Font/COMICATE.ttf", 42);
+	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42);
 	menueFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
 	screenHeight = init->getScreenHeight();
 	screenWidth = init->getScreenWidth();

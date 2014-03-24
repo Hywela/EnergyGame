@@ -17,6 +17,11 @@ Window::Window() {
 	
 	buildMenue();
 
+	//fps test variables
+	fps_lasttime = SDL_GetTicks(); //the last recorded time.
+	fps_current = 0; //the current FPS.
+	fps_frames = 0; //frames passed since the last recorded fps.
+
 }
 
 Window::~Window() {
@@ -24,7 +29,6 @@ Window::~Window() {
 }
 
 void Window::mainLoop() {	
-	
 
 	while (running) {
 		timer = SDL_GetTicks();
@@ -61,7 +65,19 @@ void Window::checkForMouseInput(){
 }
 
 void Window::gameLoop() {
-	int fps = (1000 / 30) - (timer - SDL_GetTicks());
+
+	//Fps test start
+	fps_frames++;
+	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
+	{
+		fps_lasttime = SDL_GetTicks();
+		fps_current = fps_frames;
+		fps_frames = 0;
+	}
+	int fps = fps_current;
+	//Fps test end
+
+	//int fps = (1000 / 30) - (timer - SDL_GetTicks());
 	int puzzlesSolved = 0;
 	int particlesLeft = 0;
 
