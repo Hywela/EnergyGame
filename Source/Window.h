@@ -32,7 +32,7 @@ private:
 	Render *ren;
 	
 public:
-	Window(int w = 800, int h = 600);
+	Window();
 	~Window();
 	void (Window::*leftMouseClick)();
 	void (Window::*loopType)();
