@@ -9,7 +9,7 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	loop = &Render::mainMenue;
 	menueObjects = new 	vector<button>;
 	TTF_Init();
-	font = TTF_OpenFont("./Font/COMICATE.ttf", 42);
+	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42);
 	menueFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
 	screenHeight = init->getScreenHeight();
 	screenWidth = init->getScreenWidth();
@@ -17,7 +17,7 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	renderNow = false;
 	shutDown = false;
 	inQueue = que;
-	squareVBO = new VBO();
+
 }
 
 //not sure if i need it TODO:::
@@ -28,44 +28,14 @@ void Render::setQue(InputQueue *que){
 void Render::mainLoop(string fps, string puz, string par){
 //	while (!shutDown){
 	//renderThis();
-	bool end = false;
-
-			while (!end){
-			/*	RenderData input = renderQueue->pop();
-				//printf("pop item : %i", input.getType());
-
-				switch (input.getType()) {
-				case 0: {	//type 0 == mouse click
-							//input.test();
-							//drawSquare(input.points,input.getCenter(), input.getAngle(), input.getColor());
-							break;
-				}
-
-				case 1: {	//type 0 == mouse click
-							input.circle();
-						//	drawCircle(input.getCenter(), input.getAngle(), input.getRadius(), input.getColor());
-							break;
-				}
-
-				case 2: {	//type 0 == mouse click
-						*/
+	
+				
+								
 							
-								renderThis();
-								render();
-								startRendering();		
-						
-						
 								glEnable(GL_TEXTURE_2D);
 								glEnable(GL_BLEND);
 
 								glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-								while (!squareVBO->isInUse()){
-									cout << "   ss  "<<squareVBO->isInUse();
-									squareVBO->setInUse(true);
-									if (squareVBO->isInUse())
-									squareVBO->draw();
-								}
-									squareVBO->setInUse(false);
 
 								int textX = 20;
 								int textY = 20;
@@ -88,10 +58,7 @@ void Render::mainLoop(string fps, string puz, string par){
 								renderThis();
 								endRendering();
 								SDL_GL_SwapWindow(init->window);
-								end = true;
-			
 		
-	}
 
 }
 
@@ -166,11 +133,6 @@ RenderQue* Render::getQue(){
 }*/
 Render::~Render()
 {
-	delete init;
-	delete menueFont;
-	delete font;
-	delete renderQueue;
-	delete inQueue;
 }
 void Render::mainMenue(){
 	
@@ -240,7 +202,6 @@ void Render::pushBackMenueObj(int posX, int posY, string tekst){
 int Render::menueMouseClickCheck(int x, int y){
 	for (int i = 0; i < menueObjects->size(); i++){
 		if (menueObjects->at(i).posX <= x && menueObjects->at(i).posY >= y){
-			cout << i;
 				return i;
 				
 		}
@@ -251,7 +212,7 @@ void Render::menueMouseHoverCheck(int x, int y){
 	for (int i = 0; i < menueObjects->size(); i++){
 		if (menueObjects->at(i).posX <= x && menueObjects->at(i).posY >= y){
 
-		
+
 		}
 	}
 }
@@ -265,7 +226,4 @@ void Render::zerOutCamera(){
 }
 Init* Render::getInit(){
 	return init;
-}
-VBO* Render::getVBO(){
-	return squareVBO;
 }

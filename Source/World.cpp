@@ -337,12 +337,13 @@ void World::updateChar() {
 	int type = 1;
 
 	//Draw player body
-//	RenderData circle(type, playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
-//	renderQueue->push(circle);
+	Circle circ;
+	circ.draw( playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
+	//renderQueue->push(circle);
 
 	//Update all particles
 	int ant = particles->size();
-	for (int i = 0; i < ant; i++) {
+	for (int i = 1; i < ant; i++) {
 		Particle *tempParticle = particles->at(i);
 		b2Body *tempBody = tempParticle->getBody();
 		b2Vec3 tempColor = tempParticle->getColor();
@@ -350,8 +351,8 @@ void World::updateChar() {
 		b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
 	
 		//Draw circle body
-		RenderData circle(type, tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
-		renderQueue->push(circle);
+		circ.draw(tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
+		//renderQueue->push(circle);
 
 		//Update particle
 		tempParticle->update();
@@ -393,9 +394,6 @@ void World::updatePlatforms() {
 		b2Fixture* F = B->GetFixtureList();
 
 		while (F != NULL) {
-			while (!squareVBO->isInUse()){
-			squareVBO->setInUse(true);
-			squareVBO->clear();
 			switch (F->GetType()) {
 				case b2Shape::e_polygon: {
 					b2PolygonShape* poly = (b2PolygonShape*) F->GetShape();
@@ -452,9 +450,8 @@ void World::updatePlatforms() {
 			}
 
 			F = F->GetNext();
-			}
 		}
-		squareVBO->setInUse(false);
+
 		B = B->GetNext();
 	}
 }
