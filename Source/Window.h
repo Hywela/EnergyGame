@@ -4,12 +4,14 @@
 #include <glew.h>
 #include <gl\GL.h>
 #include <gl\GLU.h>
+#include <GL\freeglut.h>
 #include <SDL_image.h>
 #include <vector>
 #include <Box2D\Box2D.h>
 #include "World.h"
 #include "InputData.h"
 #include "InputQueue.h"
+
 using namespace std;
 
 
@@ -43,4 +45,5 @@ public:
 	void CheckKeyEvent(SDL_Event e);
 	void SetupWorld();
 	World* GetWorld();
+	void drawText(const char *text, int length, int x, int y);
 };

@@ -117,6 +117,12 @@ void Window::Render() {
 	//Redraw
 	RenderOrtho();
 
+	//draw text
+	string text;
+	text = "This is text mafakkas";
+	glColor3f(0, 1, 0);
+	drawText(text.data(), text.length(), 0, 0);
+
 	//Present buffer
 	SDL_GL_SwapWindow(window);
 }
@@ -158,4 +164,24 @@ void Window::SetupWorld() {
 
 World* Window::GetWorld() {
 	return world;
+}
+
+void Window::drawText(const char *text, int length, int x, int y){
+	glMatrixMode(GL_PROJECTION);
+	double matrix[16];
+	glGetDoublev(GL_PROJECTION_MATRIX, matrix);
+	glLoadIdentity();
+	glOrtho(0, 800, 0, 600, -5, 5);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glPushMatrix();
+	glLoadIdentity();
+	glRasterPos2i(x, y);
+	for (int i = 0; i < length; i++){
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (int)text[i]);
+	}
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(matrix);
+	glMatrixMode(GL_MODELVIEW);
 }
