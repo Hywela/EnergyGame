@@ -59,6 +59,19 @@ void Init::SDL()
 		std::cout << "Couldnt init SDL2! SDL_Error: " << SDL_GetError() << std::endl;
 	}
 
+
+	SDL_DisplayMode mode[6];
+	for (int i = 0; i < SDL_GetNumVideoDisplays() &&
+		i < 6; ++i) {
+		SDL_GetCurrentDisplayMode(i, &mode[i]);
+	}
+	screenHeight = mode[0].h;
+	screenWidth = mode[0].w;
+	if (screenHeight <= 0){
+		screenHeight = 800;
+		screenWidth = 600;
+	}
+
 	window		= SDL_CreateWindow("Energy Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, flags);
 	glContext	= SDL_GL_CreateContext(window);
 };
