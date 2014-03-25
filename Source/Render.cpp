@@ -9,8 +9,8 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	loop = &Render::mainMenue;
 	menueObjects = new 	vector<button>;
 	TTF_Init();
-	font = TTF_OpenFont("./Font/COMICATE.ttf", 42);
-	menueFont = TTF_OpenFont("./Font/COMICATE.ttf", 42);
+	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42);
+	menueFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
 	screenHeight = init->getScreenHeight();
 	screenWidth = init->getScreenWidth();
 	renderQueue = rque;
@@ -28,33 +28,10 @@ void Render::setQue(InputQueue *que){
 void Render::mainLoop(string fps, string puz, string par){
 //	while (!shutDown){
 	//renderThis();
-	bool end = false;
-
-			while (!end){
-				RenderData input = renderQueue->pop();
-				//printf("pop item : %i", input.getType());
-
-				switch (input.getType()) {
-				case 0: {	//type 0 == mouse click
-							input.test();
-							//drawSquare(input.points,input.getCenter(), input.getAngle(), input.getColor());
-							break;
-				}
-
-				case 1: {	//type 0 == mouse click
-							input.circle();
-						//	drawCircle(input.getCenter(), input.getAngle(), input.getRadius(), input.getColor());
-							break;
-				}
-
-				case 2: {	//type 0 == mouse click
-						
-							if (!renderNow){
-								renderThis();
-								render();
-								startRendering();		
-							}
-							else if (renderNow){
+	
+				
+								
+							
 								glEnable(GL_TEXTURE_2D);
 								glEnable(GL_BLEND);
 
@@ -81,13 +58,7 @@ void Render::mainLoop(string fps, string puz, string par){
 								renderThis();
 								endRendering();
 								SDL_GL_SwapWindow(init->window);
-								end = true;
-							}
-							break;
-				}
-					
-		}
-	}
+		
 
 }
 
@@ -175,7 +146,7 @@ void Render::mainMenue(){
 	
 
 	for (int i = 0; i < menueObjects->size(); i++){
-		renderText(menueFont, 255, 255, 255, menueObjects->at(i).posX, menueObjects->at(i).posY, 0, menueObjects->at(i).tekst);
+		renderText(menueFont, 0, 255, 255, menueObjects->at(i).posX, menueObjects->at(i).posY, 0, menueObjects->at(i).tekst);
 	}
 
 	endRendering();
@@ -247,6 +218,11 @@ void Render::menueMouseHoverCheck(int x, int y){
 }
 void Render::setCameraDirectionX(int offsett){
 	cameraX += offsett;
+	screenWidth += offsett;
+}
+void Render::zerOutCamera(){
+	cameraX = 0;
+	screenWidth = 1920;
 }
 Init* Render::getInit(){
 	return init;

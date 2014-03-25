@@ -1,8 +1,8 @@
 #include "Init.h"
 
-Init::Init(int width, int height, Uint32 flgs) : screenWidth(width), 
-												 screenHeight(height), 
-												 flags(flgs)
+Init::Init( Uint32 flgs) : screenWidth(0), 
+						   screenHeight(0),
+						   flags(flgs)
 {};
 
 void Init::OpenGL()
@@ -52,15 +52,28 @@ void Init::OpenGL()
 void Init::SDL()
 {
 	SDL_Rect screenSize = SDL_Rect();
-
+	
 	-SDL_GetDisplayBounds(0, &screenSize);
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
 		std::cout << "Couldnt init SDL2! SDL_Error: " << SDL_GetError() << std::endl;
 	}
 
+	SDL_DisplayMode mode[6];
+	for (int i = 0; i < SDL_GetNumVideoDisplays() &&
+		i < 6; ++i) {
+		SDL_GetCurrentDisplayMode(i, &mode[i]);
+	}
+	screenHeight = mode[0].h*0.90;
+	screenWidth = mode[0].w*0.90;
+	if (screenHeight <= 0){
+		screenHeight = 800;
+		screenWidth = 600;
+	}
+
 	window		= SDL_CreateWindow("Energy Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, flags);
 	glContext	= SDL_GL_CreateContext(window);
+	
 };
 int Init::getScreenHeight(){
 	return screenHeight;

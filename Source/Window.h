@@ -31,8 +31,13 @@ private:
 	thread *worldSimulation;
 	Render *ren;
 	
+	//FPS test variables
+	Uint32 fps_lasttime;
+	Uint32 fps_current;
+	Uint32 fps_frames;
+	
 public:
-	Window(int w = 800, int h = 600);
+	Window();
 	~Window();
 	void (Window::*leftMouseClick)();
 	void (Window::*loopType)();

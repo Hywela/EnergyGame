@@ -2,7 +2,7 @@
 
 
 
-Window::Window(int w, int h) {
+Window::Window() {
 	inQueue = new InputQueue();
 	renderQueue = new RenderQue();
 	running = true;
@@ -10,12 +10,17 @@ Window::Window(int w, int h) {
 	leftMouseClick = &Window::menueLeftMouseClick;
 	loopType = &Window::menueLoop;
 	 int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
-	ren = new Render(new Init(w, h, flags), inQueue, renderQueue);
+	ren = new Render(new Init( flags), inQueue, renderQueue);
 
 	//SetupOGL();
 	//render = new thread(&Render::mainLoop, new Render(screenheight, screenwidth, inQueue ,renderQueue));
 	
 	buildMenue();
+
+	//fps test variables
+	fps_lasttime = SDL_GetTicks(); //the last recorded time.
+	fps_current = 0; //the current FPS.
+	fps_frames = 0; //frames passed since the last recorded fps.
 
 }
 
@@ -24,7 +29,6 @@ Window::~Window() {
 }
 
 void Window::mainLoop() {	
-	
 
 	while (running) {
 		timer = SDL_GetTicks();
@@ -61,7 +65,7 @@ void Window::checkForMouseInput(){
 }
 
 void Window::gameLoop() {
-	int fps = (1000 / 30) - (timer - SDL_GetTicks());
+	//int fps = (1000 / 30) - (timer - SDL_GetTicks());
 	int puzzlesSolved = 0;
 	int particlesLeft = 0;
 
@@ -70,29 +74,45 @@ void Window::gameLoop() {
 	string parStr = "";
 
 	if (world) {
-		fpsStr = "FPS: " + to_string(fps);
+		fpsStr = "FPS: " + to_string(fps_current);
 		puzStr = "Solved: " + to_string(world->getPuzzlesSolved());
 		parStr = "Particles: " + to_string(world->getParticlesLeft());
 	}
-	InputData step(1);
+	//InputData step(1);
 	//cout <<"\n fps: " <<fps;
-	inQueue->push(step); //world->checkForInput();
-
-	InputData updateWorld(2);
-	inQueue->push(updateWorld);
+	//inQueue->push(step); //world->checkForInput();
+	world->step();
+	//InputData updateWorld(2);
+	//inQueue->push(updateWorld);
+	ren->render();
+	ren->startRendering();
+	world->updateWorld();
 	ren->mainLoop(fpsStr, puzStr, parStr);
-	SDL_Delay(fps);
-	timer = SDL_GetTicks();
+	//1SDL_Delay(fps);
+	//timer = SDL_GetTicks();
+
+	//Fps test start
+	fps_frames++;
+	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
+	{
+		fps_lasttime = SDL_GetTicks();
+		fps_current = fps_frames;
+		fps_frames = 0;
+	}
+	//Fps test end
+
 }
 void Window::gameLeftMouseClick() {
-	InputData click;
-	click.mouseClick(e.button.x, e.button.y);
-	inQueue->push(click);
+	//InputData click;
+	//click.mouseClick(e.button.x, e.button.y);
+	//inQueue->push(click);
+	world->applyForce(e.button.x, e.button.y);
 }
 void Window::menueLeftMouseClick() {
 	switch (ren->menueMouseClickCheck(e.button.x, e.button.y)) {
 	case 1: {
 				cout << "play clicked";
+				ren->zerOutCamera();
 				leftMouseClick = &Window::gameLeftMouseClick;
 				loopType = &Window::gameLoop;
 				startWorld();
@@ -118,12 +138,16 @@ void Window::menueLoop(){
 }
 void Window::startWorld() {
 	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenHeight(), inQueue, renderQueue);
-	worldSimulation = new thread(&World::checkForInput, world);
+	//worldSimulation = new thread(&World::checkForInput, world);
 	//world->setupWorld();
 }
 void Window::buildMenue(){
-	ren->pushBackMenueObj(50, 50, "Play");
-	ren->pushBackMenueObj(50, 100, "Settings");
-	ren->pushBackMenueObj(50, 150, "Quit");
+	int fontSizeOffsett = 150;
+	int screenW = ren->getInit()->getScreenWidth()/3;
+	int screenH = ren->getInit()->getScreenHeight() / 20 + fontSizeOffsett;
+	ren->pushBackMenueObj(screenW, screenH*0.5, "Play");
+	ren->pushBackMenueObj(screenW, screenH*1, "Settings");
+	ren->pushBackMenueObj(screenW, screenH*1.5, "Quit");
+	
 }
 

@@ -79,12 +79,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\EnergyGameDependencies\SDL2_ttf\include;C:\EnergyGameDependencies\Box2D;C:\EnergyGameDependencies\glew\include\GL;C:\EnergyGameDependencies\SDL_image\include;C:\EnergyGameDependencies\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\EnergyGameDependencies\SDL2_ttf-2.0.12\include;C:\EnergyGameDependencies\Box2D;C:\EnergyGameDependencies\glew\include\GL;C:\EnergyGameDependencies\SDL_image\include;C:\EnergyGameDependencies\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\EnergyGameDependencies\SDL2_ttf\lib\x86;C:\EnergyGameDependencies\Box2D\Build\vs2012\bin\Debug;C:\EnergyGameDependencies\glew\lib\Release\Win32\;C:\EnergyGameDependencies\SDL_image\lib\x86;C:\EnergyGameDependencies\SDL2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\EnergyGameDependencies\SDL2_ttf-2.0.12\lib\x86;C:\EnergyGameDependencies\Box2D\Build\vs2012\bin\Debug;C:\EnergyGameDependencies\glew\lib\Release\Win32\;C:\EnergyGameDependencies\SDL_image\lib\x86;C:\EnergyGameDependencies\SDL2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Box2D.lib;SDL2_ttf.lib;SDL2main.lib;SDL2.lib;SDL_image.lib;OpenGL32.lib;glu32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <AdditionalOptions>/ENTRY:mainCRTStartup %(AdditionalOptions)</AdditionalOptions>
