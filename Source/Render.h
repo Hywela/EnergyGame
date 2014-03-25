@@ -14,6 +14,7 @@
 #include <Windows.h>
 #include "SDL_ttf.h"
 #include "Init.h"
+
 /**
 	Render.h 
 	Class for sending data to the renderer and interacting with the renderer.
