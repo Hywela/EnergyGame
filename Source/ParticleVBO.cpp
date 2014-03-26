@@ -14,7 +14,7 @@ void ParticleVBO::draw()
 		glBindBuffer(GL_ARRAY_BUFFER, colorID);
 		glColorPointer(3, GL_FLOAT, 0, 0);
 		
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size()/3);
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
 		glDisableClientState(GL_COLOR_ARRAY);
 		//restore the GL state back
@@ -66,8 +66,8 @@ void ParticleVBO::pushBack(b2Vec2 center, float angle, float radius, b2Vec3 colo
 		colors.push_back(color.x);
 		colors.push_back(color.y);
 		colors.push_back(color.z);
-		float thisX = (cos(i * M_PI / 10) * (radius )) *M2P;
-		float thisY = (sin(i * M_PI / 10) * (radius )) *M2P ;
+		float thisX = (cos(i * M_PI / 170) * (radius )) *M2P;
+		float thisY = (sin(i * M_PI / 170) * (radius )) *M2P ;
 		vertices.push_back(thisX + (moveX));
 		vertices.push_back(thisY + (moveY));
 		colors.push_back(color.x);
