@@ -14,7 +14,9 @@
 #include <Windows.h>
 #include "SDL_ttf.h"
 #include "Init.h"
-#include "VBO.h"
+#include "PlatformVBO.h"
+#include "ParticleVBO.h"
+#include "Platform.h"
 /**
 	Render.h 
 	Class for sending data to the renderer and interacting with the renderer.
@@ -48,7 +50,8 @@ private:
 		b2Vec3 color;
 	};
 	vector<button> *menueObjects;
-	VBO *squareVBO;
+	PlatformVBO *platformVBO;
+	ParticleVBO *particleVBO;
 public:
 	//constructor
 	Render(Init *init, InputQueue *que, RenderQue *rque);
@@ -57,7 +60,7 @@ public:
 	void (Render::*loop)();
 	void mainLoop(string fps = "", string puz = "", string par = "");
 	void renderLoop(RenderQue *renQue, InputQueue *que);
-	void mainMenue();
+	void mainMenue(string fps);
 	//init
 	void initiaze(int h, int w, InputQueue *que);
 	void setUpOGL();
@@ -82,6 +85,7 @@ public:
 	void setCameraDirectionX(int offsett);
 	void zerOutCamera();
 	Init* getInit();
-	VBO* getVBO();
+	PlatformVBO* getPlatformVBO();
+	ParticleVBO* getParticleVBO();
 };
 

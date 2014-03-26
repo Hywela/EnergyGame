@@ -60,7 +60,10 @@
     <ClCompile Include="Source\Init.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\VBO.cpp">
+    <ClCompile Include="Source\PlatformVBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ParticleVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,7 +116,10 @@
     <ClInclude Include="Source\Init.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\VBO.h">
+    <ClInclude Include="Source\PlatformVBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ParticleVBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

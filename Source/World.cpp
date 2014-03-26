@@ -2,11 +2,12 @@
 
 
 
-World::World(int screenwidth, int screenheight, InputQueue *inQueue, RenderQue *renderQue, VBO *square) {
+World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, ParticleVBO *particleRendering) {
 	//Initialize world variables
 	this->screenwidth = screenwidth;
 	this->screenheight = screenheight;
-	squareVBO = square;
+	platformVBO = platformRendering;
+	particleVBO = particleRendering;
 	//Initialize camera variables
 	spawnX = 0;
 	cameraSpeed = START_CAMERASPEED;
@@ -40,14 +41,12 @@ World::World(int screenwidth, int screenheight, InputQueue *inQueue, RenderQue *
 	int time = (h * 10000) + (m * 100) + s;
 	srand(time);
 
-	//Initialize queues
-	renderQueue = renderQue;
-	inputQueue = inQueue;
+
 
 	//Start world setup
 	setupWorld();
-	b2ContactListener *test;
-	test = new b2ContactListener();
+	
+
 }
 
 World::~World() {
@@ -89,10 +88,11 @@ void World::checkForInput() {
 void World::setupWorld() {
 	//Create world objects
 	world = new b2World(b2Vec2(0, 0)); //9.81
-	platform = new Platform();
+
 	circle = new Circle();
 	world->SetGravity(b2Vec2(0, 0));
 
+//	world->ShiftOrigin(b2Vec2(screenwidth / 2, screenheight / 2));
 	//Spawn character
 	spawnCharacter();
 	joinCircleJoints();
@@ -103,7 +103,7 @@ void World::setupWorld() {
 	fieldCenter *= M2P;
 	b2Vec2 cameraCenter = fieldCenter - windowCenter;
 	camOffX = cameraCenter.x;
-	camOffY = cameraCenter.y;
+	camOffY = cameraCenter.y;	
 	cameraCenter *= P2M;
 	world->ShiftOrigin(cameraCenter);
 
@@ -122,7 +122,7 @@ void World::setupWorld() {
 	spawnCooldown = 0;
 
 	//Set up edge wall
-	platforms->push_back(addInvisibleWall(0, 0, 320, screenheight, false, -1));
+	platforms->push_back(addInvisibleWall(0, 0, 320 , screenheight, false, -1));
 	platformColors->push_back(COLOR_BLACK);
 
 	//Spawn roof and floor
@@ -264,8 +264,8 @@ void World::updateWorld() {
 	//If not game over
 	if (!lost) {
 		//Update renderer
-		RenderData update(2);
-		renderQueue->push(update);
+	//	RenderData update(2);
+		//renderQueue->push(update);
 
 		//Update platforms
 		updatePlatforms();
@@ -282,7 +282,7 @@ void World::updateWorld() {
 		/*	Tells the render that new input to the render stack is inc,
 			and to wait til the world is done outputing information 
 			to send it to the renderer. */
-		renderQueue->push(update);
+	//	renderQueue->push(update);
 
 		//Update puzzles
 		if (!inProgress) {
@@ -310,13 +310,13 @@ void World::updateWorld() {
 		if (cameraSpeed) {
 			b2Vec2 cameraPos = b2Vec2(cameraSpeed, 0);
 			cameraPos *= P2M;
-			world->ShiftOrigin(cameraPos);
-
+			//world->ShiftOrigin(cameraPos);
+		
 			//Update spawn orgin
 			spawnX -= cameraSpeed;
 
 			//Update puzzle orgin
-			puzzles->at(puzzleId)->shiftOrginX(-cameraSpeed);
+		//	puzzles->at(puzzleId)->shiftOrginX(-cameraSpeed);
 		}
 
 		//Refresh position of pushwall
@@ -337,8 +337,8 @@ void World::updateChar() {
 	int type = 1;
 
 	//Draw player body
-	Circle circ;
-	circ.draw( playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
+	particleVBO->clear();
+	particleVBO->pushBack( playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
 	//renderQueue->push(circle);
 
 	//Update all particles
@@ -351,7 +351,7 @@ void World::updateChar() {
 		b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
 	
 		//Draw circle body
-		circ.draw(tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
+		particleVBO->pushBack(tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
 		//renderQueue->push(circle);
 
 		//Update particle
@@ -387,9 +387,10 @@ void World::updateChar() {
 }
 
 void World::updatePlatforms() {
+	platformVBO->clear();
 	b2Body *B = world->GetBodyList();
 	int colorId = platforms->size() - 1;
-
+	//squareVBO->clear();
 	while (B != NULL) {
 		b2Fixture* F = B->GetFixtureList();
 
@@ -441,7 +442,9 @@ void World::updatePlatforms() {
 
 					//Draw platform
 					int a = 0;
-					squareVBO->pushBack( points, B->GetWorldCenter(), B->GetAngle(), curColor);
+					platformVBO->pushBack( points, B->GetWorldCenter(), B->GetAngle(), curColor);
+					//Platform plat;
+					//plat.draw(points, B->GetWorldCenter(), B->GetAngle(), curColor);
 					//renderQueue->push(platform);
 
 					colorId--;
