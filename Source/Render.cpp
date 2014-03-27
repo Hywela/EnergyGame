@@ -19,6 +19,14 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	inQueue = que;
 	platformVBO = new PlatformVBO();
 	particleVBO = new ParticleVBO();
+	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
+	lightpos[0] = 0.5;
+	lightpos[1] = 1.0;
+	lightpos[2] = 1.0;
+	lightpos[3] = 0.0;
+		
+	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+	mUniform = glGetUniformLocation(*shader->GetShaderProgram(), "myTexture");
 }
 
 //not sure if i need it TODO:::
@@ -28,9 +36,18 @@ void Render::setQue(InputQueue *que){
 
 void Render::mainLoop(string fps, string puz, string par){
 
+	glUseProgram(*shader->GetShaderProgram());
+//	GLint LightPos = glGetUniformLocation(*shader->GetShaderProgram(), "LightPos");
+	//glProgramUniform3f(*shader->GetShaderProgram(), LightPos, lightpos[0], lightpos[1], lightpos[2]);
+	
+	platformVBO->draw();
 
-		platformVBO->draw();
+	glUseProgram(0);
+
+	
 		particleVBO->draw();
+
+
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 

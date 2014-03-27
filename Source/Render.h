@@ -16,7 +16,8 @@
 #include "Init.h"
 #include "PlatformVBO.h"
 #include "ParticleVBO.h"
-#include "Platform.h"
+#include "Shader.h"
+
 /**
 	Render.h 
 	Class for sending data to the renderer and interacting with the renderer.
@@ -24,6 +25,7 @@
 	Que based class.
 												-Kristoffer
 **/
+
 class Render  {
 private:
 	Init *init;
@@ -52,6 +54,12 @@ private:
 	vector<button> *menueObjects;
 	PlatformVBO *platformVBO;
 	ParticleVBO *particleVBO;
+	//shader
+	Shader		*shader;
+	GLint mUniform;
+	GLfloat lightpos[4];
+
+
 public:
 	//constructor
 	Render(Init *init, InputQueue *que, RenderQue *rque);

@@ -3,7 +3,7 @@
 #include <Box2D\Box2D.h>
 
 
-
+ 
 const float M2P = 32;
 const float P2M = 1 / M2P;
 const b2Vec3 COLOR_SOLID = b2Vec3(0.7, 0.7, 0.7);

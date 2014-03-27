@@ -60,14 +60,14 @@ void ParticleVBO::pushBack(b2Vec2 center, float angle, float radius, b2Vec3 colo
 	
 
 	//Creat points for circle (fan around center)
-	for (float i = 0.0; i <= 360; i += 360.0 / 240) {
+	for (float i = 0.0; i <= 360; i += 360.0 / 30) {
 		vertices.push_back(moveX);
 		vertices.push_back(moveY);
 		colors.push_back(color.x);
 		colors.push_back(color.y);
 		colors.push_back(color.z);
-		float thisX = (cos(i * M_PI / 170) * (radius )) *M2P;
-		float thisY = (sin(i * M_PI / 170) * (radius )) *M2P ;
+		float thisX = (cos(i * M_PI / 120) * (radius )) *M2P;
+		float thisY = (sin(i * M_PI / 120) * (radius)) *M2P;
 		vertices.push_back(thisX + (moveX));
 		vertices.push_back(thisY + (moveY));
 		colors.push_back(color.x);
