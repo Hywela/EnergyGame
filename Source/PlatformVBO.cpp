@@ -54,6 +54,16 @@ void PlatformVBO::pushBack(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 co
 		colors.push_back(color.z);
 	}
 }
+void PlatformVBO::pushBackground(b2Vec2* points, b2Vec2 center,  b2Vec3 color){
+	for (int i = 0; i < 4; i++) {
+		//std::cout << "c " << center.x << " " << points[i].x * M2P << " d " << points[i].y * M2P;
+		vertices.push_back(points[i].x );
+		vertices.push_back(points[i].y );
+		colors.push_back(color.x);
+		colors.push_back(color.y);
+		colors.push_back(color.z);
+	}
+}
 void PlatformVBO::clear(){
 	vertices.clear();
 	colors.clear();

@@ -22,7 +22,8 @@ private:
 public:
 	PlatformVBO();
 	~PlatformVBO();
-	void draw();
+	void draw(); 
 	void pushBack(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color);
+	void pushBackground(b2Vec2* points, b2Vec2 center, b2Vec3 color);
 	void clear();
 };

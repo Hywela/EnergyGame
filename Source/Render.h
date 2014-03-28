@@ -28,6 +28,9 @@
 
 class Render  {
 private:
+	//test
+	
+	//
 	Init *init;
 	TTF_Font *font;
 	static Render *instance;
@@ -52,14 +55,21 @@ private:
 		b2Vec3 color;
 	};
 	vector<button> *menueObjects;
-	PlatformVBO *platformVBO;
-	ParticleVBO *particleVBO;
+	PlatformVBO *platformVBO,*backgroundVBO;
+	ParticleVBO *particleVBO, *mainCharParticleVBO;
+	
 	//shader
-	Shader		*shader;
+	Shader		*shader,*geoShader;
 	GLint mUniform;
-	GLfloat lightpos[4];
-
-
+	
+	//Unifroms
+	GLint lightColor;
+	GLint mUniformscreenHeight;
+	GLint lightAttenuation;
+	GLint radius;
+	GLint lightpos[2];
+	GLint numLigth;
+	GLint fBender;
 public:
 	//constructor
 	Render(Init *init, InputQueue *que, RenderQue *rque);
@@ -83,6 +93,7 @@ public:
 		const double& X, const double& Y, const double& Z, const std::string& Text);
 	void startRendering();
 	void endRendering();
+
 	//ques
 	void setQue(InputQueue *que);
 	RenderQue* getQue();
@@ -95,5 +106,6 @@ public:
 	Init* getInit();
 	PlatformVBO* getPlatformVBO();
 	ParticleVBO* getParticleVBO();
+	ParticleVBO* getMainCharParticleVBO();
 };
 

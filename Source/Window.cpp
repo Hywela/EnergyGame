@@ -157,7 +157,8 @@ void Window::menueLoop(){
 	}
 }
 void Window::startWorld() {
-	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenHeight(), ren->getPlatformVBO(), ren->getParticleVBO());
+	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenHeight(), ren->getPlatformVBO(), ren->getParticleVBO()
+		, ren->getMainCharParticleVBO());
 	//worldSimulation = new thread(&World::checkForInput, world);
 	//world->setupWorld();
 }

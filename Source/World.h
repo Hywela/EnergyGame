@@ -33,6 +33,7 @@ class World {
 private:
 	PlatformVBO *platformVBO;
 	ParticleVBO *particleVBO;
+	ParticleVBO *mainCharParticleVBO;
 	//Main world objects
 	b2World *world;
 	Circle *circle;
@@ -66,7 +67,7 @@ private:
 	RenderQue *renderQueue;
 
 public:
-	World(int screenWidth, int screenHeight, PlatformVBO *platformRendering, ParticleVBO *particleRendering);
+	World(int screenWidth, int screenHeight, PlatformVBO *platformRendering, ParticleVBO *particleRendering, ParticleVBO *mainCharRendering);
 	~World();
 	void checkForInput();
 

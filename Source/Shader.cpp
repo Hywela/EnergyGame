@@ -29,6 +29,43 @@ Shader::Shader(const char* vsfn, const char* fsfn)
 	glLinkProgram(shaderProgram);
 	printInfoLog(shaderProgram);
 };
+Shader::Shader(const char* vsfn, const char* fsfn, const char* gsgn)
+{
+	FileReader readVert(vsfn);
+	FileReader readFrag(fsfn);
+	FileReader readGeo(gsgn);
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	geomShader = glCreateShader(GL_GEOMETRY_SHADER);
+
+	std::string vertexShaderSource = readVert.ReadFileAll();
+	std::string fragmentShaderSource = readFrag.ReadFileAll();
+	std::string geoShaderSource = readFrag.ReadFileAll();
+
+	const char * vv = vertexShaderSource.c_str();
+	const char * ff = fragmentShaderSource.c_str();
+	const char * gg = geoShaderSource.c_str();
+
+	glShaderSource(vertexShader, 1, &vv, NULL);
+	glShaderSource(fragmentShader, 1, &ff, NULL);
+	glShaderSource(geomShader, 1, &gg, NULL);
+
+	glCompileShader(vertexShader);
+	glCompileShader(fragmentShader);
+	glCompileShader(geomShader);
+
+	printInfoLog(vertexShader);
+	printInfoLog(fragmentShader);
+	printInfoLog(geomShader);
+
+	shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glAttachShader(shaderProgram, geomShader);
+
+	glLinkProgram(shaderProgram);
+	printInfoLog(shaderProgram);
+};
 
 std::string Shader::ReadFile(const char* filename)
 {

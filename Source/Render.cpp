@@ -19,14 +19,38 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	inQueue = que;
 	platformVBO = new PlatformVBO();
 	particleVBO = new ParticleVBO();
+	backgroundVBO = new PlatformVBO(); 
+	b2Vec2 vx[4];
+	vx[0].x = 0;
+	vx[0].y = 0;
+
+	vx[1].x = screenWidth;
+	vx[1].y = 0;
+
+	vx[2].x = screenWidth;
+	vx[2].y = screenHeight;
+
+	vx[3].x = 0;
+	vx[3].y = screenHeight;
+
+	backgroundVBO->pushBackground(vx, b2Vec2(screenWidth / 2, screenHeight / 2),  b2Vec3(1,1,1));
+
+	mainCharParticleVBO = new ParticleVBO();
+	//geoShader = new Shader("./Shaders/main_shader.vert", "./Shaders/main_shader.frag","./Shaders/main_shader.geom" );
 	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
-	lightpos[0] = 0.5;
-	lightpos[1] = 1.0;
-	lightpos[2] = 1.0;
-	lightpos[3] = 0.0;
-		
-	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-	mUniform = glGetUniformLocation(*shader->GetShaderProgram(), "myTexture");
+	geoShader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
+	
+	lightColor = glGetUniformLocation(*shader->GetShaderProgram(), "lightColor");
+	mUniformscreenHeight = glGetUniformLocation(*shader->GetShaderProgram(), "screenHeight");
+	lightAttenuation = glGetUniformLocation(*shader->GetShaderProgram(), "lightAttenuation");
+	radius = glGetUniformLocation(*shader->GetShaderProgram(), "radius");
+	numLigth = glGetUniformLocation(*shader->GetShaderProgram(), "numLigth");
+	
+	
+	
+	
+	//	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+//	mUniform = glGetUniformLocation(*shader->GetShaderProgram(), "time");
 }
 
 //not sure if i need it TODO:::
@@ -36,16 +60,34 @@ void Render::setQue(InputQueue *que){
 
 void Render::mainLoop(string fps, string puz, string par){
 
-	glUseProgram(*shader->GetShaderProgram());
-//	GLint LightPos = glGetUniformLocation(*shader->GetShaderProgram(), "LightPos");
-	//glProgramUniform3f(*shader->GetShaderProgram(), LightPos, lightpos[0], lightpos[1], lightpos[2]);
+
 	
+	glUseProgram(*shader->GetShaderProgram());
+	glUniform1i(numLigth, particleVBO->getCenterSize());
+	
+	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), particleVBO->getCenterSize(), particleVBO->getCenter());
+	//glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), mainCharParticleVBO->getCenter().x, mainCharParticleVBO->getCenter().y);
+	glUniform3f(lightColor, 0, 255, 255);
+	glUniform1f(mUniformscreenHeight, screenHeight);
+	glUniform3f(lightAttenuation, 1, 1, 0);
+	glUniform1f(radius, 1);
+
+	backgroundVBO->draw();
 	platformVBO->draw();
+	//particleVBO->draw();
+
+	//mainCharParticleVBO->draw();
+
+	//particleVBO->setUniforms(lightColor, mUniformscreenHeight, lightAttenuation, radius, lightpos, screenHeight, shader);
+		
+	//
+
+
 
 	glUseProgram(0);
 
-	
-		particleVBO->draw();
+
+
 
 
 		glEnable(GL_TEXTURE_2D);
@@ -139,10 +181,29 @@ Render::~Render()
 {
 }
 void Render::mainMenue(string fps){
-	
+
+	particleVBO->pushBack(b2Vec2(20, 20), 0, 1, b2Vec3(0,255,255));
 
 	render();
 	startRendering();	
+
+	/*
+	glBlendFunc(GL_ONE, GL_ONE);
+	glUseProgram(*shader->GetShaderProgram());
+	
+		glUniform2f(lightpos, 25, 25);
+		glUniform3f(lightColor, 0, 255,255);
+		glUniform1f(mUniformscreenHeight, screenHeight);
+		glUniform3f(lightAttenuation, 1, 1, 0);
+		glUniform1f(radius, 10);
+
+		
+	glUseProgram(0);*/
+	
+
+
+
+
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -238,4 +299,7 @@ PlatformVBO* Render::getPlatformVBO(){
 }
 ParticleVBO* Render::getParticleVBO(){
 	return particleVBO;
+}
+ParticleVBO* Render::getMainCharParticleVBO(){
+	return mainCharParticleVBO;
 }

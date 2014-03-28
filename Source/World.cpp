@@ -2,12 +2,13 @@
 
 
 
-World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, ParticleVBO *particleRendering) {
+World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, ParticleVBO *particleRendering, ParticleVBO *mainCharRendering) {
 	//Initialize world variables
 	this->screenwidth = screenwidth;
 	this->screenheight = screenheight;
 	platformVBO = platformRendering;
 	particleVBO = particleRendering;
+	mainCharParticleVBO = mainCharRendering;
 	//Initialize camera variables
 	spawnX = 0;
 	cameraSpeed = START_CAMERASPEED;
@@ -338,7 +339,9 @@ void World::updateChar() {
 
 	//Draw player body
 	particleVBO->clear();
-	particleVBO->pushBack( playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
+	mainCharParticleVBO->clear();
+	mainCharParticleVBO->setCenter(playerBody->GetWorldCenter());
+	mainCharParticleVBO->pushBack(playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
 	//renderQueue->push(circle);
 
 	//Update all particles

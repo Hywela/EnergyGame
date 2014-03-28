@@ -25,7 +25,7 @@ void Init::OpenGL()
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);          // Really Nice Perspective 
 
 	//Initialize the lights
-	GLfloat LightAmbient[] = { 0.3f, 0.3f, 0.3f, 1.0f };  // Ambient Light Values
+	GLfloat LightAmbient[] = { 0.9f, 0.9f, 0.9f, 1.0f };  // Ambient Light Values
 	GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 1.0f };  // Diffuse Light Values
 	GLfloat LightPosition[] = { 0.0f, 0.0f, 0.0f, 1.0f }; // Light Position
 	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);      // Setup The Ambient Light
@@ -64,8 +64,8 @@ void Init::SDL()
 		i < 6; ++i) {
 		SDL_GetCurrentDisplayMode(i, &mode[i]);
 	}
-	screenHeight = mode[0].h;
-	screenWidth = mode[0].w;
+	screenHeight = mode[0].h*0.90;
+	screenWidth = mode[0].w*0.90;
 	if (screenHeight <= 0){
 		screenHeight = 800;
 		screenWidth = 600;
