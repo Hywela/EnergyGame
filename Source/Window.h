@@ -45,12 +45,12 @@ public:
 	void checkForMouseInput();
 	void startWorld();
 	void gameLoop();
-	void menueLoop();
+	void menuLoop();
 	void mainLoop();
 	void setupWorld();
 	void gameLeftMouseClick();
-	void menueLeftMouseClick();
-	void buildMenue();
+	void menuLeftMouseClick();
+	void buildMenu();
 	
 
 };

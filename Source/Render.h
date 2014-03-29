@@ -46,15 +46,15 @@ private:
 	//Camer
 	int cameraX;
 	int cameraY;
-	//MainMenue
-	TTF_Font *menueFont;
+	//MainMenu
+	TTF_Font *menuFont;
 	struct button{
 		int posX;
 		int posY;
 		string tekst;
 		b2Vec3 color;
 	};
-	vector<button> *menueObjects;
+	vector<button> *menuObjects;
 	PlatformVBO *platformVBO,*backgroundVBO;
 	ParticleVBO *particleVBO, *mainCharParticleVBO;
 	
@@ -78,7 +78,7 @@ public:
 	void (Render::*loop)();
 	void mainLoop(string fps = "", string puz = "", string par = "");
 	void renderLoop(RenderQue *renQue, InputQueue *que);
-	void mainMenue(string fps);
+	void mainMenu(string fps);
 	//init
 	void initiaze(int h, int w, InputQueue *que);
 	void setUpOGL();
@@ -97,10 +97,10 @@ public:
 	//ques
 	void setQue(InputQueue *que);
 	RenderQue* getQue();
-	void pushBackMenueObj(int posX,int posY, string tekst);
+	void pushBackMenuObj(int posX,int posY, string tekst);
 	//controll manipulasjon
-	int menueMouseClickCheck(int x, int y);
-	void menueMouseHoverCheck(int x, int y);
+	int menuMouseClickCheck(int x, int y);
+	void menuMouseHoverCheck(int x, int y);
 	void setCameraDirectionX(int offsett);
 	void zerOutCamera();
 	Init* getInit();

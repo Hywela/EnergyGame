@@ -7,15 +7,15 @@ Window::Window() {
 	renderQueue = new RenderQue();
 	running = true;
 	isFullscreen = false;
-	leftMouseClick = &Window::menueLeftMouseClick;
-	loopType = &Window::menueLoop;
+	leftMouseClick = &Window::menuLeftMouseClick;
+	loopType = &Window::menuLoop;
 	 int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
 	ren = new Render(new Init( flags), inQueue, renderQueue);
 
 	//SetupOGL();
 	//render = new thread(&Render::mainLoop, new Render(screenheight, screenwidth, inQueue ,renderQueue));
 	
-	buildMenue();
+	buildMenu();
 
 	//fps test variables
 	fps_lasttime = SDL_GetTicks(); //the last recorded time.
@@ -37,7 +37,7 @@ void Window::mainLoop() {
 		
 	
 		(this->*loopType)();
-		//ren->mainMenue(fpsStr);
+		//ren->mainMenu(fpsStr);
 	//	SDL_Delay(fps);
 		timer = SDL_GetTicks();
 
@@ -114,8 +114,8 @@ void Window::gameLeftMouseClick() {
 	//inQueue->push(click);
 	world->applyForce(e.button.x, e.button.y);
 }
-void Window::menueLeftMouseClick() {
-	switch (ren->menueMouseClickCheck(e.button.x, e.button.y)) {
+void Window::menuLeftMouseClick() {
+	switch (ren->menuMouseClickCheck(e.button.x, e.button.y)) {
 	case 1: {
 			//	cout << "play clicked";
 				//ren->zerOutCamera();
@@ -139,12 +139,12 @@ void Window::menueLeftMouseClick() {
 		}
 	}
 }
-void Window::menueLoop(){
+void Window::menuLoop(){
 	string fpsStr = "FPS: " + to_string(fps_current);
 
 	int fps = (1000 / 30) - (timer - SDL_GetTicks());
 	//(this->*loopType)();
-	ren->mainMenue(fpsStr);
+	ren->mainMenu(fpsStr);
 	//	SDL_Delay(fps);
 	timer = SDL_GetTicks();
 
@@ -162,13 +162,13 @@ void Window::startWorld() {
 	//worldSimulation = new thread(&World::checkForInput, world);
 	//world->setupWorld();
 }
-void Window::buildMenue(){
-	int fontSizeOffsett = 150;
+void Window::buildMenu(){
+	int fontSizeOffsett = 250;
 	int screenW = ren->getInit()->getScreenWidth()/3;
 	int screenH = ren->getInit()->getScreenHeight() / 20 + fontSizeOffsett;
-	ren->pushBackMenueObj(screenW, screenH*0.5, "Play");
-	ren->pushBackMenueObj(screenW, screenH*1, "Settings");
-	ren->pushBackMenueObj(screenW, screenH*1.5, "Quit");
+	ren->pushBackMenuObj(screenW, screenH*0.5, "Play");
+	ren->pushBackMenuObj(screenW, screenH*1, "Settings");
+	ren->pushBackMenuObj(screenW, screenH*1.5, "Quit");
 	
 }
 
