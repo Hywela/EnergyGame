@@ -18,22 +18,12 @@ using namespace std;
 
 
 
-const int ROOF = 0;
-const int FLOOR = 600;
-const int WALLSIZE = 5;
-const float START_CAMERASPEED = 5;
-const float CAMERASPEED_INCREASE = 0;
-const int START_WALLS = 10;
-const int WALL_INCREASE = 4;
-const int WALL_DISTANCE = 100;
-const int START_PARTICLES = 20;
-
-
 class World {
 private:
 	PlatformVBO *platformVBO;
 	ParticleVBO *particleVBO;
 	ParticleVBO *mainCharParticleVBO;
+
 	//Main world objects
 	b2World *world;
 	Circle *circle;
@@ -56,7 +46,7 @@ private:
 	b2Body *playerBody;
 	b2Vec3 playerColor;
 	vector <Particle*> *particles;
-	int numParticles;
+	int numParticles, numStored;
 	bool lost;
 
 	//Random wall variables
@@ -99,6 +89,8 @@ public:
 	int shootParticle(int x, int y);
 	void spawnCharacter();
 	int getParticlesLeft();
+	void storeParticles();
+	void retriveParticles();
 
 	//Random wall functions
 	void cleanWalls();

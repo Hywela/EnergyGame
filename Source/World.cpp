@@ -9,6 +9,7 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	platformVBO = platformRendering;
 	particleVBO = particleRendering;
 	mainCharParticleVBO = mainCharRendering;
+
 	//Initialize camera variables
 	spawnX = 0;
 	cameraSpeed = START_CAMERASPEED;
@@ -25,6 +26,7 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	//Initialize player variables
 	particles = new vector<Particle*>;
 	numParticles = START_PARTICLES;
+	numStored = 0;
 	lost = false;
 
 	//Initialize random wall variables
@@ -42,12 +44,8 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	int time = (h * 10000) + (m * 100) + s;
 	srand(time);
 
-
-
 	//Start world setup
 	setupWorld();
-	
-
 }
 
 World::~World() {
@@ -111,10 +109,8 @@ void World::setupWorld() {
 	//Load puzzles
 	loadPuzzles("Levels/Puzzles.txt"); 
 
-	int roomW = 10000000;
-	int roomH = 600;
-	int deathWallSpace = 100;
-
+	int roomW = INCREDIBLY_LONG;
+	int roomH = FLOOR - ROOF;
 	int roomX = (-camOffX) + (roomW / 2);
 	int floorY = (-camOffY) + FLOOR;
 	int roofY = (-camOffY) + ROOF;
@@ -123,7 +119,7 @@ void World::setupWorld() {
 	spawnCooldown = 0;
 
 	//Set up edge wall
-	platforms->push_back(addInvisibleWall(0, 0, 320 , screenheight, false, -1));
+	platforms->push_back(addInvisibleWall(0, 0, DEATHWALL_SIZE, screenheight, false, -1));
 	platformColors->push_back(COLOR_BLACK);
 
 	//Spawn roof and floor
@@ -160,7 +156,7 @@ b2Body* World::addCircle(int x, int y, float radius, bool dyn, int grp) {
 	fixturedef.density = 0.0;
 
 	fixturedef.friction = 0.0;
-	fixturedef.restitution = 0.2;
+	fixturedef.restitution = 0.8;
 	//fixturedef.isSensor = true;
 	fixturedef.filter.groupIndex = grp;
 	body->CreateFixture(&fixturedef);
@@ -258,14 +254,14 @@ void World::updateWorld() {
 	b2Vec2 playerPos = playerBody->GetPosition();
 	playerPos *= M2P;
 
-	if (playerPos.x < 317) {
+	if (playerPos.x < DEATH_WALL_SPACE) {
 		lost = true;
 	}
 
 	//If not game over
 	if (!lost) {
 		//Update renderer
-	//	RenderData update(2);
+		//RenderData update(2);
 		//renderQueue->push(update);
 
 		//Update platforms
@@ -283,10 +279,20 @@ void World::updateWorld() {
 		/*	Tells the render that new input to the render stack is inc,
 			and to wait til the world is done outputing information 
 			to send it to the renderer. */
-	//	renderQueue->push(update);
+		//renderQueue->push(update);
 
 		//Update puzzles
 		if (!inProgress) {
+			//If too far on right side
+			if (playerPos.x >= CAMERA_SPEEDUP_RANGE) {
+				//Speedup camera
+				cameraSpeed += 0.1;
+			}
+			else {
+				//Use normal speed
+				cameraSpeed = newSpeed;
+			}
+
 			if (startPuzzle()) {
 				inProgress = true;
 			}
@@ -297,13 +303,13 @@ void World::updateWorld() {
 				puzzlesSolved++;
 
 				//Spawn new
-				int randomPuzzleId = randomRange(1, 1);
+				int randomPuzzleId = 4; //randomRange(1, 2);
 				setPuzzle(randomPuzzleId);
 
 				//Spawn particles for bonus
-				int offX = puzzles->at(puzzleId)->getSpawn() + 100;
+				int offX = puzzles->at(puzzleId)->getSpawn() + 200;
 				int offY = 150;
-				spawnGroundParticles(10, b2Vec2(offX, offY), 30);
+				//spawnGroundParticles(10, b2Vec2(offX, offY), 30);
 			}
 		}
 
@@ -311,18 +317,18 @@ void World::updateWorld() {
 		if (cameraSpeed) {
 			b2Vec2 cameraPos = b2Vec2(cameraSpeed, 0);
 			cameraPos *= P2M;
-			//world->ShiftOrigin(cameraPos);
+			world->ShiftOrigin(cameraPos);
 		
 			//Update spawn orgin
 			spawnX -= cameraSpeed;
 
 			//Update puzzle orgin
-		//	puzzles->at(puzzleId)->shiftOrginX(-cameraSpeed);
+			puzzles->at(puzzleId)->shiftOrginX(-cameraSpeed);
 		}
 
 		//Refresh position of pushwall
 		b2Body *invWall = platforms->at(0);
-		int invX = (WALLSIZE / 2) + 150;
+		int invX = (DEATHWALL_SIZE / 2) + 100;
 		int invY = (-camOffY) + (FLOOR / 2);
 		b2Vec2 moveTo = b2Vec2(invX, invY);
 		moveTo *= P2M;
@@ -369,7 +375,7 @@ void World::updateChar() {
 			int totDist = distX + distY;
 
 			//If in pickup range
-			if (totDist <= 40) {
+			if (totDist <= PICKUP_RANGE) {
 				//Initialize join settings
 				b2DistanceJointDef *join = new b2DistanceJointDef();
 				join->Initialize(playerBody, tempBody, playerBody->GetPosition(), tempBody->GetPosition());
@@ -445,7 +451,6 @@ void World::updatePlatforms() {
 					int a = 0;
 					platformVBO->pushBack( points, B->GetWorldCenter(), B->GetAngle(), curColor);
 			
-
 					colorId--;
 					break;
 				}
@@ -589,6 +594,19 @@ bool World::startPuzzle() {
 			platforms->push_back(addRect(offX, offY, entrance.w, entrance.h, entrance.dynamic, entrance.group));
 			platformColors->push_back(entrance.color);
 
+			//Backup player particles
+			if (puzzlesSolved) {
+				storeParticles();
+
+				//Spawn assigned particles to puzzle
+				int puzzleParticleStorage = 2; //TODO: Add to puzzle class
+				b2Vec2 playerPos = playerBody->GetPosition();
+				playerPos *= M2P;
+				playerPos.x += camOffX;
+				playerPos.y += camOffY;
+				spawnGroundParticles(puzzleParticleStorage, playerPos, 30);
+			}
+
 			inside = true;
 		}
 	}
@@ -626,6 +644,11 @@ bool World::endPuzzle() {
 		//Start moving camera again
 		newSpeed += CAMERASPEED_INCREASE;
 		cameraSpeed = newSpeed;
+
+		//Give back particles stored
+		if (puzzlesSolved) {
+			retriveParticles();
+		}
 
 		ended = true;
 	}
@@ -867,6 +890,53 @@ int World::getParticlesLeft() {
 	return numParticles;
 }
 
+void World::storeParticles() {
+	//Clear particles not fired
+	int ant = particles->size();
+	for (int i = 0; i < ant; i++) {
+		Particle *tempParticle = particles->at(i);
+		//If not new particle
+		if (!(tempParticle->onGround() && !tempParticle->isFired())) {
+			//Remove joint
+			b2Joint *popJoint = tempParticle->fire();
+			if (popJoint != NULL) {
+				world->DestroyJoint(popJoint);
+			}
+
+			//Remove body
+			b2Body *popBody = tempParticle->getBody();
+			world->DestroyBody(popBody);
+
+			//Remove particle
+			particles->erase(particles->begin() + i--);
+			ant--;
+			delete tempParticle;
+		}
+	}
+
+	//Move particles to storage
+	numStored = numParticles;
+	numParticles = 0;
+
+	//Spawn allocated number of particles
+
+}
+
+void World::retriveParticles() {
+	if (numStored) {
+		//Spawn stored particles
+		int bonusParticles = 10;
+		b2Vec2 playerPos = playerBody->GetPosition();
+		playerPos *= M2P;
+		playerPos.x += camOffX;
+		playerPos.y += camOffY;
+		spawnGroundParticles((numStored + bonusParticles), playerPos, 40);
+
+		//Regained stored particles
+		numStored = 0;
+	}
+}
+
 
 
 //Random wall functions
@@ -909,7 +979,11 @@ void World::cleanParticles() {
 		//If not connected to mainbody
 		if (tempParticle->isFired() || tempParticle->onGround()) {
 			//If touching backborder
-			if (tempPos.x < 317) {
+			if (tempPos.x < DEATH_WALL_SPACE + DEATHWALL_SIZE) {
+				//Remove body
+				b2Body *popBody = tempParticle->getBody();
+				world->DestroyBody(popBody);
+
 				//Remove particle
 				particles->erase(particles->begin() + i);
 				ant--;
