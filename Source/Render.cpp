@@ -208,7 +208,7 @@ void Render::mainMenu(string fps){
 
 
 
-
+	platformVBO->draw();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -271,21 +271,22 @@ void Render::pushBackMenuObj(int posX, int posY, string tekst){
 	but.posX = posX;
 	but.posY = posY;
 	but.tekst = tekst;
-
+	int offsetX = 700;
+	int offsetY = 100;
 	b2Vec2 vx[4];
-	vx[0].x = 0;
-	vx[0].y = 0;
+	vx[0].x = posX;
+	vx[0].y = posY;
 
-	vx[1].x = posX+20;
-	vx[1].y = 0;
+	vx[1].x = posX + offsetX;
+	vx[1].y = posY;
 
-	vx[2].x = posX+20;
-	vx[2].y = posY+20;
+	vx[2].x = posX + offsetX;
+	vx[2].y = posY + offsetY;
 
-	vx[3].x = 0;
-	vx[3].y = posY+20;
+	vx[3].x = posX;
+	vx[3].y = posY + offsetY;
 	menuObjects->push_back(but);
-	platformVBO->pushBack(vx, b2Vec2(posX + 20, posY + 20), 0, b2Vec3(0, 255, 255));
+	platformVBO->pushBackground(vx, b2Vec2(posX + offsetX / 2, posY + offsetY/2), b2Vec3(0, 255, 255));
 }
 int Render::menuMouseClickCheck(int x, int y){
 	for (int i = 0; i < menuObjects->size(); i++){
