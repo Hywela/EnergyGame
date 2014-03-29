@@ -10,7 +10,7 @@ class InputQueue {
 private:
 	queue <InputData> items;
 	mutex accessMutex;
-
+	
 public:
 	InputQueue();
 	~InputQueue();

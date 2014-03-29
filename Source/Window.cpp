@@ -31,15 +31,17 @@ Window::~Window() {
 void Window::mainLoop() {	
 
 	while (running) {
-		timer = SDL_GetTicks();
-		checkForMouseInput();
-
 	
-		int fps = (1000 / 30) - (timer - SDL_GetTicks());
-		(this->*loopType)();
+		checkForMouseInput();
 		
-		SDL_Delay(fps);
+		
+	
+		(this->*loopType)();
+		//ren->mainMenue(fpsStr);
+	//	SDL_Delay(fps);
 		timer = SDL_GetTicks();
+
+		
 	}
 }
 
@@ -51,6 +53,9 @@ void Window::checkForMouseInput(){
 				if (e.key.keysym.sym == SDLK_q) {
 					running = false;
 				}
+				if (e.key.keysym.sym == SDLK_t) {
+					ren->setCameraDirectionX(10);
+				}
 				else if (e.key.keysym.sym == SDLK_TAB) {
 								  //ToggleFullscreen();
 				}
@@ -60,6 +65,7 @@ void Window::checkForMouseInput(){
 				(this->*leftMouseClick)();
 			break;
 			}
+		
 		}
 	}
 }
@@ -111,8 +117,8 @@ void Window::gameLeftMouseClick() {
 void Window::menueLeftMouseClick() {
 	switch (ren->menueMouseClickCheck(e.button.x, e.button.y)) {
 	case 1: {
-				cout << "play clicked";
-				ren->zerOutCamera();
+			//	cout << "play clicked";
+				//ren->zerOutCamera();
 				leftMouseClick = &Window::gameLeftMouseClick;
 				loopType = &Window::gameLoop;
 				startWorld();
@@ -134,10 +140,25 @@ void Window::menueLeftMouseClick() {
 	}
 }
 void Window::menueLoop(){
-	ren->mainMenue();
+	string fpsStr = "FPS: " + to_string(fps_current);
+
+	int fps = (1000 / 30) - (timer - SDL_GetTicks());
+	//(this->*loopType)();
+	ren->mainMenue(fpsStr);
+	//	SDL_Delay(fps);
+	timer = SDL_GetTicks();
+
+	fps_frames++;
+	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
+	{
+		fps_lasttime = SDL_GetTicks();
+		fps_current = fps_frames;
+		fps_frames = 0;
+	}
 }
 void Window::startWorld() {
-	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenHeight(), inQueue, renderQueue);
+	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenHeight(), ren->getPlatformVBO(), ren->getParticleVBO()
+		, ren->getMainCharParticleVBO());
 	//worldSimulation = new thread(&World::checkForInput, world);
 	//world->setupWorld();
 }

@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Circle.cpp" />
+    <ClCompile Include="Source\FileReader.cpp" />
+    <ClCompile Include="Source\ParticleVBO.cpp" />
     <ClCompile Include="Source\Consts.cpp" />
     <ClCompile Include="Source\Init.cpp" />
     <ClCompile Include="Source\Input.cpp" />
@@ -24,13 +26,16 @@
     <ClCompile Include="Source\Render.cpp" />
     <ClCompile Include="Source\RenderData.cpp" />
     <ClCompile Include="Source\RenderQue.cpp" />
+    <ClCompile Include="Source\PlatformVBO.cpp" />
+    <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="Source\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Circle.h" />
-    <ClInclude Include="Source\Consts.h" />
     <ClInclude Include="Source\FileReader.h" />
+    <ClInclude Include="Source\ParticleVBO.h" />
+    <ClInclude Include="Source\Consts.h" />
     <ClInclude Include="Source\Init.h" />
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\InputData.h" />
@@ -42,6 +47,8 @@
     <ClInclude Include="Source\Render.h" />
     <ClInclude Include="Source\RenderData.h" />
     <ClInclude Include="Source\RenderQue.h" />
+    <ClInclude Include="Source\PlatformVBO.h" />
+    <ClInclude Include="Source\Shader.h" />
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\World.h" />
   </ItemGroup>

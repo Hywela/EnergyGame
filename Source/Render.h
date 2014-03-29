@@ -14,6 +14,9 @@
 #include <Windows.h>
 #include "SDL_ttf.h"
 #include "Init.h"
+#include "PlatformVBO.h"
+#include "ParticleVBO.h"
+#include "Shader.h"
 
 /**
 	Render.h 
@@ -22,8 +25,12 @@
 	Que based class.
 												-Kristoffer
 **/
+
 class Render  {
 private:
+	//test
+	
+	//
 	Init *init;
 	TTF_Font *font;
 	static Render *instance;
@@ -48,6 +55,21 @@ private:
 		b2Vec3 color;
 	};
 	vector<button> *menueObjects;
+	PlatformVBO *platformVBO,*backgroundVBO;
+	ParticleVBO *particleVBO, *mainCharParticleVBO;
+	
+	//shader
+	Shader		*shader,*geoShader;
+	GLint mUniform;
+	
+	//Unifroms
+	GLint lightColor;
+	GLint mUniformscreenHeight;
+	GLint lightAttenuation;
+	GLint radius;
+	GLint lightpos[2];
+	GLint numLigth;
+	GLint fBender;
 public:
 	//constructor
 	Render(Init *init, InputQueue *que, RenderQue *rque);
@@ -56,7 +78,7 @@ public:
 	void (Render::*loop)();
 	void mainLoop(string fps = "", string puz = "", string par = "");
 	void renderLoop(RenderQue *renQue, InputQueue *que);
-	void mainMenue();
+	void mainMenue(string fps);
 	//init
 	void initiaze(int h, int w, InputQueue *que);
 	void setUpOGL();
@@ -71,6 +93,7 @@ public:
 		const double& X, const double& Y, const double& Z, const std::string& Text);
 	void startRendering();
 	void endRendering();
+
 	//ques
 	void setQue(InputQueue *que);
 	RenderQue* getQue();
@@ -81,5 +104,8 @@ public:
 	void setCameraDirectionX(int offsett);
 	void zerOutCamera();
 	Init* getInit();
+	PlatformVBO* getPlatformVBO();
+	ParticleVBO* getParticleVBO();
+	ParticleVBO* getMainCharParticleVBO();
 };
 

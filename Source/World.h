@@ -13,13 +13,14 @@
 #include "Render.h"
 #include "Puzzle.h"
 #include "Particle.h"
+#include "PlatformVBO.h"
 using namespace std;
 
 
 
 const int ROOF = 0;
 const int FLOOR = 600;
-const int WALLSIZE = 10;
+const int WALLSIZE = 5;
 const float START_CAMERASPEED = 5;
 const float CAMERASPEED_INCREASE = 0;
 const int START_WALLS = 10;
@@ -30,9 +31,11 @@ const int START_PARTICLES = 20;
 
 class World {
 private:
+	PlatformVBO *platformVBO;
+	ParticleVBO *particleVBO;
+	ParticleVBO *mainCharParticleVBO;
 	//Main world objects
 	b2World *world;
-	Platform *platform;
 	Circle *circle;
 	int screenwidth, screenheight;
 
@@ -64,7 +67,7 @@ private:
 	RenderQue *renderQueue;
 
 public:
-	World(int screenWidth, int screenHeight, InputQueue *inQueue, RenderQue *renderQue);
+	World(int screenWidth, int screenHeight, PlatformVBO *platformRendering, ParticleVBO *particleRendering, ParticleVBO *mainCharRendering);
 	~World();
 	void checkForInput();
 
