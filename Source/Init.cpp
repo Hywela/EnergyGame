@@ -66,8 +66,8 @@ void Init::SDL()
 		i < 6; ++i) {
 		SDL_GetCurrentDisplayMode(i, &mode[i]);
 	}
-	screenHeight = mode[0].h;
-	screenWidth = mode[0].w;
+	screenHeight = mode[0].h*0.90;
+	screenWidth = mode[0].w*0.90;
 	if (screenHeight <= 0){
 		screenHeight = 800;
 		screenWidth = 600;

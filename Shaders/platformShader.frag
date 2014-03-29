@@ -49,7 +49,7 @@ vec2 pixel=gl_FragCoord.xy;
 
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 
-	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*vec4(vec3(gl_Color),1.0)*120;	
+	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*vec4(vec3(gl_Color),1.0);	
 	
 
  
@@ -66,11 +66,11 @@ vec4 psum = vec4(0,0,0,0);
 
 
 
-for(int i = 0; i <10; i++){
+for(int i = 0; i <6; i++){
 	platcalcColor[i] =   platFormLight(i);
 	
 	}
-	for(int i = 0; i <10; i++){
+	for(int i = 0; i <6; i++){
 	psum +=  platcalcColor[i];
 
 	}
@@ -85,7 +85,7 @@ for(int i = 0; i <10; i++){
 	sum +=  calcColor[i];
 
 	}
-	sum += mainCharLight();
+	
 
 	gl_FragColor = sum+psum;
 	
