@@ -94,7 +94,7 @@ void Window::gameLoop() {
 	ren->startRendering();
 	world->updateWorld();
 	ren->mainLoop(fpsStr, puzStr, parStr);
-	//1SDL_Delay(fps);
+
 	//timer = SDL_GetTicks();
 
 	//Fps test start
@@ -106,7 +106,7 @@ void Window::gameLoop() {
 		fps_frames = 0;
 	}
 	//Fps test end
-
+	//SDL_Delay(fps_lasttime);
 }
 void Window::gameLeftMouseClick() {
 	//InputData click;

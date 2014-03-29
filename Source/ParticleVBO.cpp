@@ -5,11 +5,13 @@ void ParticleVBO::draw()
 
 	if (vertices.size() > 0){
 		setVBO();
-	
+		glEnable(GL_PROGRAM_POINT_SIZE_EXT);
+		glPointSize(65);
+
 		glEnableClientState(GL_VERTEX_ARRAY);
 
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glVertexPointer(3, GL_FLOAT, 0, 0);
+		glVertexPointer(2, GL_FLOAT, 0, 0);
 
 		glEnableClientState(GL_COLOR_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, colorID);
@@ -23,6 +25,8 @@ void ParticleVBO::draw()
 		glDisableClientState(GL_COLOR_ARRAY);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0); //Restore non VBO mode
+		glDisable(GL_PROGRAM_POINT_SIZE_EXT);
+
 
 	}
 
@@ -63,10 +67,7 @@ GLfloat *ParticleVBO::getCenter(){
 //	std::cout << " " <<s;
 	for (int i = 1; i < s; i +=1){
 		dd[i] = postions.at(i);
-		
-		
 	}
-	
 	return dd;
 }
 b2Vec2 ParticleVBO::getMainCenter(){
@@ -75,22 +76,22 @@ b2Vec2 ParticleVBO::getMainCenter(){
 int ParticleVBO::getCenterSize(){
 	return postions.size();
 }
-void ParticleVBO::pushBack(b2Vec2 center, float angle, float radius, b2Vec3 color){
+void ParticleVBO::pushBack(b2Vec2 pCenter, float angle, float radius, b2Vec3 color){
 	//Push central point
-	int moveX = center.x*M2P;
-	int moveY = center.y*M2P;
+	int moveX = pCenter.x*M2P;
+	int moveY = pCenter.y*M2P;
 
 	postions.push_back(moveX);
 	postions.push_back(moveY);
 
 
-	
+
 
 	//Creat points for circle (fan around center)
-	for (float i = 0.0; i <= 360; i += 360.0 / 120) {
+	for (float i = 0.0; i <= 360; i += 360.0 / 30) {
 		vertices.push_back(moveX);
 		vertices.push_back(moveY);
-		vertices.push_back(0);
+
 
 		colors.push_back(color.x);
 		colors.push_back(color.y);
@@ -99,7 +100,7 @@ void ParticleVBO::pushBack(b2Vec2 center, float angle, float radius, b2Vec3 colo
 		float thisY = (sin(i * M_PI / 165) * (radius)) *M2P;
 		vertices.push_back(thisX + (moveX));
 		vertices.push_back(thisY + (moveY));
-		vertices.push_back(0);
+
 		colors.push_back(color.x);
 		colors.push_back(color.y);
 		colors.push_back(color.z);
@@ -108,7 +109,7 @@ void ParticleVBO::pushBack(b2Vec2 center, float angle, float radius, b2Vec3 colo
 		//Center
 		vertices.push_back(thisX + (moveX));
 		vertices.push_back(thisY + (moveY));
-		vertices.push_back(0);
+	
 		colors.push_back(color.x);
 		colors.push_back(color.y);
 		colors.push_back(color.z);

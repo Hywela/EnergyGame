@@ -3,7 +3,7 @@
 void PlatformVBO::draw(){
 	if (vertices.size() > 0){
 		setVBO();
-	
+		
 		glEnableClientState(GL_VERTEX_ARRAY);
 
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
@@ -83,10 +83,7 @@ GLfloat *PlatformVBO::getCenter(){
 	dd = new GLfloat[s * 2];
 	for (int i = 1; i < s; i += 1){
 		dd[i] = postions.at(i);
-
-
 	}
-
 	return dd;
 }
 int PlatformVBO::getCenterSize(){

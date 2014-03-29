@@ -28,7 +28,7 @@ public:
 	void draw();
 	void setCenter(b2Vec2 center);
 //	b2Vec2 getCenter();
-	void pushBack(b2Vec2 center, float angle, float radius, b2Vec3 color);
+	void pushBack(b2Vec2 pCenter, float angle, float radius, b2Vec3 color);
 	void clear();
 	void makeCircle(b2Vec2 center, float angle, float radius, b2Vec3 color);
 	void setUniforms(GLint lightColor,
