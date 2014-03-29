@@ -33,7 +33,7 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	vx[3].x = 0;
 	vx[3].y = screenHeight;
 
-	backgroundVBO->pushBackground(vx, b2Vec2(screenWidth / 2, screenHeight / 2),  b2Vec3(1,1,1));
+	backgroundVBO->pushBackground(vx, b2Vec2(screenWidth / 2, screenHeight / 2), b2Vec3(0, 0, 0));
 
 	mainCharParticleVBO = new ParticleVBO();
 	//geoShader = new Shader("./Shaders/main_shader.vert", "./Shaders/main_shader.frag","./Shaders/main_shader.geom" );
@@ -60,20 +60,25 @@ void Render::setQue(InputQueue *que){
 
 void Render::mainLoop(string fps, string puz, string par){
 
-
-	
-	glUseProgram(*shader->GetShaderProgram());
-	glUniform1i(numLigth, particleVBO->getCenterSize());
-	
-	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), particleVBO->getCenterSize(), particleVBO->getCenter());
-	//glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), mainCharParticleVBO->getCenter().x, mainCharParticleVBO->getCenter().y);
-	glUniform3f(lightColor, 0, 255, 255);
-	glUniform1f(mUniformscreenHeight, screenHeight);
-	glUniform3f(lightAttenuation, 1, 1, 0);
-	glUniform1f(radius, 1);
-
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
+	glUseProgram(*shader->GetShaderProgram());	
 	backgroundVBO->draw();
 	platformVBO->draw();
+
+	glUniform1i(numLigth, particleVBO->getCenterSize());
+
+	glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "MainCharLightpos"), mainCharParticleVBO->getMainCenter().x,
+		mainCharParticleVBO->getMainCenter().y);
+	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), particleVBO->getCenterSize(), particleVBO->getCenter());
+	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "platformLightpos"), platformVBO->getCenterSize(), platformVBO->getCenter());
+	//glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), mainCharParticleVBO->getCenter().x, mainCharParticleVBO->getCenter().y);
+	glUniform3f(lightColor, 1, 1, 0.81);
+	glUniform1f(mUniformscreenHeight, screenHeight);
+	glUniform3f(lightAttenuation, -1, 1, 1);
+	glUniform1f(radius,40);
+
+
 	//particleVBO->draw();
 
 	//mainCharParticleVBO->draw();
@@ -85,9 +90,9 @@ void Render::mainLoop(string fps, string puz, string par){
 
 
 	glUseProgram(0);
+	glDisable(GL_BLEND);
 
-
-
+	particleVBO->draw();
 
 
 		glEnable(GL_TEXTURE_2D);
@@ -182,11 +187,11 @@ Render::~Render()
 }
 void Render::mainMenue(string fps){
 
-	particleVBO->pushBack(b2Vec2(20, 20), 0, 1, b2Vec3(0,255,255));
+	//particleVBO->pushBack(b2Vec2(20, 20), 0, 1, b2Vec3(0,255,255));
 
 	render();
 	startRendering();	
-
+	
 	/*
 	glBlendFunc(GL_ONE, GL_ONE);
 	glUseProgram(*shader->GetShaderProgram());
@@ -213,7 +218,7 @@ void Render::mainMenue(string fps){
 
 	renderText(menueFont, 0, 255, 255, 100, 600, 0,fps);
 	for (int i = 0; i < menueObjects->size(); i++){
-		renderText(menueFont, 0, 255, 255, menueObjects->at(i).posX, menueObjects->at(i).posY, 0, menueObjects->at(i).tekst);
+		renderText(menueFont, 255, 255, 255, menueObjects->at(i).posX, menueObjects->at(i).posY, 0, menueObjects->at(i).tekst);
 	}
 
 	endRendering();
@@ -260,11 +265,27 @@ void Render::renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G
 	SDL_FreeSurface(Message);
 }
 void Render::pushBackMenueObj(int posX, int posY, string tekst){
+
 	button but;
+
 	but.posX = posX;
 	but.posY = posY;
 	but.tekst = tekst;
+
+	b2Vec2 vx[4];
+	vx[0].x = 0;
+	vx[0].y = 0;
+
+	vx[1].x = posX+20;
+	vx[1].y = 0;
+
+	vx[2].x = posX+20;
+	vx[2].y = posY+20;
+
+	vx[3].x = 0;
+	vx[3].y = posY+20;
 	menueObjects->push_back(but);
+	platformVBO->pushBack(vx, b2Vec2(posX + 20, posY + 20), 0, b2Vec3(0, 255, 255));
 }
 int Render::menueMouseClickCheck(int x, int y){
 	for (int i = 0; i < menueObjects->size(); i++){

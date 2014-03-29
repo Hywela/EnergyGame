@@ -18,6 +18,7 @@ private:
 		colorID;
 	std::vector<GLfloat> vertices;
 	std::vector <GLfloat> colors;
+	std::vector <GLfloat> postions;
 	void setVBO();
 public:
 	PlatformVBO();
@@ -26,4 +27,7 @@ public:
 	void pushBack(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color);
 	void pushBackground(b2Vec2* points, b2Vec2 center, b2Vec3 color);
 	void clear();
+	int getCenterSize();
+	GLfloat *getCenter();
+	void setCenter(b2Vec2 center);
 };
