@@ -11,11 +11,13 @@
 #define _USE_MATH_DEFINES // for C
 #include <math.h>
 #include "Consts.h"
+/**		--PlatformVBO--
+- PlatformVBO handles all drawing of square types
+								-kristoffer 
+**/
 class PlatformVBO{
 private:
-
-	GLuint  vboID,
-		colorID;
+	GLuint  vboID, colorID;
 	std::vector<GLfloat> vertices;
 	std::vector <GLfloat> colors;
 	std::vector <GLfloat> postions;
@@ -23,11 +25,16 @@ private:
 public:
 	PlatformVBO();
 	~PlatformVBO();
+
 	void draw(); 
+	//Setters
 	void pushBack(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color);
 	void pushBackground(b2Vec2* points, b2Vec2 center, b2Vec3 color);
+	void setCenter(b2Vec2 center);
+	//Clear
 	void clear();
+	//Getters
 	int getCenterSize();
 	GLfloat *getCenter();
-	void setCenter(b2Vec2 center);
+	
 };

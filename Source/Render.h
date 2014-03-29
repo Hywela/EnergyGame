@@ -29,7 +29,8 @@
 class Render  {
 private:
 	//test
-	
+
+
 	//
 	Init *init;
 	TTF_Font *font;
@@ -54,8 +55,8 @@ private:
 		string tekst;
 		b2Vec3 color;
 	};
-	vector<button> *menuObjects;
-	PlatformVBO *platformVBO,*backgroundVBO;
+	vector<button> *menuObjects,*pauseObjects;
+	PlatformVBO *platformVBO,*backgroundVBO, *pauseVBO;
 	ParticleVBO *particleVBO, *mainCharParticleVBO;
 	
 	//shader
@@ -70,7 +71,8 @@ private:
 	GLint lightpos;
 	GLint platformLightpos;
 	GLint numLigth;
-	GLint fBender;
+	
+
 public:
 	//constructor
 	Render(Init *init, InputQueue *que, RenderQue *rque);
@@ -94,13 +96,15 @@ public:
 		const double& X, const double& Y, const double& Z, const std::string& Text);
 	void startRendering();
 	void endRendering();
-
+	void pauseLoop();
 	//ques
 	void setQue(InputQueue *que);
 	RenderQue* getQue();
 	void pushBackMenuObj(int posX,int posY, string tekst);
+	void pushBackPauseObj(int posX, int posY, string tekst);
 	//controll manipulasjon
 	int menuMouseClickCheck(int x, int y);
+	int pauseMouseClickCheck(int x, int y);
 	void menuMouseHoverCheck(int x, int y);
 	void setCameraDirectionX(int offsett);
 	void zerOutCamera();

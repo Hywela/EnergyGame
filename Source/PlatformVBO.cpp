@@ -24,7 +24,7 @@ void PlatformVBO::draw(){
 
 	}
 
-};
+}
 
 PlatformVBO::PlatformVBO() {
 }
@@ -69,6 +69,7 @@ void PlatformVBO::pushBackground(b2Vec2* points, b2Vec2 center,  b2Vec3 color){
 		colors.push_back(color.y);
 		colors.push_back(color.z);
 	}
+
 }
 void PlatformVBO::clear(){
 	vertices.clear();

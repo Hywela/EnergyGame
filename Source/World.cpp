@@ -49,7 +49,6 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 }
 
 World::~World() {
-
 	platformVBO->clear();
 	particleVBO->clear();
 	mainCharParticleVBO->clear();
@@ -58,7 +57,6 @@ World::~World() {
 	delete puzzles;
 	delete platformColors;
 	delete particles;
-
 }
 
 void World::checkForInput() {
@@ -89,8 +87,6 @@ void World::checkForInput() {
 		}
 	}*/
 }
-
-
 
 //Main world functions
 void World::setupWorld() {
@@ -355,7 +351,7 @@ void World::updateChar() {
 	particleVBO->clear();
 	mainCharParticleVBO->clear();
 	mainCharParticleVBO->setCenter(playerBody->GetWorldCenter());
-	//particleVBO->pushBack(playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
+	mainCharParticleVBO->pushBack(playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
 
 	//Update all particles
 	int ant = particles->size();

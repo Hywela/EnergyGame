@@ -25,6 +25,8 @@ private:
 	World *world;
 	bool running;
 	bool isFullscreen;
+	bool inGame;
+	bool paused; 
 	int timer;
 	SDL_Event e;
 	InputQueue *inQueue;
@@ -47,9 +49,11 @@ public:
 	void gameLoop();
 	void menuLoop();
 	void mainLoop();
+	void pauseLoop();
 	void setupWorld();
 	void gameLeftMouseClick();
 	void menuLeftMouseClick();
+	void pauseLeftMouseClick();
 	void buildMenu();
 	
 

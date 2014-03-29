@@ -1,27 +1,25 @@
 #include "Window.h"
 
-
-
 Window::Window() {
 	inQueue = new InputQueue();
 	renderQueue = new RenderQue();
 	running = true;
 	isFullscreen = false;
+	paused = false;
 	leftMouseClick = &Window::menuLeftMouseClick;
 	loopType = &Window::menuLoop;
-	 int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
+
+	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
+
 	ren = new Render(new Init( flags), inQueue, renderQueue);
 
-	//SetupOGL();
-	//render = new thread(&Render::mainLoop, new Render(screenheight, screenwidth, inQueue ,renderQueue));
-	
 	buildMenu();
 
 	//fps test variables
 	fps_lasttime = SDL_GetTicks(); //the last recorded time.
 	fps_current = 0; //the current FPS.
 	fps_frames = 0; //frames passed since the last recorded fps.
-
+	inGame = false;
 }
 
 Window::~Window() {
@@ -50,24 +48,34 @@ void Window::checkForMouseInput(){
 				if (e.key.keysym.sym == SDLK_q) {
 					running = false;
 				}
-				if (e.key.keysym.sym == SDLK_t) {
-					loopType = &Window::menuLoop;
-					leftMouseClick = &Window::menuLeftMouseClick;
-					delete world;
-
+				if (e.key.keysym.sym == SDLK_ESCAPE) {
+					if (paused){  
+						paused = false;
+						loopType = &Window::gameLoop;
+						leftMouseClick = &Window::gameLeftMouseClick;
+					}else if (inGame){
+						paused = true;
+						loopType = &Window::pauseLoop;
+						leftMouseClick = &Window::pauseLeftMouseClick;
+					}
 				}
 				else if (e.key.keysym.sym == SDLK_TAB) {
 								  //ToggleFullscreen();
 				}
 			break;
-			}
+			}//End Case()
 			case SDL_MOUSEBUTTONDOWN: {
 				(this->*leftMouseClick)();
 			break;
-			}
-		
-		}
-	}
+			}//End Case()
+			case SDL_KEYUP :{
+				if (e.key.keysym.sym == SDLK_ESCAPE) {
+
+				}
+			  break;
+			}//End Case()
+		}//End Switch()
+	}//End while()
 }
 
 void Window::gameLoop() {
@@ -105,19 +113,14 @@ void Window::gameLoop() {
 
 }
 void Window::gameLeftMouseClick() {
-	//InputData click;
-	//click.mouseClick(e.button.x, e.button.y);
-	//inQueue->push(click);
 	world->applyForce(e.button.x, e.button.y);
 }
 void Window::menuLeftMouseClick() {
 	switch (ren->menuMouseClickCheck(e.button.x, e.button.y)) {
 	case 1: {
-			//	cout << "play clicked";
-				//ren->zerOutCamera();
-				leftMouseClick = &Window::gameLeftMouseClick;
 				startWorld();
 				loopType = &Window::gameLoop;
+				leftMouseClick = &Window::gameLeftMouseClick;
 	break;
 	}
 	case 2: {
@@ -133,6 +136,29 @@ void Window::menuLeftMouseClick() {
 	default:{
 	break;
 		}
+	}
+}
+void Window::pauseLeftMouseClick() {
+	switch (ren->pauseMouseClickCheck(e.button.x, e.button.y)) {
+	case 1: {
+				paused = false;
+				leftMouseClick = &Window::gameLeftMouseClick;
+				loopType = &Window::gameLoop;
+				break;
+	}
+	case 2: {
+				cout << "2";
+
+				break;
+	}
+	case 3: {
+				cout << "3";
+
+				break;
+	}
+	default:{
+				break;
+	}
 	}
 }
 void Window::menuLoop(){
@@ -152,7 +178,25 @@ void Window::menuLoop(){
 		fps_frames = 0;
 	}
 }
+void Window::pauseLoop(){
+	string fpsStr = "FPS: " + to_string(fps_current);
+
+	int fps = (1000 / 30) - (timer - SDL_GetTicks());
+	//(this->*loopType)();
+	ren->pauseLoop();
+	//	SDL_Delay(fps);
+	timer = SDL_GetTicks();
+
+	fps_frames++;
+	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
+	{
+		fps_lasttime = SDL_GetTicks();
+		fps_current = fps_frames;
+		fps_frames = 0;
+	}
+}
 void Window::startWorld() {
+	inGame = true;
 	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenHeight(), ren->getPlatformVBO(), ren->getParticleVBO()
 		, ren->getMainCharParticleVBO());
 	//worldSimulation = new thread(&World::checkForInput, world);
@@ -165,6 +209,10 @@ void Window::buildMenu(){
 	ren->pushBackMenuObj(screenW, screenH*0.5, "Play");
 	ren->pushBackMenuObj(screenW, screenH*1, "Settings");
 	ren->pushBackMenuObj(screenW, screenH*1.5, "Quit");
+
+	ren->pushBackPauseObj(screenW, screenH*0.5, "Resum");
+	ren->pushBackPauseObj(screenW, screenH * 1, "Settings");
+	ren->pushBackPauseObj(screenW, screenH*1.5, "Quit");
 	
 }
 

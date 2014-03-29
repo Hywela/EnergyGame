@@ -72,6 +72,9 @@
     <ClCompile Include="Source\FileReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\InputData.h">
@@ -113,9 +116,6 @@
     <ClInclude Include="Source\Puzzle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\objloader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Init.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -129,6 +129,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\FileReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

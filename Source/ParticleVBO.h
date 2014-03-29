@@ -12,30 +12,32 @@
 #include <math.h>
 #include "Consts.h"
 #include "Shader.h"
+
+/**		--ParticleVBO--
+- ParticleVBO handles all drawing of circle types,
+can also be used as a storce for ligths(center).
+											-kristoffer
+**/
 class ParticleVBO{
 private:
-
-	GLuint  vboID,
-		colorID;
+	GLuint  vboID, colorID;
 	std::vector<GLfloat> vertices;
 	std::vector <GLfloat> colors;
 	std::vector <GLfloat> postions;
-	void setVBO();
 	b2Vec2 center;
+	//Private Setter
+	void setVBO();
 public:
 	ParticleVBO();
 	~ParticleVBO();
+	//Draw
 	void draw();
+	//Setters
 	void setCenter(b2Vec2 center);
-//	b2Vec2 getCenter();
 	void pushBack(b2Vec2 pCenter, float angle, float radius, b2Vec3 color);
+	//Clears
 	void clear();
-	void makeCircle(b2Vec2 center, float angle, float radius, b2Vec3 color);
-	void setUniforms(GLint lightColor,
-		GLint mUniformscreenHeight,
-		GLint lightAttenuation,
-		GLint radius,
-		GLint lightpos, int screenHeight, Shader *sh);
+	//Getters
 	int getCenterSize();
 	GLfloat *getCenter();
 	b2Vec2 getMainCenter();

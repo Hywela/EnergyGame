@@ -6,8 +6,10 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	init->OpenGL();
 	cameraX = 0;
 	cameraY = 0;
+
 	//loop = &Render::mainMenu;
-	menuObjects = new 	vector<button>;
+	menuObjects = new vector<button>;
+	pauseObjects = new vector<button>;
 	TTF_Init();
 	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42);
 	menuFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
@@ -17,9 +19,12 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	renderNow = false;
 	shutDown = false;
 	inQueue = que;
+
 	platformVBO = new PlatformVBO();
 	particleVBO = new ParticleVBO();
 	backgroundVBO = new PlatformVBO(); 
+	pauseVBO = new PlatformVBO();	
+	mainCharParticleVBO = new ParticleVBO();
 	b2Vec2 vx[4];
 	vx[0].x = 0;
 	vx[0].y = 0;
@@ -35,10 +40,10 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 
 	backgroundVBO->pushBackground(vx, b2Vec2(screenWidth / 2, screenHeight / 2), b2Vec3(0, 0, 0));
 
-	mainCharParticleVBO = new ParticleVBO();
+
 	//geoShader = new Shader("./Shaders/main_shader.vert", "./Shaders/main_shader.frag","./Shaders/main_shader.geom" );
 	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
-	geoShader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
+	//geoShader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
 	
 	lightColor = glGetUniformLocation(*shader->GetShaderProgram(), "lightColor");
 	mUniformscreenHeight = glGetUniformLocation(*shader->GetShaderProgram(), "screenHeight");
@@ -52,12 +57,35 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	//	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 //	mUniform = glGetUniformLocation(*shader->GetShaderProgram(), "time");
 }
+Render::~Render()
+{
+}
 
-//not sure if i need it TODO:::
 void Render::setQue(InputQueue *que){
 	inQueue = que;
 }
+void Render::pauseLoop(){
+	render();
+	startRendering();
 
+	pauseVBO->draw();
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+	
+	for (int i = 0; i < pauseObjects->size(); i++){
+		renderText(menuFont, 255, 255, 255, pauseObjects->at(i).posX, pauseObjects->at(i).posY, 0, pauseObjects->at(i).tekst);
+	}
+
+	endRendering();
+	SDL_GL_SwapWindow(init->window);
+
+
+}
 void Render::mainLoop(string fps, string puz, string par){
 
 	glEnable(GL_BLEND);
@@ -81,7 +109,7 @@ void Render::mainLoop(string fps, string puz, string par){
 
 	//particleVBO->draw();
 
-	//mainCharParticleVBO->draw();
+
 
 	//particleVBO->setUniforms(lightColor, mUniformscreenHeight, lightAttenuation, radius, lightpos, screenHeight, shader);
 		
@@ -93,7 +121,7 @@ void Render::mainLoop(string fps, string puz, string par){
 	glDisable(GL_BLEND);
 
 	particleVBO->draw();
-
+	mainCharParticleVBO->draw();
 
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
@@ -143,11 +171,9 @@ void Render::renderOrtho() {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-
 void Render::renderThis(){
 	renderNow = !renderNow;
 }
-
 
 void Render::startRendering(){
 	glMatrixMode(GL_PROJECTION);
@@ -171,44 +197,12 @@ void Render::endRendering(){
 	glMatrixMode(GL_MODELVIEW);
 }
 
-/*
-RenderQue* Render::getQue(){
-
-	return renderQueue;
-}
-//Render::Render()
-{
-	
-	printf("\n Constructor Called");
-
-}*/
-Render::~Render()
-{
-}
 void Render::mainMenu(string fps){
-
-	//particleVBO->pushBack(b2Vec2(20, 20), 0, 1, b2Vec3(0,255,255));
 
 	render();
 	startRendering();	
-	
-	/*
-	glBlendFunc(GL_ONE, GL_ONE);
-	glUseProgram(*shader->GetShaderProgram());
-	
-		glUniform2f(lightpos, 25, 25);
-		glUniform3f(lightColor, 0, 255,255);
-		glUniform1f(mUniformscreenHeight, screenHeight);
-		glUniform3f(lightAttenuation, 1, 1, 0);
-		glUniform1f(radius, 10);
 
-		
-	glUseProgram(0);*/
-	
-
-
-
-	platformVBO->draw();
+	pauseVBO->draw();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -264,7 +258,7 @@ void Render::renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G
 	glDeleteTextures(1, &Texture);
 	SDL_FreeSurface(Message);
 }
-void Render::pushBackMenuObj(int posX, int posY, string tekst){
+void Render::pushBackMenuObj(int posX, int posY, string tekst ){
 
 	button but;
 
@@ -286,13 +280,31 @@ void Render::pushBackMenuObj(int posX, int posY, string tekst){
 	vx[3].x = posX;
 	vx[3].y = posY + offsetY;
 	menuObjects->push_back(but);
-	platformVBO->pushBackground(vx, b2Vec2(posX + offsetX / 2, posY + offsetY/2), b2Vec3(0, 255, 255));
+	pauseVBO->pushBackground(vx, b2Vec2(posX + offsetX / 2, posY + offsetY / 2), b2Vec3(0, 255, 255));
 }
+void Render::pushBackPauseObj(int posX, int posY, string tekst){
+
+	button but;
+	but.posX = posX;
+	but.posY = posY;
+	but.tekst = tekst;
+	pauseObjects->push_back(but);
+}
+
 int Render::menuMouseClickCheck(int x, int y){
 	for (int i = 0; i < menuObjects->size(); i++){
 		if (menuObjects->at(i).posX <= x && menuObjects->at(i).posY >= y){
 				return i;
 				
+		}
+	}
+	return NULL;
+}
+int Render::pauseMouseClickCheck(int x, int y){
+	for (int i = 0; i < menuObjects->size(); i++){
+		if (pauseObjects->at(i).posX <= x && menuObjects->at(i).posY >= y){
+			return i;
+
 		}
 	}
 	return NULL;

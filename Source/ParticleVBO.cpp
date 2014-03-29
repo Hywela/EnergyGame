@@ -30,7 +30,7 @@ void ParticleVBO::draw()
 
 	}
 
-};
+}
 
 ParticleVBO::ParticleVBO()
 {
@@ -121,17 +121,6 @@ void ParticleVBO::clear(){
 	colors.clear();
 	postions.clear();
 }
-void ParticleVBO::makeCircle(b2Vec2 center, float angle, float radius, b2Vec3 color){
-	
 
-}
-void ParticleVBO::setUniforms(GLint lightColor,
-GLint mUniformscreenHeight,
-GLint lightAttenuation,
-GLint radius,
-GLint lightpos, int screenHeight, Shader *sh){
-
-
-}
 
 
