@@ -33,12 +33,9 @@ void Window::mainLoop() {
 	while (running) {
 	
 		checkForMouseInput();
-		
-		
-	
+
 		(this->*loopType)();
-		//ren->mainMenu(fpsStr);
-	//	SDL_Delay(fps);
+
 		timer = SDL_GetTicks();
 
 		
@@ -54,7 +51,10 @@ void Window::checkForMouseInput(){
 					running = false;
 				}
 				if (e.key.keysym.sym == SDLK_t) {
-					ren->setCameraDirectionX(10);
+					loopType = &Window::menuLoop;
+					leftMouseClick = &Window::menuLeftMouseClick;
+					delete world;
+
 				}
 				else if (e.key.keysym.sym == SDLK_TAB) {
 								  //ToggleFullscreen();
@@ -71,7 +71,7 @@ void Window::checkForMouseInput(){
 }
 
 void Window::gameLoop() {
-	//int fps = (1000 / 30) - (timer - SDL_GetTicks());
+	int fps = (1000 / 30) - (timer - SDL_GetTicks()) -20;
 	int puzzlesSolved = 0;
 	int particlesLeft = 0;
 
@@ -84,19 +84,15 @@ void Window::gameLoop() {
 		puzStr = "Solved: " + to_string(world->getPuzzlesSolved());
 		parStr = "Particles: " + to_string(world->getParticlesLeft());
 	}
-	//InputData step(1);
-	//cout <<"\n fps: " <<fps;
-	//inQueue->push(step); //world->checkForInput();
+
 	world->step();
-	//InputData updateWorld(2);
-	//inQueue->push(updateWorld);
+
 	ren->render();
 	ren->startRendering();
 	world->updateWorld();
 	ren->mainLoop(fpsStr, puzStr, parStr);
 
-	//timer = SDL_GetTicks();
-
+	SDL_Delay(fps);
 	//Fps test start
 	fps_frames++;
 	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
@@ -106,7 +102,7 @@ void Window::gameLoop() {
 		fps_frames = 0;
 	}
 	//Fps test end
-	//SDL_Delay(fps_lasttime);
+
 }
 void Window::gameLeftMouseClick() {
 	//InputData click;
@@ -120,13 +116,13 @@ void Window::menuLeftMouseClick() {
 			//	cout << "play clicked";
 				//ren->zerOutCamera();
 				leftMouseClick = &Window::gameLeftMouseClick;
-				loopType = &Window::gameLoop;
 				startWorld();
+				loopType = &Window::gameLoop;
 	break;
 	}
 	case 2: {
 				cout << "2";
-				ren->setCameraDirectionX(10);
+			
 	break;
 	}
 	case 3: {
@@ -134,7 +130,7 @@ void Window::menuLeftMouseClick() {
 				
 				break;
 	}
-	default:{ren->setCameraDirectionX(-10);
+	default:{
 	break;
 		}
 	}

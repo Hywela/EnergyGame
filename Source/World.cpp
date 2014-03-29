@@ -43,17 +43,26 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	int s = now->tm_sec;
 	int time = (h * 10000) + (m * 100) + s;
 	srand(time);
-
+	
 	//Start world setup
 	setupWorld();
 }
 
 World::~World() {
 
+	platformVBO->clear();
+	particleVBO->clear();
+	mainCharParticleVBO->clear();
+	delete world;
+	delete platforms;
+	delete puzzles;
+	delete platformColors;
+	delete particles;
+
 }
 
 void World::checkForInput() {
-	bool exit = false;
+/*	bool exit = false;
 
 	while (!exit) {
 		if (inputQueue->getSize() > 0) {
@@ -78,7 +87,7 @@ void World::checkForInput() {
 				}
 			}
 		}
-	}
+	}*/
 }
 
 
@@ -88,7 +97,6 @@ void World::setupWorld() {
 	//Create world objects
 	world = new b2World(b2Vec2(0, 0)); //9.81
 
-	circle = new Circle();
 	world->SetGravity(b2Vec2(0, 0));
 
 	world->ShiftOrigin(b2Vec2(screenwidth / 2, screenheight / 2));

@@ -1,7 +1,8 @@
 
 uniform vec2 lightpos[60];
-uniform vec2 platformLightpos[10];
+uniform vec2 platformLightpos[6];
 uniform vec2 MainCharLightpos;
+
 uniform vec3 lightColor;
 uniform float screenHeight;
 uniform vec3 lightAttenuation;
@@ -77,11 +78,11 @@ for(int i = 0; i <6; i++){
 	
 
 
-	for(int i = 0; i <20; i++){
+	for(int i = 0; i <30; i++){
 	calcColor[i] =   light(i);
 	
 	}
-	for(int i = 0; i <20; i++){
+	for(int i = 0; i <30; i++){
 	sum +=  calcColor[i];
 
 	}

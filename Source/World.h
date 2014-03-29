@@ -6,10 +6,6 @@
 #include <Windows.h>
 #include <freeglut\freeglut.h>
 #include "Consts.h"
-#include "InputData.h"
-#include "InputQueue.h"
-#include "RenderData.h"
-#include "RenderQue.h"
 #include "Render.h"
 #include "Puzzle.h"
 #include "Particle.h"
@@ -26,7 +22,7 @@ private:
 
 	//Main world objects
 	b2World *world;
-	Circle *circle;
+	
 	int screenwidth, screenheight;
 
 	//Camera variables
@@ -53,8 +49,8 @@ private:
 	int spawnCooldown;
 	int numWalls;
 
-	InputQueue *inputQueue;
-	RenderQue *renderQueue;
+	//InputQueue *inputQueue;
+	//RenderQue *renderQueue;
 
 public:
 	World(int screenWidth, int screenHeight, PlatformVBO *platformRendering, ParticleVBO *particleRendering, ParticleVBO *mainCharRendering);
