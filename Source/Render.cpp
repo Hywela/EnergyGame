@@ -6,11 +6,11 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	init->OpenGL();
 	cameraX = 0;
 	cameraY = 0;
-	//loop = &Render::mainMenue;
-	menueObjects = new 	vector<button>;
+	//loop = &Render::mainMenu;
+	menuObjects = new 	vector<button>;
 	TTF_Init();
 	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42);
-	menueFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
+	menuFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
 	screenHeight = init->getScreenHeight();
 	screenWidth = init->getScreenWidth();
 	renderQueue = rque;
@@ -185,7 +185,7 @@ RenderQue* Render::getQue(){
 Render::~Render()
 {
 }
-void Render::mainMenue(string fps){
+void Render::mainMenu(string fps){
 
 	//particleVBO->pushBack(b2Vec2(20, 20), 0, 1, b2Vec3(0,255,255));
 
@@ -216,9 +216,9 @@ void Render::mainMenue(string fps){
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-	renderText(menueFont, 0, 255, 255, 100, 600, 0,fps);
-	for (int i = 0; i < menueObjects->size(); i++){
-		renderText(menueFont, 255, 255, 255, menueObjects->at(i).posX, menueObjects->at(i).posY, 0, menueObjects->at(i).tekst);
+	renderText(menuFont, 0, 255, 255, 100, 600, 0,fps);
+	for (int i = 0; i < menuObjects->size(); i++){
+		renderText(menuFont, 255, 255, 255, menuObjects->at(i).posX, menuObjects->at(i).posY, 0, menuObjects->at(i).tekst);
 	}
 
 	endRendering();
@@ -264,7 +264,7 @@ void Render::renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G
 	glDeleteTextures(1, &Texture);
 	SDL_FreeSurface(Message);
 }
-void Render::pushBackMenueObj(int posX, int posY, string tekst){
+void Render::pushBackMenuObj(int posX, int posY, string tekst){
 
 	button but;
 
@@ -284,21 +284,21 @@ void Render::pushBackMenueObj(int posX, int posY, string tekst){
 
 	vx[3].x = 0;
 	vx[3].y = posY+20;
-	menueObjects->push_back(but);
+	menuObjects->push_back(but);
 	platformVBO->pushBack(vx, b2Vec2(posX + 20, posY + 20), 0, b2Vec3(0, 255, 255));
 }
-int Render::menueMouseClickCheck(int x, int y){
-	for (int i = 0; i < menueObjects->size(); i++){
-		if (menueObjects->at(i).posX <= x && menueObjects->at(i).posY >= y){
+int Render::menuMouseClickCheck(int x, int y){
+	for (int i = 0; i < menuObjects->size(); i++){
+		if (menuObjects->at(i).posX <= x && menuObjects->at(i).posY >= y){
 				return i;
 				
 		}
 	}
 	return NULL;
 }
-void Render::menueMouseHoverCheck(int x, int y){
-	for (int i = 0; i < menueObjects->size(); i++){
-		if (menueObjects->at(i).posX <= x && menueObjects->at(i).posY >= y){
+void Render::menuMouseHoverCheck(int x, int y){
+	for (int i = 0; i < menuObjects->size(); i++){
+		if (menuObjects->at(i).posX <= x && menuObjects->at(i).posY >= y){
 
 
 		}
