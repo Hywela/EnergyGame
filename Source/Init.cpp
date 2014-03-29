@@ -23,7 +23,9 @@ void Init::OpenGL()
 
 	//glShadeModel(GL_SMOOTH);                        // Enable Smooth Shading
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);          // Really Nice Perspective 
-
+	
+	//glEnable(GL_NORMALIZE);
+	/*
 	//Initialize the lights
 	GLfloat LightAmbient[] = { 0.9f, 0.9f, 0.9f, 1.0f };  // Ambient Light Values
 	GLfloat LightDiffuse[] = { 0.7f, 0.7f, 0.7f, 1.0f };  // Diffuse Light Values
@@ -31,7 +33,7 @@ void Init::OpenGL()
 	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);      // Setup The Ambient Light
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);      // Setup The Diffuse Light
 	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);    // Position The Light
-	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT1);*/
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);

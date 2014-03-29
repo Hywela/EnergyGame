@@ -38,4 +38,5 @@ public:
 		GLint lightpos, int screenHeight, Shader *sh);
 	int getCenterSize();
 	GLfloat *getCenter();
+	b2Vec2 getMainCenter();
 };

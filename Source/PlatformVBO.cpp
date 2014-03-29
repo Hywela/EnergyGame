@@ -45,6 +45,11 @@ void PlatformVBO::setVBO(){
 
 }
 void PlatformVBO::pushBack(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color){
+	int moveX = center.x*M2P;
+	int moveY = center.y*M2P;
+	if (color.x == 0 && color.y == 1){
+	postions.push_back(moveX);
+	postions.push_back(moveY);}
 	for (int i = 0; i < 4; i++) {
 		//std::cout << "c " << center.x << " " << points[i].x * M2P << " d " << points[i].y * M2P;
 		vertices.push_back(points[i].x  *M2P + center.x*M2P);
@@ -55,6 +60,7 @@ void PlatformVBO::pushBack(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 co
 	}
 }
 void PlatformVBO::pushBackground(b2Vec2* points, b2Vec2 center,  b2Vec3 color){
+
 	for (int i = 0; i < 4; i++) {
 		//std::cout << "c " << center.x << " " << points[i].x * M2P << " d " << points[i].y * M2P;
 		vertices.push_back(points[i].x );
@@ -67,4 +73,22 @@ void PlatformVBO::pushBackground(b2Vec2* points, b2Vec2 center,  b2Vec3 color){
 void PlatformVBO::clear(){
 	vertices.clear();
 	colors.clear();
+	postions.clear();
+}
+
+GLfloat *PlatformVBO::getCenter(){
+	int s = postions.size();
+	GLfloat *dd;
+	//std::cout << " " << s;
+	dd = new GLfloat[s * 2];
+	for (int i = 1; i < s; i += 1){
+		dd[i] = postions.at(i);
+
+
+	}
+
+	return dd;
+}
+int PlatformVBO::getCenterSize(){
+	return postions.size();
 }

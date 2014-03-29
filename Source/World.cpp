@@ -93,7 +93,7 @@ void World::setupWorld() {
 	circle = new Circle();
 	world->SetGravity(b2Vec2(0, 0));
 
-//	world->ShiftOrigin(b2Vec2(screenwidth / 2, screenheight / 2));
+	world->ShiftOrigin(b2Vec2(screenwidth / 2, screenheight / 2));
 	//Spawn character
 	spawnCharacter();
 	joinCircleJoints();
@@ -341,8 +341,7 @@ void World::updateChar() {
 	particleVBO->clear();
 	mainCharParticleVBO->clear();
 	mainCharParticleVBO->setCenter(playerBody->GetWorldCenter());
-	mainCharParticleVBO->pushBack(playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
-	//renderQueue->push(circle);
+	//particleVBO->pushBack(playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
 
 	//Update all particles
 	int ant = particles->size();
@@ -355,7 +354,6 @@ void World::updateChar() {
 	
 		//Draw circle body
 		particleVBO->pushBack(tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
-		//renderQueue->push(circle);
 
 		//Update particle
 		tempParticle->update();
@@ -446,9 +444,7 @@ void World::updatePlatforms() {
 					//Draw platform
 					int a = 0;
 					platformVBO->pushBack( points, B->GetWorldCenter(), B->GetAngle(), curColor);
-					//Platform plat;
-					//plat.draw(points, B->GetWorldCenter(), B->GetAngle(), curColor);
-					//renderQueue->push(platform);
+			
 
 					colorId--;
 					break;

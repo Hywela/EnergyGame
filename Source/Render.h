@@ -67,7 +67,8 @@ private:
 	GLint mUniformscreenHeight;
 	GLint lightAttenuation;
 	GLint radius;
-	GLint lightpos[2];
+	GLint lightpos;
+	GLint platformLightpos;
 	GLint numLigth;
 	GLint fBender;
 public:

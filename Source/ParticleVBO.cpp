@@ -60,7 +60,7 @@ GLfloat *ParticleVBO::getCenter(){
 	int s = postions.size();
 	GLfloat *dd;
 	dd = new GLfloat[s*2];
-
+//	std::cout << " " <<s;
 	for (int i = 1; i < s; i +=1){
 		dd[i] = postions.at(i);
 		
@@ -68,6 +68,9 @@ GLfloat *ParticleVBO::getCenter(){
 	}
 	
 	return dd;
+}
+b2Vec2 ParticleVBO::getMainCenter(){
+	return center;
 }
 int ParticleVBO::getCenterSize(){
 	return postions.size();
@@ -77,10 +80,12 @@ void ParticleVBO::pushBack(b2Vec2 center, float angle, float radius, b2Vec3 colo
 	int moveX = center.x*M2P;
 	int moveY = center.y*M2P;
 
-	
-	
 	postions.push_back(moveX);
 	postions.push_back(moveY);
+
+
+	
+
 	//Creat points for circle (fan around center)
 	for (float i = 0.0; i <= 360; i += 360.0 / 120) {
 		vertices.push_back(moveX);
@@ -108,7 +113,7 @@ void ParticleVBO::pushBack(b2Vec2 center, float angle, float radius, b2Vec3 colo
 		colors.push_back(color.y);
 		colors.push_back(color.z);
 	}
-
+	
 }
 void ParticleVBO::clear(){
 	vertices.clear();
