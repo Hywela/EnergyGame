@@ -51,6 +51,7 @@ public:
 	void mainLoop();
 	void pauseLoop();
 	void setupWorld();
+	void mouseHoverCheck(int type);
 	void gameLeftMouseClick();
 	void menuLeftMouseClick();
 	void pauseLeftMouseClick();

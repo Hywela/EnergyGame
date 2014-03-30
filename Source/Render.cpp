@@ -78,7 +78,7 @@ void Render::pauseLoop(){
 
 	
 	for (int i = 0; i < pauseObjects->size(); i++){
-		renderText(menuFont, 255, 255, 255, pauseObjects->at(i).posX, pauseObjects->at(i).posY, 0, pauseObjects->at(i).tekst);
+		renderText(menuFont, pauseObjects->at(i).color, pauseObjects->at(i).posX, pauseObjects->at(i).posY, 0, pauseObjects->at(i).tekst);
 	}
 
 	endRendering();
@@ -132,15 +132,15 @@ void Render::mainLoop(string fps, string puz, string par){
 		int textY = 20;
 
 		if (fps != "") {
-			renderText(font, 255, 255, 255, textX, textY, 0, fps);
+			renderText(font, MENU_COLOR_NORMAL, textX, textY, 0, fps);
 			textY += 50;
 		}
 		if (puz != "") {
-			renderText(font, 255, 255, 255, textX, textY, 0, puz);
+			renderText(font, MENU_COLOR_NORMAL, textX, textY, 0, puz);
 			textY += 50;
 		}
 		if (par != "") {
-			renderText(font, 255, 255, 255, textX, textY, 0, par);
+			renderText(font, MENU_COLOR_NORMAL, textX, textY, 0, par);
 			textY += 50;
 		}
 
@@ -210,9 +210,9 @@ void Render::mainMenu(string fps){
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-	renderText(menuFont, 0, 255, 255, 100, 600, 0,fps);
+	renderText(menuFont, MENU_COLOR_NORMAL , 100, 600, 0, fps);
 	for (int i = 0; i < menuObjects->size(); i++){
-		renderText(menuFont, 255, 255, 255, menuObjects->at(i).posX, menuObjects->at(i).posY, 0, menuObjects->at(i).tekst);
+		renderText(menuFont, menuObjects->at(i).color, menuObjects->at(i).posX, menuObjects->at(i).posY, 0, menuObjects->at(i).tekst);
 	}
 
 	endRendering();
@@ -228,11 +228,10 @@ void Render::mainMenu(string fps){
 	glUseProgram(0);*/
 }
 //Render *Render::instance;
-void Render::renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G, const GLubyte& B,
+void Render::renderText(const TTF_Font *Font, SDL_Color Color,
 	const double& X, const double& Y, const double& Z, const std::string& Text)
 {
 	/*Create some variables.*/
-	SDL_Color Color = { R, G, B };
 	SDL_Surface *Message = TTF_RenderText_Blended(const_cast<TTF_Font*>(Font), Text.c_str(), Color);
 	unsigned Texture = 0;
 
@@ -261,59 +260,95 @@ void Render::renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G
 void Render::pushBackMenuObj(int posX, int posY, string tekst ){
 
 	button but;
-
+	but.color = MENU_COLOR_NORMAL;
 	but.posX = posX;
 	but.posY = posY;
 	but.tekst = tekst;
 	int offsetX = 700;
 	int offsetY = 100;
-	b2Vec2 vx[4];
-	vx[0].x = posX;
-	vx[0].y = posY;
 
-	vx[1].x = posX + offsetX;
-	vx[1].y = posY;
+	but.buttonBox[0].x = posX;
+	but.buttonBox[0].y = posY;
 
-	vx[2].x = posX + offsetX;
-	vx[2].y = posY + offsetY;
+	but.buttonBox[1].x = posX + offsetX;
+	but.buttonBox[1].y = posY;
 
-	vx[3].x = posX;
-	vx[3].y = posY + offsetY;
+	but.buttonBox[2].x = posX + offsetX;
+	but.buttonBox[2].y = posY + offsetY;
+
+	but.buttonBox[3].x = posX;
+	but.buttonBox[3].y = posY + offsetY;
 	menuObjects->push_back(but);
-	pauseVBO->pushBackground(vx, b2Vec2(posX + offsetX / 2, posY + offsetY / 2), b2Vec3(0, 255, 255));
+	
 }
 void Render::pushBackPauseObj(int posX, int posY, string tekst){
 
 	button but;
+	but.color = MENU_COLOR_NORMAL;
 	but.posX = posX;
 	but.posY = posY;
 	but.tekst = tekst;
+	int offsetX = 700;
+	int offsetY = 100;
+
+	but.buttonBox[0].x = posX;
+	but.buttonBox[0].y = posY;
+
+	but.buttonBox[1].x = posX + offsetX;
+	but.buttonBox[1].y = posY;
+
+	but.buttonBox[2].x = posX + offsetX;
+	but.buttonBox[2].y = posY + offsetY;
+
+	but.buttonBox[3].x = posX;
+	but.buttonBox[3].y = posY + offsetY;
 	pauseObjects->push_back(but);
 }
 
 int Render::menuMouseClickCheck(int x, int y){
 	for (int i = 0; i < menuObjects->size(); i++){
-		if (menuObjects->at(i).posX <= x && menuObjects->at(i).posY >= y){
+		if(menuObjects->at(i).buttonBox[0].x <= x && menuObjects->at(i).buttonBox[2].y >= y){
+			if (menuObjects->at(i).buttonBox[2].x >= x && menuObjects->at(i).buttonBox[0].y <= y){
+				cout << " ddd";
 				return i;
-				
+			}
+
 		}
 	}
 	return NULL;
 }
 int Render::pauseMouseClickCheck(int x, int y){
-	for (int i = 0; i < menuObjects->size(); i++){
-		if (pauseObjects->at(i).posX <= x && menuObjects->at(i).posY >= y){
-			return i;
+	for (int i = 0; i < pauseObjects->size(); i++){
+		if (pauseObjects->at(i).buttonBox[0].x <= x && pauseObjects->at(i).buttonBox[2].y >= y){
+
+			if (pauseObjects->at(i).buttonBox[2].x >= x && pauseObjects->at(i).buttonBox[0].y <= y){
+				
+
+				return i;
+			}
 
 		}
 	}
 	return NULL;
 }
-void Render::menuMouseHoverCheck(int x, int y){
-	for (int i = 0; i < menuObjects->size(); i++){
-		if (menuObjects->at(i).posX <= x && menuObjects->at(i).posY >= y){
+void Render::menuMouseHoverCheck(int x, int y, int type){
+	vector<button> *temp = NULL;
 
+	if (type == 0)
+		temp = menuObjects;
+	else if (type == 1)
+		temp = pauseObjects;
 
+	for (int i = 0; i < temp->size(); i++){
+		temp->at(i).color = MENU_COLOR_NORMAL;
+		if (temp->at(i).buttonBox[0].x <= x && temp->at(i).buttonBox[2].y >= y){
+		
+			if (temp->at(i).buttonBox[2].x >= x && temp->at(i).buttonBox[0].y <= y){
+				temp->at(i).color = MENU_COLOR_HOVER;
+				
+
+			}
+		
 		}
 	}
 }

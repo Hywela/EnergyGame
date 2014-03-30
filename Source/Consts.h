@@ -1,13 +1,16 @@
 #pragma once
 #include <random>
 #include <Box2D\Box2D.h>
+#include <SDL.h>
 
 
 
 //Box2D variables
 const float M2P = 30;
 const float P2M = 1 / M2P;
-
+//Meny const
+const SDL_Color MENU_COLOR_HOVER = SDL_Color{ 255, 255, 0 };
+const SDL_Color MENU_COLOR_NORMAL = SDL_Color{ 0, 255, 255 };
 //World variables
 const b2Vec3 COLOR_SOLID = b2Vec3(0.7, 0.7, 0.7);
 const b2Vec3 COLOR_UNLIT = b2Vec3(0.7, 0, 0);

@@ -29,14 +29,9 @@ Window::~Window() {
 void Window::mainLoop() {	
 
 	while (running) {
-	
 		checkForMouseInput();
-
 		(this->*loopType)();
-
 		timer = SDL_GetTicks();
-
-		
 	}
 }
 
@@ -44,37 +39,46 @@ void Window::checkForMouseInput(){
 
 	while (SDL_PollEvent(&e)) {
 		switch (e.type) {
-			case SDL_KEYDOWN: {
-				if (e.key.keysym.sym == SDLK_q) {
-					running = false;
+		case SDL_MOUSEMOTION:{
+			if (!inGame || paused){
+				int type = 0;
+				if (paused){
+					type = 1;
 				}
-				if (e.key.keysym.sym == SDLK_ESCAPE) {
-					if (paused){  
-						paused = false;
-						loopType = &Window::gameLoop;
-						leftMouseClick = &Window::gameLeftMouseClick;
-					}else if (inGame){
-						paused = true;
-						loopType = &Window::pauseLoop;
-						leftMouseClick = &Window::pauseLeftMouseClick;
-					}
+				ren->menuMouseHoverCheck(e.button.x, e.button.y, type);
+			}
+		 break;
+		}//End Case()
+		case SDL_KEYDOWN: {
+			if (e.key.keysym.sym == SDLK_q) {
+				running = false;
+			}
+			if (e.key.keysym.sym == SDLK_ESCAPE) {
+				if (paused){  
+					paused = false;
+					loopType = &Window::gameLoop;
+					leftMouseClick = &Window::gameLeftMouseClick;
+				}else if (inGame){
+					paused = true;
+					loopType = &Window::pauseLoop;
+					leftMouseClick = &Window::pauseLeftMouseClick;
 				}
-				else if (e.key.keysym.sym == SDLK_TAB) {
-								  //ToggleFullscreen();
-				}
-			break;
-			}//End Case()
-			case SDL_MOUSEBUTTONDOWN: {
-				(this->*leftMouseClick)();
-			break;
-			}//End Case()
-			case SDL_KEYUP :{
-				if (e.key.keysym.sym == SDLK_ESCAPE) {
-
-				}
-			  break;
-			}//End Case()
-		}//End Switch()
+			}
+			else if (e.key.keysym.sym == SDLK_TAB) {
+							  //ToggleFullscreen();
+			}
+		break;
+		}//End Case()
+		case SDL_MOUSEBUTTONDOWN: {
+			(this->*leftMouseClick)();
+		break;
+		}//End Case()
+		case SDL_KEYUP :{
+			if (e.key.keysym.sym == SDLK_ESCAPE) {
+			}
+		  break;
+		}//End Case()
+	}//End Switch()
 	}//End while()
 }
 
@@ -115,20 +119,24 @@ void Window::gameLoop() {
 void Window::gameLeftMouseClick() {
 	world->applyForce(e.button.x, e.button.y);
 }
+void Window::mouseHoverCheck(int type){
+	
+
+}
 void Window::menuLeftMouseClick() {
 	switch (ren->menuMouseClickCheck(e.button.x, e.button.y)) {
-	case 1: {
+	case 0: {
 				startWorld();
 				loopType = &Window::gameLoop;
 				leftMouseClick = &Window::gameLeftMouseClick;
 	break;
 	}
-	case 2: {
+	case 1: {
 				cout << "2";
 			
 	break;
 	}
-	case 3: {
+	case 2: {
 				cout << "3";
 				
 				break;
@@ -140,19 +148,26 @@ void Window::menuLeftMouseClick() {
 }
 void Window::pauseLeftMouseClick() {
 	switch (ren->pauseMouseClickCheck(e.button.x, e.button.y)) {
-	case 1: {
+	case 0: {
 				paused = false;
 				leftMouseClick = &Window::gameLeftMouseClick;
 				loopType = &Window::gameLoop;
 				break;
 	}
-	case 2: {
-				cout << "2";
-
+	case 1: {
+				paused = false;
+				delete world;
+				startWorld();
+				leftMouseClick = &Window::gameLeftMouseClick;
+				loopType = &Window::gameLoop;
 				break;
 	}
-	case 3: {
-				cout << "3";
+	case 2: {
+				paused = false;
+				inGame = false;
+				delete world;
+				leftMouseClick = &Window::menuLeftMouseClick;
+				loopType = &Window::menuLoop;
 
 				break;
 	}
@@ -211,8 +226,8 @@ void Window::buildMenu(){
 	ren->pushBackMenuObj(screenW, screenH*1.5, "Quit");
 
 	ren->pushBackPauseObj(screenW, screenH*0.5, "Resum");
-	ren->pushBackPauseObj(screenW, screenH * 1, "Settings");
-	ren->pushBackPauseObj(screenW, screenH*1.5, "Quit");
+	ren->pushBackPauseObj(screenW, screenH * 1, "Restart");
+	ren->pushBackPauseObj(screenW, screenH*1.5, "Main Menue");
 	
 }
 

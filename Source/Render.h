@@ -50,10 +50,11 @@ private:
 	//MainMenu
 	TTF_Font *menuFont;
 	struct button{
+		b2Vec2 buttonBox[4];
 		int posX;
 		int posY;
 		string tekst;
-		b2Vec3 color;
+		SDL_Color color;
 	};
 	vector<button> *menuObjects,*pauseObjects;
 	PlatformVBO *platformVBO,*backgroundVBO, *pauseVBO;
@@ -92,7 +93,7 @@ public:
 	void drawSquare(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color);
 	void renderOrtho();
 	void renderThis(); //bool
-	void renderText(const TTF_Font *Font, const GLubyte& R, const GLubyte& G, const GLubyte& B,
+	void renderText(const TTF_Font *Font, SDL_Color Color,
 		const double& X, const double& Y, const double& Z, const std::string& Text);
 	void startRendering();
 	void endRendering();
@@ -105,7 +106,7 @@ public:
 	//controll manipulasjon
 	int menuMouseClickCheck(int x, int y);
 	int pauseMouseClickCheck(int x, int y);
-	void menuMouseHoverCheck(int x, int y);
+	void menuMouseHoverCheck(int x, int y, int type);
 	void setCameraDirectionX(int offsett);
 	void zerOutCamera();
 	Init* getInit();
