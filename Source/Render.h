@@ -103,7 +103,7 @@ public:
 	int pauseMouseClickCheck(int x, int y);
 	void menuMouseHoverCheck(int x, int y, int type);
 	void setCameraDirectionX(int offsett);
-	void zerOutCamera();
+	void zeroOutCamera();
 	Init* getInit();
 	PlatformVBO* getPlatformVBO();
 	ParticleVBO* getParticleVBO();

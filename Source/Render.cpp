@@ -354,7 +354,7 @@ void Render::setCameraDirectionX(int offsett){
 	cameraX += offsett;
 	screenWidth += offsett;
 }
-void Render::zerOutCamera(){
+void Render::zeroOutCamera(){
 	cameraX = 0;
 	screenWidth = 1920;
 }

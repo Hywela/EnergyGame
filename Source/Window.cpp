@@ -224,9 +224,9 @@ void Window::buildMenu(){
 	ren->pushBackMenuObj(screenW, screenH*1, "Settings");
 	ren->pushBackMenuObj(screenW, screenH*1.5, "Quit");
 
-	ren->pushBackPauseObj(screenW, screenH*0.5, "Resum");
+	ren->pushBackPauseObj(screenW, screenH*0.5, "Resume");
 	ren->pushBackPauseObj(screenW, screenH * 1, "Restart");
-	ren->pushBackPauseObj(screenW, screenH*1.5, "Main Menue");
+	ren->pushBackPauseObj(screenW, screenH*1.5, "Main Menu");
 	
 }
 
