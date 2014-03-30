@@ -34,13 +34,10 @@ private:
 	//
 	Init *init;
 	TTF_Font *font;
-	static Render *instance;
-	InputQueue *inQueue;
 	int screenWidth;
 	int screenHeight;
 	int maxWidth, maxHeight;
 	int minWidth, minHeight;
-	RenderQue *renderQueue;
 	bool renderNow;
 	bool shutDown;
 	
@@ -76,7 +73,7 @@ private:
 
 public:
 	//constructor
-	Render(Init *init, InputQueue *que, RenderQue *rque);
+	Render(Init *init);
 	~Render();
 	//Loops //call for rendering 
 	void (Render::*loop)();
@@ -98,9 +95,7 @@ public:
 	void startRendering();
 	void endRendering();
 	void pauseLoop();
-	//ques
-	void setQue(InputQueue *que);
-	RenderQue* getQue();
+
 	void pushBackMenuObj(int posX,int posY, string tekst);
 	void pushBackPauseObj(int posX, int posY, string tekst);
 	//controll manipulasjon

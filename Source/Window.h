@@ -29,9 +29,6 @@ private:
 	bool paused; 
 	int timer;
 	SDL_Event e;
-	InputQueue *inQueue;
-	RenderQue *renderQueue;
-	thread *worldSimulation;
 	Render *ren;
 	
 	//FPS test variables

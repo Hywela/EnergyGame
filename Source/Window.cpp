@@ -1,8 +1,7 @@
 #include "Window.h"
 
 Window::Window() {
-	inQueue = new InputQueue();
-	renderQueue = new RenderQue();
+
 	running = true;
 	isFullscreen = false;
 	paused = false;
@@ -11,7 +10,7 @@ Window::Window() {
 
 	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
 
-	ren = new Render(new Init( flags), inQueue, renderQueue);
+	ren = new Render(new Init( flags));
 
 	buildMenu();
 

@@ -1,6 +1,6 @@
 #include "Render.h"
 
-Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
+Render::Render(Init *init){
 	this->init = init;
 	init->SDL();
 	init->OpenGL();
@@ -15,10 +15,9 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 	menuFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
 	screenHeight = init->getScreenHeight();
 	screenWidth = init->getScreenWidth();
-	renderQueue = rque;
 	renderNow = false;
 	shutDown = false;
-	inQueue = que;
+	
 
 	platformVBO = new PlatformVBO();
 	particleVBO = new ParticleVBO();
@@ -59,10 +58,9 @@ Render::Render(Init *init, InputQueue *que ,RenderQue *rque){
 }
 Render::~Render()
 {
-}
+	delete font;
+	delete init;
 
-void Render::setQue(InputQueue *que){
-	inQueue = que;
 }
 void Render::pauseLoop(){
 	render();
