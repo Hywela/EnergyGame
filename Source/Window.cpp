@@ -118,10 +118,6 @@ void Window::gameLoop() {
 void Window::gameLeftMouseClick() {
 	world->applyForce(e.button.x, e.button.y);
 }
-void Window::mouseHoverCheck(int type){
-	
-
-}
 void Window::menuLeftMouseClick() {
 	switch (ren->menuMouseClickCheck(e.button.x, e.button.y)) {
 	case 0: {
