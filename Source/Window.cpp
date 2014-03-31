@@ -60,6 +60,8 @@ void Window::checkForMouseInput(){
 	while (SDL_PollEvent(&e)) {
 		switch (e.type) {
 		case SDL_MOUSEMOTION:{
+			if (inGame)
+				ren->setMousePointLigth(e.button.x, e.button.y);
 			if (currentMenu) {
 				ren->menuMouseHoverCheck(e.button.x, e.button.y, currentMenu);
 			}

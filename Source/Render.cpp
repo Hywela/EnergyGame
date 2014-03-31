@@ -188,6 +188,8 @@ void Render::mainLoop(string fps, string puz, string par, string sco){
 
 	glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "MainCharLightpos"), mainCharParticleVBO->getMainCenter().x,
 		mainCharParticleVBO->getMainCenter().y);
+	glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "mousePointerLigthpos"), mousePointer.x,
+		mousePointer.y);
 	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), particleVBO->getCenterSize(), particleVBO->getCenter());
 	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "platformLightpos"), platformVBO->getCenterSize(), platformVBO->getCenter());
 	//glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), mainCharParticleVBO->getCenter().x, mainCharParticleVBO->getCenter().y);
@@ -560,6 +562,10 @@ void Render::setBackgroundSquare(int posX, int posY, int offsetX, int offsetY , 
 
 	std::cout <<" " << (posX + offsetX)/2;
 	tempVBO->pushBackground(temp, b2Vec2(screenHeight / 2, screenWidth / 2), color);
+}
+void Render::setMousePointLigth(int x, int y){
+	mousePointer.x = x;
+	mousePointer.y = y;
 }
 void Render::pushOrClearPopupMenu(int type, int x, int y ){
 	pauseVBO->clear();

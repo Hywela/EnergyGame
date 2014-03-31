@@ -2,7 +2,7 @@
 uniform vec2 lightpos[50];
 uniform vec2 platformLightpos[12];
 uniform vec2 MainCharLightpos;
-
+uniform vec2 mousePointerLigthpos;
 uniform vec3 lightColor;
 uniform float screenHeight;
 uniform vec3 lightAttenuation;
@@ -23,6 +23,21 @@ vec2 pixel=gl_FragCoord.xy;
 	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*vec4(vec3(gl_Color),1.0);	
 
   return color*60;
+}
+vec4 mousePointerLigth ()
+{
+vec2 pixel=gl_FragCoord.xy;		
+	pixel.y=screenHeight-pixel.y;	
+
+	vec2 aux=mousePointerLigthpos-pixel;
+
+	float distance=length(aux)/2;
+
+	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
+
+	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*vec4(vec3(gl_Color),1.0);	
+
+  return color*radius;
 }
 vec4 mainCharLight ()
 {
@@ -92,7 +107,7 @@ if (platformLightpos[i] != vec2(0,0))
 	}
 	
 
-	gl_FragColor = sum+psum+mainCharLight();
+	gl_FragColor = sum+psum+mainCharLight()+mousePointerLigth();
 	
 
 	

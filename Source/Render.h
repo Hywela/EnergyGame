@@ -39,7 +39,7 @@ private:
 	int minWidth, minHeight;
 	bool renderNow;
 	bool shutDown;
-	
+	b2Vec2 mousePointer;
 	//Camer
 	int cameraX;
 	int cameraY;
@@ -108,6 +108,7 @@ public:
 	void pushBackSettingsBtn(int posX, int posY, string tekst);
 
 	//controll manipulasjon
+	void setMousePointLigth(int x, int y);
 	int menuMouseClickCheck(int x, int y);
 	int pauseMouseClickCheck(int x, int y);
 	int scoreMouseClickCheck(int x, int y);
