@@ -55,7 +55,7 @@ vec2 pixel=gl_FragCoord.xy;
 
  
  
-  return color;
+  return color*60;
 }
 void main()
 {	
