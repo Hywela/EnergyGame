@@ -30,6 +30,7 @@ public:
 	//Setters
 	void pushBack(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color);
 	void pushBackground(b2Vec2* points, b2Vec2 center, b2Vec3 color);
+	void pushBackLigthPostion(b2Vec2 center);
 	void setCenter(b2Vec2 center);
 	//Clear
 	void clear();

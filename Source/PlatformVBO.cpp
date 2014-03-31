@@ -71,6 +71,13 @@ void PlatformVBO::pushBackground(b2Vec2* points, b2Vec2 center,  b2Vec3 color){
 	}
 
 }
+void PlatformVBO::pushBackLigthPostion(b2Vec2 center){
+	int moveX = center.x*M2P;
+	int moveY = center.y*M2P;
+	postions.push_back(moveX);
+	postions.push_back(moveY);
+}
+
 void PlatformVBO::clear(){
 	vertices.clear();
 	colors.clear();

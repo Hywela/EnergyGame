@@ -464,6 +464,7 @@ void World::updatePlatforms() {
 									if (parXY.y >= x1.y - 10 && parXY.y <= x2.y + 10) {
 										//Light platform
 										curColor = COLOR_LIT;
+										platformVBO->pushBackLigthPostion(B->GetWorldCenter());
 										platformColors->at(colorId) = COLOR_LIT;
 
 										Puzzle *puzzle = puzzles->at(puzzleId);
