@@ -43,7 +43,7 @@ Render::Render(Init *init){
 	vx[3].y = screenHeight;
 	
 	//pauseVBO->pushBackground(vx, b2Vec2(screenHeight / 2, screenWidth / 2), b2Vec3(0, 0, 255));
-	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 255), pauseVBO);
+	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
 	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0.7, 0.7, 0.7), backgroundVBO);
 	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
 

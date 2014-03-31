@@ -16,7 +16,7 @@ vec2 pixel=gl_FragCoord.xy;
 
 	vec2 aux=lightpos[i]-pixel;
 
-	float distance=length(aux);
+	float distance=length(aux)/4;
 
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 
