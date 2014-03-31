@@ -65,7 +65,7 @@ GLfloat *ParticleVBO::getCenter(){
 	GLfloat *dd;
 	dd = new GLfloat[s*2];
 //	std::cout << " " <<s;
-	for (int i = 1; i < s; i +=1){
+	for (int i = 0; i < s; i +=1){
 		dd[i] = postions.at(i);
 	}
 	return dd;

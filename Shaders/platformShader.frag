@@ -1,6 +1,6 @@
 
-uniform vec2 lightpos[60];
-uniform vec2 platformLightpos[6];
+uniform vec2 lightpos[50];
+uniform vec2 platformLightpos[12];
 uniform vec2 MainCharLightpos;
 
 uniform vec3 lightColor;
@@ -67,22 +67,26 @@ vec4 psum = vec4(0,0,0,0);
 
 
 
-for(int i = 0; i <6; i++){
+for(int i = 0; i <12; i++){
+if (platformLightpos[i] != vec2(0,0))
 	platcalcColor[i] =   platFormLight(i);
 	
 	}
-	for(int i = 0; i <6; i++){
+	for(int i = 0; i <12; i++){
+	if (platformLightpos[i] != vec2(0,0))
 	psum +=  platcalcColor[i];
 
 	}
 	
 
 
-	for(int i = 0; i <59; i++){
+	for(int i = 0; i <50; i++){
+	if (lightpos[i] != vec2(0,0))
 	calcColor[i] =   light(i);
 	
 	}
-	for(int i = 0; i <59; i++){
+	for(int i = 0; i <50; i++){
+		if (lightpos[i] != vec2(0,0))
 	sum +=  calcColor[i];
 
 	}
