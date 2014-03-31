@@ -16,13 +16,13 @@ vec2 pixel=gl_FragCoord.xy;
 
 	vec2 aux=lightpos[i]-pixel;
 
-	float distance=length(aux)/4;
+	float distance=length(aux);
 
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 
 	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*vec4(vec3(gl_Color),1.0);	
 
-  return color*50;
+  return color*80;
 }
 vec4 mainCharLight ()
 {
@@ -67,12 +67,12 @@ vec4 psum = vec4(0,0,0,0);
 
 
 
-for(int i = 0; i <12; i++){
+for(int i = 0; i <6; i++){
 if (platformLightpos[i] != vec2(0,0))
 	platcalcColor[i] =   platFormLight(i);
 	
 	}
-	for(int i = 0; i <12; i++){
+	for(int i = 0; i <6; i++){
 	if (platformLightpos[i] != vec2(0,0))
 	psum +=  platcalcColor[i];
 
@@ -80,12 +80,12 @@ if (platformLightpos[i] != vec2(0,0))
 	
 
 
-	for(int i = 0; i <50; i++){
+	for(int i = 0; i <40; i++){
 	if (lightpos[i] != vec2(0,0))
 	calcColor[i] =   light(i);
 	
 	}
-	for(int i = 0; i <50; i++){
+	for(int i = 0; i <40; i++){
 		if (lightpos[i] != vec2(0,0))
 	sum +=  calcColor[i];
 

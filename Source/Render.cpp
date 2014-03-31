@@ -43,8 +43,8 @@ Render::Render(Init *init){
 	vx[3].y = screenHeight;
 	
 	//pauseVBO->pushBackground(vx, b2Vec2(screenHeight / 2, screenWidth / 2), b2Vec3(0, 0, 255));
-	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
-	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), platformVBO);
+	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 255), pauseVBO);
+	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0.7, 0.7, 0.7), backgroundVBO);
 	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
 
 	lightColor = glGetUniformLocation(*shader->GetShaderProgram(), "lightColor");
@@ -176,11 +176,12 @@ void Render::settingsLoop(int musVol) {
 }
 
 void Render::mainLoop(string fps, string puz, string par, string sco){
+	//backgroundVBO->draw();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
 	glUseProgram(*shader->GetShaderProgram());	
-	backgroundVBO->draw();
+	
 	platformVBO->draw();
 
 	glUniform1i(numLigth, particleVBO->getCenterSize());
