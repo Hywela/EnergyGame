@@ -57,7 +57,7 @@ Render::Render(Init *init){
 Render::~Render()
 {
 
-	delete popupButtons;
+	//delete popupButtons;
 	delete menuObjects;
 	delete pauseObjects;
 	delete scoreButtons;
