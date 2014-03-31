@@ -10,6 +10,9 @@ Render::Render(Init *init){
 	//loop = &Render::mainMenu;
 	menuObjects = new vector<button>;
 	pauseObjects = new vector<button>;
+	scoreButtons = new vector<button>;
+	scoreTexts = new vector<button>;
+	settingsButtons = new vector<button>;
 	TTF_Init();
 	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42);
 	menuFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
@@ -73,18 +76,97 @@ void Render::pauseLoop(){
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
-	
 	for (int i = 0; i < pauseObjects->size(); i++){
 		renderText(menuFont, pauseObjects->at(i).color, pauseObjects->at(i).posX, pauseObjects->at(i).posY, 0, pauseObjects->at(i).tekst);
 	}
 
 	endRendering();
 	SDL_GL_SwapWindow(init->window);
-
-
 }
-void Render::mainLoop(string fps, string puz, string par){
+void Render::scoreLoop(vector <int> scores, int scoreFinal, int scorePos, bool inGame) {
+	render();
+	startRendering();
+
+	pauseVBO->draw();
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//Only render if opened after a ended game
+	scoreButtons->at(0).disabled = true;
+	scoreButtons->at(1).tekst = "Back";
+	scoreTexts->at(0).color = HIGHSCORE_COLOR_NEW;
+
+	if (inGame) {
+		//Render text
+		scoreTexts->at(0).tekst = "Score: " + to_string(scoreFinal);
+		renderText(menuFont, scoreTexts->at(0).color, scoreTexts->at(0).posX, scoreTexts->at(0).posY, 0, scoreTexts->at(0).tekst);
+
+		//Set appropriate name for menu button
+		scoreButtons->at(1).tekst = "Main Menu";
+
+		//Render "retry" button
+		scoreButtons->at(0).disabled = false;
+		renderText(menuFont, scoreButtons->at(0).color, scoreButtons->at(0).posX, scoreButtons->at(0).posY, 0, scoreButtons->at(0).tekst);
+	}
+
+	for (int i = 1; i < scoreTexts->size(); i++) {
+		//If highscore list element
+		if (i >= 2 && i < 2 + HIGHSCORES) {
+			//Update scoretext
+			if (scores[i - 2] >= 0) {
+				scoreTexts->at(i).tekst = to_string(i - 1) + ": " + to_string(scores[i - 2]);
+			}
+			else {
+				scoreTexts->at(i).tekst = to_string(i - 1) + ": ---";
+			}
+
+			if ((i - 2) == scorePos) {
+				//Highlight new highscore
+				scoreTexts->at(i).color = HIGHSCORE_COLOR_NEW;
+			}
+			else {
+				//Set normal color to others
+				scoreTexts->at(i).color = HIGHSCORE_COLOR_NORMAL;
+			}
+		}
+
+		//Render text
+		renderText(menuFont, scoreTexts->at(i).color, scoreTexts->at(i).posX, scoreTexts->at(i).posY, 0, scoreTexts->at(i).tekst);
+	}
+
+	//Render "goto main menu" button
+	renderText(menuFont, scoreButtons->at(1).color, scoreButtons->at(1).posX, scoreButtons->at(1).posY, 0, scoreButtons->at(1).tekst);
+
+	endRendering();
+	SDL_GL_SwapWindow(init->window);
+}
+void Render::settingsLoop(int musVol) {
+	render();
+	startRendering();
+
+	pauseVBO->draw();
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//Update volume button
+	settingsButtons->at(0).tekst = "Music volume: " + to_string(musVol) + "%";
+
+	for (int i = 0; i < settingsButtons->size(); i++) {
+		//Render text
+		renderText(menuFont, settingsButtons->at(i).color, settingsButtons->at(i).posX, settingsButtons->at(i).posY, 0, settingsButtons->at(i).tekst);
+	}
+
+	endRendering();
+	SDL_GL_SwapWindow(init->window);
+}
+
+void Render::mainLoop(string fps, string puz, string par, string sco){
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
@@ -130,8 +212,7 @@ void Render::mainLoop(string fps, string puz, string par){
 		int textY = 20;
 
 		if (fps != "") {
-			renderText(font, MENU_COLOR_NORMAL, textX, textY, 0, fps);
-			textY += 50;
+			renderText(font, MENU_COLOR_NORMAL, 20, screenHeight - 50, 0, fps);
 		}
 		if (puz != "") {
 			renderText(font, MENU_COLOR_NORMAL, textX, textY, 0, puz);
@@ -139,6 +220,10 @@ void Render::mainLoop(string fps, string puz, string par){
 		}
 		if (par != "") {
 			renderText(font, MENU_COLOR_NORMAL, textX, textY, 0, par);
+			textY += 50;
+		}
+		if (sco != "") {
+			renderText(font, MENU_COLOR_NORMAL, textX, textY, 0, sco);
 			textY += 50;
 		}
 
@@ -208,7 +293,7 @@ void Render::mainMenu(string fps){
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-	renderText(menuFont, MENU_COLOR_NORMAL , 100, 600, 0, fps);
+	renderText(font, MENU_COLOR_NORMAL, 20, screenHeight - 50, 0, fps);
 	for (int i = 0; i < menuObjects->size(); i++){
 		renderText(menuFont, menuObjects->at(i).color, menuObjects->at(i).posX, menuObjects->at(i).posY, 0, menuObjects->at(i).tekst);
 	}
@@ -276,8 +361,9 @@ void Render::pushBackMenuObj(int posX, int posY, string tekst ){
 
 	but.buttonBox[3].x = posX;
 	but.buttonBox[3].y = posY + offsetY;
+
+	but.disabled = false;
 	menuObjects->push_back(but);
-	
 }
 void Render::pushBackPauseObj(int posX, int posY, string tekst){
 
@@ -300,7 +386,81 @@ void Render::pushBackPauseObj(int posX, int posY, string tekst){
 
 	but.buttonBox[3].x = posX;
 	but.buttonBox[3].y = posY + offsetY;
+
+	but.disabled = false;
 	pauseObjects->push_back(but);
+}
+void Render::pushBackScoreBtn(int posX, int posY, string tekst){
+	button but;
+	but.color = MENU_COLOR_NORMAL;
+	but.posX = posX;
+	but.posY = posY;
+	but.tekst = tekst;
+	int offsetX = 700;
+	int offsetY = 100;
+
+	but.buttonBox[0].x = posX;
+	but.buttonBox[0].y = posY;
+
+	but.buttonBox[1].x = posX + offsetX;
+	but.buttonBox[1].y = posY;
+
+	but.buttonBox[2].x = posX + offsetX;
+	but.buttonBox[2].y = posY + offsetY;
+
+	but.buttonBox[3].x = posX;
+	but.buttonBox[3].y = posY + offsetY;
+
+	but.disabled = false;
+	scoreButtons->push_back(but);
+}
+void Render::pushBackScoreTxt(int posX, int posY, string tekst){
+	button but;
+	but.color = MENU_COLOR_NORMAL;
+	but.posX = posX;
+	but.posY = posY;
+	but.tekst = tekst;
+	int offsetX = 700;
+	int offsetY = 100;
+
+	but.buttonBox[0].x = posX;
+	but.buttonBox[0].y = posY;
+
+	but.buttonBox[1].x = posX + offsetX;
+	but.buttonBox[1].y = posY;
+
+	but.buttonBox[2].x = posX + offsetX;
+	but.buttonBox[2].y = posY + offsetY;
+
+	but.buttonBox[3].x = posX;
+	but.buttonBox[3].y = posY + offsetY;
+
+	but.disabled = false;
+	scoreTexts->push_back(but);
+}
+void Render::pushBackSettingsBtn(int posX, int posY, string tekst){
+	button but;
+	but.color = MENU_COLOR_NORMAL;
+	but.posX = posX;
+	but.posY = posY;
+	but.tekst = tekst;
+	int offsetX = 700;
+	int offsetY = 100;
+
+	but.buttonBox[0].x = posX;
+	but.buttonBox[0].y = posY;
+
+	but.buttonBox[1].x = posX + offsetX;
+	but.buttonBox[1].y = posY;
+
+	but.buttonBox[2].x = posX + offsetX;
+	but.buttonBox[2].y = posY + offsetY;
+
+	but.buttonBox[3].x = posX;
+	but.buttonBox[3].y = posY + offsetY;
+
+	but.disabled = false;
+	settingsButtons->push_back(but);
 }
 
 int Render::menuMouseClickCheck(int x, int y){
@@ -308,45 +468,78 @@ int Render::menuMouseClickCheck(int x, int y){
 		if(menuObjects->at(i).buttonBox[0].x <= x && menuObjects->at(i).buttonBox[2].y >= y){
 			if (menuObjects->at(i).buttonBox[2].x >= x && menuObjects->at(i).buttonBox[0].y <= y){
 				cout << " ddd";
-				return i;
+				if (!menuObjects->at(i).disabled) {
+					menuObjects->at(i).color = MENU_COLOR_NORMAL;
+					return i + 1;
+				}
 			}
 
 		}
 	}
-	return NULL;
+	return 0;
 }
 int Render::pauseMouseClickCheck(int x, int y){
 	for (int i = 0; i < pauseObjects->size(); i++){
 		if (pauseObjects->at(i).buttonBox[0].x <= x && pauseObjects->at(i).buttonBox[2].y >= y){
-
 			if (pauseObjects->at(i).buttonBox[2].x >= x && pauseObjects->at(i).buttonBox[0].y <= y){
-				
-
-				return i;
+				if (!pauseObjects->at(i).disabled) {
+					pauseObjects->at(i).color = MENU_COLOR_NORMAL;
+					return i + 1;
+				}
 			}
-
 		}
 	}
-	return NULL;
+
+	return 0;
+}
+int Render::scoreMouseClickCheck(int x, int y){
+	for (int i = 0; i < scoreButtons->size(); i++) {
+		if (scoreButtons->at(i).buttonBox[0].x <= x && scoreButtons->at(i).buttonBox[2].y >= y) {
+			if (scoreButtons->at(i).buttonBox[2].x >= x && scoreButtons->at(i).buttonBox[0].y <= y) {
+				if (!scoreButtons->at(i).disabled) {
+					scoreButtons->at(i).color = MENU_COLOR_NORMAL;
+					return i + 1;
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+int Render::settingsMouseClickCheck(int x, int y){
+	for (int i = 0; i < settingsButtons->size(); i++) {
+		if (settingsButtons->at(i).buttonBox[0].x <= x && settingsButtons->at(i).buttonBox[2].y >= y) {
+			if (settingsButtons->at(i).buttonBox[2].x >= x && settingsButtons->at(i).buttonBox[0].y <= y) {
+				if (!settingsButtons->at(i).disabled) {
+					settingsButtons->at(i).color = MENU_COLOR_NORMAL;
+					return i + 1;
+				}
+			}
+		}
+	}
+
+	return 0;
 }
 void Render::menuMouseHoverCheck(int x, int y, int type){
 	vector<button> *temp = NULL;
 
-	if (type == 0)
-		temp = menuObjects;
-	else if (type == 1)
-		temp = pauseObjects;
+	switch (type) {
+		case MENU_MAIN: {temp = menuObjects; break;}
+		case MENU_PAUSE: {temp = pauseObjects; break;}
+		case MENU_SETTINGS: {temp = settingsButtons; break;}
+		case MENU_HIGHSCORE: {temp = scoreButtons; break;}
+		default: {break;}
+	}
 
-	for (int i = 0; i < temp->size(); i++){
-		temp->at(i).color = MENU_COLOR_NORMAL;
-		if (temp->at(i).buttonBox[0].x <= x && temp->at(i).buttonBox[2].y >= y){
-		
-			if (temp->at(i).buttonBox[2].x >= x && temp->at(i).buttonBox[0].y <= y){
-				temp->at(i).color = MENU_COLOR_HOVER;
-				
+	if (temp != NULL) {
+		for (int i = 0; i < temp->size(); i++){
+			temp->at(i).color = MENU_COLOR_NORMAL;
 
+			if (temp->at(i).buttonBox[0].x <= x && temp->at(i).buttonBox[2].y >= y){
+				if (temp->at(i).buttonBox[2].x >= x && temp->at(i).buttonBox[0].y <= y){
+					temp->at(i).color = MENU_COLOR_HOVER;
+				}
 			}
-		
 		}
 	}
 }

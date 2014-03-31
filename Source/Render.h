@@ -52,8 +52,10 @@ private:
 		int posY;
 		string tekst;
 		SDL_Color color;
+		boolean disabled;
 	};
-	vector<button> *menuObjects,*pauseObjects;
+
+	vector<button> *menuObjects, *pauseObjects, *scoreButtons, *scoreTexts, *settingsButtons;
 	PlatformVBO *platformVBO,*backgroundVBO, *pauseVBO;
 	ParticleVBO *particleVBO, *mainCharParticleVBO;
 	
@@ -77,7 +79,7 @@ public:
 	~Render();
 	//Loops //call for rendering 
 	void (Render::*loop)();
-	void mainLoop(string fps = "", string puz = "", string par = "");
+	void mainLoop(string fps = "", string puz = "", string par = "", string sco = "");
 	void renderLoop(RenderQue *renQue, InputQueue *que);
 	void mainMenu(string fps);
 	//init
@@ -95,12 +97,19 @@ public:
 	void startRendering();
 	void endRendering();
 	void pauseLoop();
+	void scoreLoop(vector <int> scores, int scoreFinal, int scorePos, bool inGame);
+	void settingsLoop(int musVol);
 
 	void pushBackMenuObj(int posX,int posY, string tekst);
 	void pushBackPauseObj(int posX, int posY, string tekst);
+	void pushBackScoreBtn(int posX, int posY, string tekst);
+	void pushBackScoreTxt(int posX, int posY, string tekst);
+	void pushBackSettingsBtn(int posX, int posY, string tekst);
 	//controll manipulasjon
 	int menuMouseClickCheck(int x, int y);
 	int pauseMouseClickCheck(int x, int y);
+	int scoreMouseClickCheck(int x, int y);
+	int settingsMouseClickCheck(int x, int y);
 	void menuMouseHoverCheck(int x, int y, int type);
 	void setCameraDirectionX(int offsett);
 	void zeroOutCamera();

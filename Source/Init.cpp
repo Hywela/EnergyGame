@@ -66,8 +66,8 @@ void Init::SDL()
 		i < 6; ++i) {
 		SDL_GetCurrentDisplayMode(i, &mode[i]);
 	}
-	screenHeight = mode[0].h*0.90;
-	screenWidth = mode[0].w*0.90;
+	screenHeight = mode[0].h;//*0.90;
+	screenWidth = mode[0].w;//*0.90;
 	if (screenHeight <= 0){
 		screenHeight = 800;
 		screenWidth = 600;
@@ -75,7 +75,7 @@ void Init::SDL()
 
 	window		= SDL_CreateWindow("Energy Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, flags);
 	glContext	= SDL_GL_CreateContext(window);
-	
+
 };
 int Init::getScreenHeight(){
 	return screenHeight;

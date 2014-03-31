@@ -28,6 +28,7 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	numParticles = START_PARTICLES;
 	numStored = 0;
 	lost = false;
+	score = 0;
 
 	//Initialize random wall variables
 	numWalls = START_WALLS - WALL_INCREASE;
@@ -44,6 +45,9 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	int time = (h * 10000) + (m * 100) + s;
 	srand(time);
 	
+	//Set audio variables
+	bg_music = NULL;
+
 	//Start world setup
 	setupWorld();
 }
@@ -57,6 +61,10 @@ World::~World() {
 	delete puzzles;
 	delete platformColors;
 	delete particles;
+
+	//Clear music
+	Mix_FreeMusic(bg_music);
+	bg_music = NULL;
 }
 
 void World::checkForInput() {
@@ -135,6 +143,17 @@ void World::setupWorld() {
 
 	//Spawn tutorial puzzle
 	setPuzzle(0);
+
+	//Play music
+	string song1 = DIR_MUSIC + "Tobu - Colors.mp3";
+	bg_music = Mix_LoadMUS(song1.c_str());
+
+	if (bg_music != NULL) {
+		Mix_PlayMusic(bg_music, -1);
+	}
+	else {
+		cout << "ERROR: The background music was not loaded!\n";
+	}
 }
 
 void World::step() {
@@ -325,6 +344,10 @@ void World::updateWorld() {
 		
 			//Update spawn orgin
 			spawnX -= cameraSpeed;
+
+			if (puzzlesSolved) {
+				score++;
+			}
 
 			//Update puzzle orgin
 			puzzles->at(puzzleId)->shiftOrginX(-cameraSpeed);
@@ -934,11 +957,19 @@ void World::retriveParticles() {
 		playerPos *= M2P;
 		playerPos.x += camOffX;
 		playerPos.y += camOffY;
-		spawnGroundParticles((numStored + bonusParticles), playerPos, 40);
+		spawnGroundParticles((numStored + bonusParticles), playerPos, 20);
 
 		//Regained stored particles
 		numStored = 0;
 	}
+}
+
+bool World::gameOver() {
+	return lost;
+}
+
+int World::getScore() {
+	return score;
 }
 
 

@@ -6,6 +6,8 @@
 #include <SDL_image.h>
 #include <vector>
 #include <Box2D\Box2D.h>
+#include <SDL_mixer.h>
+#include <fstream>
 #include "World.h"
 #include "InputData.h"
 #include "InputQueue.h"
@@ -30,6 +32,10 @@ private:
 	int timer;
 	SDL_Event e;
 	Render *ren;
+	vector <int> highScores;
+	int scoreFinal, scorePos;
+	menu currentMenu;
+	int musicVolume;
 	
 	//FPS test variables
 	Uint32 fps_lasttime;
@@ -47,12 +53,24 @@ public:
 	void menuLoop();
 	void mainLoop();
 	void pauseLoop();
+	void scoreLoop();
+	void settingsLoop();
 	void setupWorld();
 	void mouseHoverCheck(int type);
 	void gameLeftMouseClick();
 	void menuLeftMouseClick();
 	void pauseLeftMouseClick();
+	void scoreLeftMouseClick();
+	void settingsLeftMouseClick();
 	void buildMenu();
-	
-
+	void resumeGame();
+	void restartGame();
+	void exitGame();
+	void pauseGame();
+	void showHighscores();
+	void newGame();
+	void showSettings();
+	void endGame();
+	void saveData();
+	void loadData();
 };

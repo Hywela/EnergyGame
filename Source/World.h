@@ -5,6 +5,7 @@
 #include <fstream>
 #include <Windows.h>
 #include <freeglut\freeglut.h>
+#include <SDL_mixer.h>
 #include "Consts.h"
 #include "Render.h"
 #include "Puzzle.h"
@@ -26,7 +27,7 @@ private:
 	int screenwidth, screenheight;
 
 	//Camera variables
-	int spawnX;
+	float spawnX;
 	int camOffX, camOffY;
 	float cameraSpeed, newSpeed;
 
@@ -44,10 +45,14 @@ private:
 	vector <Particle*> *particles;
 	int numParticles, numStored;
 	bool lost;
+	int score;
 
 	//Random wall variables
 	int spawnCooldown;
 	int numWalls;
+
+	//Audio variables
+	Mix_Music *bg_music;
 
 	//InputQueue *inputQueue;
 	//RenderQue *renderQueue;
@@ -87,6 +92,8 @@ public:
 	int getParticlesLeft();
 	void storeParticles();
 	void retriveParticles();
+	bool gameOver();
+	int getScore();
 
 	//Random wall functions
 	void cleanWalls();
