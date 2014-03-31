@@ -47,6 +47,7 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	
 	//Set audio variables
 	bg_music = NULL;
+	snd_Shoot = NULL;
 
 	//Start world setup
 	setupWorld();
@@ -143,6 +144,10 @@ void World::setupWorld() {
 
 	//Spawn tutorial puzzle
 	setPuzzle(0);
+
+	//Load sounds
+	string shootSnd = DIR_EFFECTS + "Super Mario - Fireball Effect.wav";
+	snd_Shoot = Mix_LoadWAV(shootSnd.c_str());
 
 	//Play music
 	string song1 = DIR_MUSIC + "Tobu - Colors.mp3";
@@ -326,7 +331,7 @@ void World::updateWorld() {
 				puzzlesSolved++;
 
 				//Spawn new
-				int randomPuzzleId = 4; //randomRange(1, 2);
+				int randomPuzzleId = randomRange(1, 4);
 				setPuzzle(randomPuzzleId);
 
 				//Spawn particles for bonus
@@ -511,6 +516,8 @@ void World::loadPuzzles(string file) {
 	string type, dynamic;
 	vector <PartData> parts;
 	Puzzle *puzzle = NULL;
+	int bonus;
+	int challenge;
 
 	//Load level
 	while (!lvl.eof()) {
@@ -529,40 +536,55 @@ void World::loadPuzzles(string file) {
 
 			if (puzzle != NULL) {
 				puzzle->setParts(parts);
+				puzzle->setChallenge(challenge);
+				puzzle->setBonus(bonus);
 				puzzles->push_back(puzzle);
 			}
 			puzzle = new Puzzle();
 			parts.clear();
+			bonus = 0;
+			challenge = 0;
 		}
 		else if (phase) {
-			//Read platform data
-			switch(phase) {
-				case 1: {data.x = atoi(dataText.c_str()); break;}
-				case 2: {data.y = atoi(dataText.c_str()); break;}
-				case 3: {data.w = atoi(dataText.c_str()); break;}
-				case 4: {data.h = atoi(dataText.c_str()); break;}
-				case 5: {dynamic = dataText; break;}
-				case 6: {data.group = atoi(dataText.c_str()); break;}
-				case 7: {type = dataText; break;}
-				case 8: {
-					data.door = ((dataText.find("true") != -1) ? true : false);
-					data.dynamic = ((dynamic.find("true") != -1) ? true : false);
-					data.color = ((type.find("solid") != -1) ? COLOR_SOLID : COLOR_UNLIT);
-
-					//All data collected, create platform
-					parts.push_back(data);
-
-					//Reset phase and look for more platforms
-					phase = 0;
-					break;
-				}
+			//Check for extra data
+			if (dataText.find("Particles:") != -1) {
+				lvl >> challenge;
 			}
-			phase++;
+			else if (dataText.find("Bonus:") != -1) {
+				lvl >> bonus;
+			}
+			else {
+				//Read platform data
+				switch(phase) {
+					case 1: {data.x = atoi(dataText.c_str()); break;}
+					case 2: {data.y = atoi(dataText.c_str()); break;}
+					case 3: {data.w = atoi(dataText.c_str()); break;}
+					case 4: {data.h = atoi(dataText.c_str()); break;}
+					case 5: {dynamic = dataText; break;}
+					case 6: {data.group = atoi(dataText.c_str()); break;}
+					case 7: {type = dataText; break;}
+					case 8: {
+						data.door = ((dataText.find("true") != -1) ? true : false);
+						data.dynamic = ((dynamic.find("true") != -1) ? true : false);
+						data.color = ((type.find("solid") != -1) ? COLOR_SOLID : COLOR_UNLIT);
+
+						//All data collected, create platform
+						parts.push_back(data);
+
+						//Reset phase and look for more platforms
+						phase = 0;
+						break;
+					}
+				}
+				phase++;
+			}
 		}
 	}
 
 	//Save last puzzle
 	puzzle->setParts(parts);
+	puzzle->setChallenge(challenge);
+	puzzle->setBonus(bonus);
 	puzzles->push_back(puzzle);
 }
 
@@ -629,15 +651,20 @@ bool World::startPuzzle() {
 
 			//Backup player particles
 			if (puzzlesSolved) {
-				storeParticles();
+				//See if challenge puzzle
+				int challenge = puzzle->getChallenge();
 
-				//Spawn assigned particles to puzzle
-				int puzzleParticleStorage = 2; //TODO: Add to puzzle class
-				b2Vec2 playerPos = playerBody->GetPosition();
-				playerPos *= M2P;
-				playerPos.x += camOffX;
-				playerPos.y += camOffY;
-				spawnGroundParticles(puzzleParticleStorage, playerPos, 30);
+				//If challenge puzzle
+				if (challenge) {
+					storeParticles();
+
+					//Spawn assigned particles to puzzle
+					b2Vec2 playerPos = playerBody->GetPosition();
+					playerPos *= M2P;
+					playerPos.x += camOffX;
+					playerPos.y += camOffY;
+					spawnGroundParticles(challenge + 1, playerPos, 30);
+				}
 			}
 
 			inside = true;
@@ -664,7 +691,7 @@ bool World::endPuzzle() {
 	bool ended = false;
 	Puzzle *puzzle = puzzles->at(puzzleId);
 
-	if (puzzle->isDone()) {
+	if (puzzle->isDone() || puzzle->hasFailed()) {
 		//Open exit door
 		int exitId = puzzle->deleteExit();
 		b2Body *body = platforms->at(exitId);
@@ -865,6 +892,11 @@ int World::shootParticle(int x, int y) {
 
 	//If particle found
 	if (closestParticle != -1) {
+		//Play sound
+		if (snd_Shoot != NULL) {
+			Mix_PlayChannel(EFFECTS, snd_Shoot, 0);
+		}
+
 		//Pop off
 		Particle *tempParticle = particles->at(closestParticle);
 		b2Joint *popJoint = tempParticle->fire();
@@ -956,14 +988,17 @@ void World::storeParticles() {
 }
 
 void World::retriveParticles() {
-	if (numStored) {
+	Puzzle *puzzle = puzzles->at(puzzleId);
+	int bonusParticles = puzzle->getBonus();
+	int totalParticles = numStored + bonusParticles;
+
+	if (totalParticles) {
 		//Spawn stored particles
-		int bonusParticles = 10;
 		b2Vec2 playerPos = playerBody->GetPosition();
 		playerPos *= M2P;
 		playerPos.x += camOffX;
 		playerPos.y += camOffY;
-		spawnGroundParticles((numStored + bonusParticles), playerPos, 20);
+		spawnGroundParticles(totalParticles, playerPos, 30);
 
 		//Regained stored particles
 		numStored = 0;

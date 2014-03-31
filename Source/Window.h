@@ -35,7 +35,7 @@ private:
 	vector <int> highScores;
 	int scoreFinal, scorePos;
 	menu currentMenu;
-	int musicVolume;
+	int musicVolume, effectVolume;
 	
 	//FPS test variables
 	Uint32 fps_lasttime;

@@ -30,6 +30,8 @@ puzzle 2:
 500,	550,	50,	50,	false,		1,	unlit,	false
 
 puzzle 3:
+Particles: 2
+Bonus: 10
 5,	150,	10,	300,	false,		1,	solid,	false
 5,	450,	10,	300,	false,		1,	solid,	true
 795,	150,	10,	300,	false,		1,	solid,	true
@@ -42,6 +44,8 @@ puzzle 3:
 440,	340,	50,	50,	false,		1,	unlit,	false
 
 puzzle 4:
+Particles: 1
+Bonus: 5
 5,	150,	10,	300,	false,		1,	solid,	false
 5,	450,	10,	300,	false,		1,	solid,	true
 795,	150,	10,	300,	false,		1,	solid,	false
