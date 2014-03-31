@@ -152,7 +152,7 @@ void Render::scoreLoop(vector <int> scores, int scoreFinal, int scorePos, bool i
 	endRendering();
 	SDL_GL_SwapWindow(init->window);
 }
-void Render::settingsLoop(int musVol) {
+void Render::settingsLoop(int musVol, int effVol) {
 	render();
 	startRendering();
 
@@ -165,6 +165,7 @@ void Render::settingsLoop(int musVol) {
 
 	//Update volume button
 	settingsButtons->at(0).tekst = "Music volume: " + to_string(musVol) + "%";
+	settingsButtons->at(1).tekst = "Effects volume: " + to_string(effVol) + "%";
 
 	for (int i = 0; i < settingsButtons->size(); i++) {
 		//Render text

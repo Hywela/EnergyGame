@@ -34,6 +34,9 @@ Window::Window() {
 
 	world = NULL;
 	musicVolume = 0;
+	Mix_VolumeMusic(musicVolume);
+	effectVolume = 0;
+	Mix_Volume(EFFECTS, effectVolume);
 	loadData();
 }
 
@@ -215,6 +218,15 @@ void Window::settingsLeftMouseClick() {
 			break;
 		}
 		case 2: {
+			//Effects volume
+			effectVolume += 5;
+			if (effectVolume > 100) {
+				effectVolume = 0;
+			}
+			Mix_Volume(EFFECTS, effectVolume);
+			break;
+		}
+		case 3: {
 			//Main menu
 			exitGame();
 			break;
@@ -277,7 +289,7 @@ void Window::settingsLoop() {
 	string fpsStr = "FPS: " + to_string(fps_current);
 	int fps = (1000 / 30) - (timer - SDL_GetTicks());
 
-	ren->settingsLoop(musicVolume);
+	ren->settingsLoop(musicVolume, effectVolume);
 
 	timer = SDL_GetTicks();
 	fps_frames++;
@@ -326,7 +338,8 @@ void Window::buildMenu(){
 	ren->pushBackScoreBtn(scoreRight, scoreTop + (screenH * 2), "Main Menu");
 
 	//Settings objects
-	ren->pushBackSettingsBtn(scoreLeft, scoreTop, "Volume: 100");
+	ren->pushBackSettingsBtn(scoreLeft, scoreTop, "Music volume: 0");
+	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (screenH * 0.5), "Effects volume: 0");
 	ren->pushBackSettingsBtn(scoreRight + (screenW * 0.75), screenH * 2.5, "Back");
 
 
@@ -400,7 +413,8 @@ void Window::saveData() {
 	ofstream file(DATA_FILE);
 
 	//Save settings
-	file << "MusicVolume: " << musicVolume << endl;
+	file << "MusicVolume: " << musicVolume
+		<< "\nEffectsVolume: " << effectVolume << endl;
 
 	//Save highscores
 	file << "Highscores:\n";
@@ -423,6 +437,11 @@ void Window::loadData() {
 			if (arg == "MusicVolume:") {
 				file >> musicVolume;
 				Mix_VolumeMusic(musicVolume);
+			}
+
+			if (arg == "EffectsVolume:") {
+				file >> effectVolume;
+				Mix_Volume(EFFECTS, effectVolume);
 			}
 
 			if (arg == "Highscores:") {

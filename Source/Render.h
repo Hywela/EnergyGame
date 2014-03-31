@@ -98,7 +98,7 @@ public:
 	void pauseLoop();
 	void popupMenu();
 	void scoreLoop(vector <int> scores, int scoreFinal, int scorePos, bool inGame);
-	void settingsLoop(int musVol);
+	void settingsLoop(int musVol, int effVol);
 
 	void pushOrClearPopupMenu(int type, int x, int y);
 	void pushBackMenuObj(int posX,int posY, string tekst);

@@ -18,6 +18,8 @@ private:
 	vector <PartData> parts;
 	int entranceId, exitId;
 	bool activated;
+	int bonusParticles;
+	int challengeParticles;
 
 public:
 	Puzzle();
@@ -37,5 +39,10 @@ public:
 	void shiftOrginX(float add);
 	void updateExitId(int deletedId);
 	bool cameraAtCenter(b2Vec2 position);
+	void setChallenge(int particles);
+	void setBonus(int particles);
+	int getChallenge();
+	int getBonus();
+	bool hasFailed();
 };
 

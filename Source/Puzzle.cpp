@@ -9,6 +9,8 @@ Puzzle::Puzzle() {
 	tasksTotal = 0;
 	tasksDone = 0;
 	activated = true;
+	bonusParticles = 0;
+	challengeParticles = 0;
 }
 
 Puzzle::~Puzzle() {
@@ -114,4 +116,30 @@ bool Puzzle::cameraAtCenter(b2Vec2 position) {
 	}
 
 	return found;
+}
+
+void Puzzle::setChallenge(int particles) {
+	challengeParticles = particles;
+}
+
+void Puzzle::setBonus(int particles) {
+	bonusParticles = particles;
+}
+
+int Puzzle::getChallenge() {
+	return challengeParticles;
+}
+
+int Puzzle::getBonus() {
+	int bonus = 0;
+
+	if (!hasFailed()) {
+		bonus = bonusParticles;
+	}
+
+	return bonus;
+}
+
+bool Puzzle::hasFailed() {
+	return false;
 }

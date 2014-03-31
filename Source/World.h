@@ -53,6 +53,7 @@ private:
 
 	//Audio variables
 	Mix_Music *bg_music;
+	Mix_Chunk *snd_Shoot;
 
 	//InputQueue *inputQueue;
 	//RenderQue *renderQueue;
