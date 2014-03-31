@@ -13,5 +13,6 @@ int main(int argc, char *argv[]) {
 	//inputThread = new thread(&Input::inputLoop, Input(mainWindow));
 
 	mainWindow->mainLoop();
+	delete mainWindow;
 	return 0;
 }

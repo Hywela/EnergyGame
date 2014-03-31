@@ -13,9 +13,11 @@ Render::Render(Init *init){
 	scoreButtons = new vector<button>;
 	scoreTexts = new vector<button>;
 	settingsButtons = new vector<button>;
+	//popupButtons = new vector<button>;
 	TTF_Init();
 	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42);
 	menuFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
+	popupFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 20);
 	screenHeight = init->getScreenHeight();
 	screenWidth = init->getScreenWidth();
 	renderNow = false;
@@ -39,30 +41,37 @@ Render::Render(Init *init){
 
 	vx[3].x = 0;
 	vx[3].y = screenHeight;
-
-	backgroundVBO->pushBackground(vx, b2Vec2(screenWidth / 2, screenHeight / 2), b2Vec3(0, 0, 0));
-
-
-	//geoShader = new Shader("./Shaders/main_shader.vert", "./Shaders/main_shader.frag","./Shaders/main_shader.geom" );
-	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
-	//geoShader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
 	
+	//pauseVBO->pushBackground(vx, b2Vec2(screenHeight / 2, screenWidth / 2), b2Vec3(0, 0, 255));
+	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
+	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), platformVBO);
+	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
+
 	lightColor = glGetUniformLocation(*shader->GetShaderProgram(), "lightColor");
 	mUniformscreenHeight = glGetUniformLocation(*shader->GetShaderProgram(), "screenHeight");
 	lightAttenuation = glGetUniformLocation(*shader->GetShaderProgram(), "lightAttenuation");
 	radius = glGetUniformLocation(*shader->GetShaderProgram(), "radius");
 	numLigth = glGetUniformLocation(*shader->GetShaderProgram(), "numLigth");
-	
-	
-	
-	
-	//	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-//	mUniform = glGetUniformLocation(*shader->GetShaderProgram(), "time");
+
 }
 Render::~Render()
 {
-	delete font;
+
+	delete popupButtons;
+	delete menuObjects;
+	delete pauseObjects;
+	delete scoreButtons;
+	delete scoreTexts;
+	delete settingsButtons;
+	delete platformVBO;
+	delete backgroundVBO;
+	delete pauseVBO;
+	delete particleVBO;
+	delete mainCharParticleVBO;
+	delete shader;
 	delete init;
+
+	//Delete fonts not working
 
 }
 void Render::pauseLoop(){
@@ -542,6 +551,33 @@ void Render::menuMouseHoverCheck(int x, int y, int type){
 			}
 		}
 	}
+}
+void Render::setBackgroundSquare(int posX, int posY, int offsetX, int offsetY , b2Vec3 color , PlatformVBO *tempVBO){
+
+	b2Vec2 temp[4];
+
+	temp[0].x = posX;
+	temp[0].y = posY;
+
+	temp[1].x = posX + offsetX;
+	temp[1].y = posY;
+
+	temp[2].x = posX + offsetX;
+	temp[2].y = posY + offsetY;
+
+	temp[3].x = posX;
+	temp[3].y = posY + offsetY;
+
+	std::cout <<" " << (posX + offsetX)/2;
+	tempVBO->pushBackground(temp, b2Vec2(screenHeight / 2, screenWidth / 2), color);
+}
+void Render::pushOrClearPopupMenu(int type, int x, int y ){
+	pauseVBO->clear();
+	if (type == 0){
+		setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
+		setBackgroundSquare(x, y, 200, 200, b2Vec3(0, 255, 255), pauseVBO);
+	}else
+		setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
 }
 void Render::setCameraDirectionX(int offsett){
 	cameraX += offsett;

@@ -52,6 +52,7 @@ void Window::mainLoop() {
 
 	Mix_CloseAudio();
 	saveData();
+	delete ren;
 }
 
 void Window::checkForMouseInput(){
@@ -149,7 +150,10 @@ void Window::menuLeftMouseClick() {
 		}
 		case 4: {
 			//Quit
+					
+				//	ren->pushOrClearPopupMenu(0, e.button.x, e.button.y);
 			running = false;
+		
 			break;
 		}
 		default:{
@@ -322,6 +326,9 @@ void Window::buildMenu(){
 	//Settings objects
 	ren->pushBackSettingsBtn(scoreLeft, scoreTop, "Volume: 100");
 	ren->pushBackSettingsBtn(scoreRight + (screenW * 0.75), screenH * 2.5, "Back");
+
+
+
 }
 void Window::resumeGame() {
 	paused = false;

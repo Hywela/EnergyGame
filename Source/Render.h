@@ -33,7 +33,6 @@ private:
 
 	//
 	Init *init;
-	TTF_Font *font;
 	int screenWidth;
 	int screenHeight;
 	int maxWidth, maxHeight;
@@ -45,7 +44,7 @@ private:
 	int cameraX;
 	int cameraY;
 	//MainMenu
-	TTF_Font *menuFont;
+	TTF_Font *font, *menuFont, *popupFont;
 	struct button{
 		b2Vec2 buttonBox[4];
 		int posX;
@@ -55,12 +54,12 @@ private:
 		boolean disabled;
 	};
 
-	vector<button> *menuObjects, *pauseObjects, *scoreButtons, *scoreTexts, *settingsButtons;
+	vector<button> *popupButtons, *menuObjects, *pauseObjects, *scoreButtons, *scoreTexts, *settingsButtons;
 	PlatformVBO *platformVBO,*backgroundVBO, *pauseVBO;
 	ParticleVBO *particleVBO, *mainCharParticleVBO;
 	
 	//shader
-	Shader		*shader,*geoShader;
+	Shader *shader;
 	GLint mUniform;
 	
 	//Unifroms
@@ -97,14 +96,17 @@ public:
 	void startRendering();
 	void endRendering();
 	void pauseLoop();
+	void popupMenu();
 	void scoreLoop(vector <int> scores, int scoreFinal, int scorePos, bool inGame);
 	void settingsLoop(int musVol);
 
+	void pushOrClearPopupMenu(int type, int x, int y);
 	void pushBackMenuObj(int posX,int posY, string tekst);
 	void pushBackPauseObj(int posX, int posY, string tekst);
 	void pushBackScoreBtn(int posX, int posY, string tekst);
 	void pushBackScoreTxt(int posX, int posY, string tekst);
 	void pushBackSettingsBtn(int posX, int posY, string tekst);
+
 	//controll manipulasjon
 	int menuMouseClickCheck(int x, int y);
 	int pauseMouseClickCheck(int x, int y);
@@ -113,6 +115,7 @@ public:
 	void menuMouseHoverCheck(int x, int y, int type);
 	void setCameraDirectionX(int offsett);
 	void zeroOutCamera();
+	void setBackgroundSquare(int posX, int posY, int offsetX, int offsetY, b2Vec3 color, PlatformVBO *tempVBO);
 	Init* getInit();
 	PlatformVBO* getPlatformVBO();
 	ParticleVBO* getParticleVBO();
