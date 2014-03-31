@@ -57,7 +57,7 @@ Render::Render(Init *init){
 Render::~Render()
 {
 
-	delete popupButtons;
+//	delete popupButtons;
 	delete menuObjects;
 	delete pauseObjects;
 	delete scoreButtons;
@@ -195,18 +195,8 @@ void Render::mainLoop(string fps, string puz, string par, string sco){
 	glUniform3f(lightAttenuation, -1, 1, 1);
 	glUniform1f(radius,40);
 
-
-	//particleVBO->draw();
-
-
-
-	//particleVBO->setUniforms(lightColor, mUniformscreenHeight, lightAttenuation, radius, lightpos, screenHeight, shader);
-		
-	//
-
-
-
 	glUseProgram(0);
+
 	glDisable(GL_BLEND);
 
 	particleVBO->draw();
@@ -241,7 +231,6 @@ void Render::mainLoop(string fps, string puz, string par, string sco){
 		
 		endRendering();
 		SDL_GL_SwapWindow(init->window);
-		
 
 }
 

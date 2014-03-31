@@ -78,11 +78,11 @@ for(int i = 0; i <6; i++){
 	
 
 
-	for(int i = 0; i <30; i++){
+	for(int i = 0; i <59; i++){
 	calcColor[i] =   light(i);
 	
 	}
-	for(int i = 0; i <30; i++){
+	for(int i = 0; i <59; i++){
 	sum +=  calcColor[i];
 
 	}

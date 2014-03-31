@@ -494,8 +494,6 @@ void World::updatePlatforms() {
 	}
 }
 
-
-
 //Puzzle functions
 void World::loadPuzzles(string file) {
 	//Load puzzles
