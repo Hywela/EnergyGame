@@ -96,7 +96,7 @@ bool Puzzle::isActivated() {
 	return activated;
 }
 
-void Puzzle::shiftOrginX(int add) {
+void Puzzle::shiftOrginX(float add) {
 	spawnX += add;
 }
 

@@ -13,7 +13,7 @@ struct PartData {
 
 class Puzzle {
 private:
-	int spawnX;
+	float spawnX;
 	int tasksTotal, tasksDone;
 	vector <PartData> parts;
 	int entranceId, exitId;
@@ -34,7 +34,7 @@ public:
 	int deleteExit();
 	void taskDone();
 	bool isActivated();
-	void shiftOrginX(int add);
+	void shiftOrginX(float add);
 	void updateExitId(int deletedId);
 	bool cameraAtCenter(b2Vec2 position);
 };

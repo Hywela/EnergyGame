@@ -22,5 +22,4 @@ public:
 	int getScreenHeight();
 	int getScreenWidth();
 	int  CleanUp();
-
 };

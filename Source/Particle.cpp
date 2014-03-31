@@ -49,7 +49,7 @@ b2Vec3 Particle::getColor() {
 bool Particle::onGround() {
 	bool grounded = false;
 
-	if ((timeFired == -1) || (timeFired >= 120)) {
+	if ((timeFired == -1) || (timeFired >= 30)) {
 		grounded = true;
 	}
 
