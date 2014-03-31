@@ -440,6 +440,9 @@ void World::updatePlatforms() {
 
 					//Check if platform is unlit
 					b2Vec3 curColor = platformColors->at(colorId);
+					if (curColor.x == COLOR_LIT.x && curColor.y == COLOR_LIT.y && curColor.z == COLOR_LIT.z) {
+						platformVBO->pushBackLigthPostion(B->GetWorldCenter());
+					}
 					if (curColor.x == COLOR_UNLIT.x && curColor.y == COLOR_UNLIT.y && curColor.z == COLOR_UNLIT.z) {
 						b2Body *platBody = platforms->at(colorId);
 						b2Vec2 platPos = platBody->GetPosition();
@@ -464,7 +467,7 @@ void World::updatePlatforms() {
 									if (parXY.y >= x1.y - 10 && parXY.y <= x2.y + 10) {
 										//Light platform
 										curColor = COLOR_LIT;
-										platformVBO->pushBackLigthPostion(B->GetWorldCenter());
+										
 										platformColors->at(colorId) = COLOR_LIT;
 
 										Puzzle *puzzle = puzzles->at(puzzleId);
