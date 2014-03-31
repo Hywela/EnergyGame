@@ -34,6 +34,7 @@ public:
 	void draw();
 	//Setters
 	void setCenter(b2Vec2 center);
+	void pushBackCenter(b2Vec2 pcenter);
 	void pushBack(b2Vec2 pCenter, float angle, float radius, b2Vec3 color);
 	//Clears
 	void clear();

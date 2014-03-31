@@ -22,7 +22,7 @@ vec2 pixel=gl_FragCoord.xy;
 
 	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*vec4(vec3(gl_Color),1.0);	
 
-  return color*80;
+  return color*60;
 }
 vec4 mainCharLight ()
 {
@@ -92,7 +92,7 @@ if (platformLightpos[i] != vec2(0,0))
 	}
 	
 
-	gl_FragColor = sum+psum;
+	gl_FragColor = sum+psum+mainCharLight();
 	
 
 	

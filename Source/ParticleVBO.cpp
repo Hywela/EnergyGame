@@ -60,6 +60,10 @@ void ParticleVBO::setCenter(b2Vec2 center){
 	this->center.x = center.x*M2P;
 	this->center.y = center.y*M2P;
 }
+void ParticleVBO::pushBackCenter(b2Vec2 pcenter){
+	postions.push_back(pcenter.x*M2P);
+	postions.push_back(pcenter.y*M2P);
+}
 GLfloat *ParticleVBO::getCenter(){
 	int s = postions.size();
 	GLfloat *dd;
@@ -81,8 +85,8 @@ void ParticleVBO::pushBack(b2Vec2 pCenter, float angle, float radius, b2Vec3 col
 	int moveX = pCenter.x*M2P;
 	int moveY = pCenter.y*M2P;
 
-	postions.push_back(moveX);
-	postions.push_back(moveY);
+	//postions.push_back(moveX);
+	//postions.push_back(moveY);
 
 
 

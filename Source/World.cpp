@@ -385,11 +385,15 @@ void World::updateChar() {
 		b2Fixture *F = tempBody->GetFixtureList();
 		b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
 	
-		//Draw circle body
+		//Draw circle body	
 		particleVBO->pushBack(tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
-
-		//Update particle
+	
+		
+		if (tempParticle->isFired())
+		particleVBO->pushBackCenter(tempBody->GetWorldCenter());
+		//Update particle	
 		tempParticle->update();
+	
 
 		//Check for particles on ground
 		if (tempParticle->onGround()) {
