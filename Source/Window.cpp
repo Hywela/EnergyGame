@@ -420,6 +420,7 @@ void Window::loadData() {
 
 			if (arg == "MusicVolume:") {
 				file >> musicVolume;
+				Mix_VolumeMusic(musicVolume);
 			}
 
 			if (arg == "Highscores:") {

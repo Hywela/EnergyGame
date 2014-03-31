@@ -57,7 +57,7 @@ Render::Render(Init *init){
 Render::~Render()
 {
 
-//	delete popupButtons;
+	//delete popupButtons;
 	delete menuObjects;
 	delete pauseObjects;
 	delete scoreButtons;
@@ -231,7 +231,7 @@ void Render::mainLoop(string fps, string puz, string par, string sco){
 		
 		endRendering();
 		SDL_GL_SwapWindow(init->window);
-
+		
 }
 
 void Render::render() {
