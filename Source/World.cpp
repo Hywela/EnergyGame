@@ -161,9 +161,9 @@ void World::setupWorld() {
 	}
 }
 
-void World::step() {
+void World::step(int fps) {
 	//checkForInput();
-	world->Step(1.0 / 32.0, 8, 3);
+	world->Step(1.0/fps, 8, 3);
 }
 
 b2Body* World::addCircle(int x, int y, float radius, bool dyn, int grp) {
@@ -393,9 +393,9 @@ void World::updateChar() {
 		//Draw circle body	
 		particleVBO->pushBack(tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
 	
-		
-		if (tempParticle->isFired())
 		particleVBO->pushBackCenter(tempBody->GetWorldCenter());
+		/*if (tempParticle->isFired())
+		particleVBO->pushBackCenter(tempBody->GetWorldCenter());*/
 		//Update particle	
 		tempParticle->update();
 	
@@ -450,8 +450,16 @@ void World::updatePlatforms() {
 					//Check if platform is unlit
 					b2Vec3 curColor = platformColors->at(colorId);
 					if (curColor.x == COLOR_LIT.x && curColor.y == COLOR_LIT.y && curColor.z == COLOR_LIT.z) {
-						platformVBO->pushBackLigthPostion(B->GetWorldCenter());
+						
+						platformVBO->pushBackLigthPostionLit(B->GetWorldCenter());
 					}
+					if (curColor.x == COLOR_UNLIT.x && curColor.y == COLOR_UNLIT.y && curColor.z == COLOR_UNLIT.z) {
+
+						platformVBO->pushBackLigthPostionUnlit(B->GetWorldCenter());
+
+					}
+
+
 					if (curColor.x == COLOR_UNLIT.x && curColor.y == COLOR_UNLIT.y && curColor.z == COLOR_UNLIT.z) {
 						b2Body *platBody = platforms->at(colorId);
 						b2Vec2 platPos = platBody->GetPosition();
@@ -461,6 +469,7 @@ void World::updatePlatforms() {
 						x1 *= M2P;
 						x2 *= M2P;
 
+						
 						//Check if any particles collide
 						int ant = particles->size();
 						for (int i = 0; i < ant; i++) {

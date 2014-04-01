@@ -47,9 +47,7 @@ void PlatformVBO::setVBO(){
 void PlatformVBO::pushBack(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color){
 	int moveX = center.x*M2P;
 	int moveY = center.y*M2P;
-	if (color.x == 0 && color.y == 1){
-	postions.push_back(moveX);
-	postions.push_back(moveY);}
+	
 	for (int i = 0; i < 4; i++) {
 		//std::cout << "c " << center.x << " " << points[i].x * M2P << " d " << points[i].y * M2P;
 		vertices.push_back(points[i].x  *M2P + center.x*M2P);
@@ -71,29 +69,61 @@ void PlatformVBO::pushBackground(b2Vec2* points, b2Vec2 center,  b2Vec3 color){
 	}
 
 }
-void PlatformVBO::pushBackLigthPostion(b2Vec2 center){
+void PlatformVBO::pushBackLigthPostionLit(b2Vec2 center){
 	int moveX = center.x*M2P;
 	int moveY = center.y*M2P;
-	postions.push_back(moveX);
-	postions.push_back(moveY);
+	litPostions.push_back(moveX);
+	litPostions.push_back(moveY);
+}
+void PlatformVBO::pushBackLigthPostionUnlit(b2Vec2 center){
+	int moveX = center.x*M2P;
+	int moveY = center.y*M2P;
+	unlitPostions.push_back(moveX);
+	unlitPostions.push_back(moveY);
 }
 
 void PlatformVBO::clear(){
 	vertices.clear();
 	colors.clear();
-	postions.clear();
+	if (litPostions.size() > 0)
+	litPostions.clear();
+	if (unlitPostions.size() > 0)
+	unlitPostions.clear();
 }
 
-GLfloat *PlatformVBO::getCenter(){
-	int s = postions.size();
+GLfloat *PlatformVBO::getCenterUnlit( ){
+
+
+	int s = unlitPostions.size();
 	GLfloat *dd;
 	//std::cout << " " << s;
 	dd = new GLfloat[s * 2];
 	for (int i = 0; i < s; i += 1){
-		dd[i] = postions.at(i);
+		dd[i] = unlitPostions.at(i);
 	}
+	
 	return dd;
 }
-int PlatformVBO::getCenterSize(){
-	return postions.size();
+GLfloat *PlatformVBO::getCenterLit(){
+
+
+int s = litPostions.size();
+	GLfloat *dd;
+	//std::cout << " " << s;
+	dd = new GLfloat[s * 2];
+	for (int i = 0; i < s; i += 1){
+		dd[i] = litPostions.at(i);
+	}
+
+	return dd;
+}
+int PlatformVBO::getCenterLitSize(){
+
+
+	return litPostions.size();
+}
+int PlatformVBO::getCenterUnlitSize(){
+
+
+	return unlitPostions.size();
 }

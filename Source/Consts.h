@@ -40,7 +40,7 @@ const int HIGHSCORES = 5;
 const int AUDIO_RATE = 22050;
 const Uint16 AUDIO_FORMAT = AUDIO_S16; /* 16-bit stereo */
 enum SOUND_CHANNEL {BG_MUSIC, EFFECTS, AUDIO_CHANNELS};
-const int AUDIO_BUFFERS = 4096;
+const int AUDIO_BUFFERS = 2048;
 const string DIR_MUSIC = "Audio/Music/";
 const string DIR_EFFECTS = "Audio/Effects/";
 const string DATA_FILE = "GameData.txt";

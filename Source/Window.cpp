@@ -11,7 +11,7 @@ Window::Window() {
 	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
 
 	ren = new Render(new Init( flags));
-
+	tempOFFON = false;
 	buildMenu();
 
 	//fps test variables
@@ -63,7 +63,7 @@ void Window::checkForMouseInput(){
 	while (SDL_PollEvent(&e)) {
 		switch (e.type) {
 		case SDL_MOUSEMOTION:{
-			if (inGame)
+			if (inGame && tempOFFON)
 				ren->setMousePointLigth(e.button.x, e.button.y);
 			if (currentMenu) {
 				ren->menuMouseHoverCheck(e.button.x, e.button.y, currentMenu);
@@ -71,6 +71,9 @@ void Window::checkForMouseInput(){
 			break;
 		}//End Case()
 		case SDL_KEYDOWN: {
+			if (e.key.keysym.sym == SDLK_t) {
+				tempOFFON = !tempOFFON;
+			}
 			if (e.key.keysym.sym == SDLK_ESCAPE) {
 				if (paused) {  
 					resumeGame();
@@ -110,15 +113,17 @@ void Window::gameLoop() {
 		scoStr = "Score: " + to_string(world->getScore());
 	}
 
-	world->step();
+	world->step(fps_current);
 
 	ren->render();
 	ren->startRendering();
 	world->updateWorld();
 	ren->mainLoop(fpsStr, puzStr, parStr, scoStr);
 
-	SDL_Delay(fps);
+	//SDL_Delay(fps);
 	//Fps test start
+	
+	//Fps test end
 	fps_frames++;
 	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
 	{
@@ -126,8 +131,6 @@ void Window::gameLoop() {
 		fps_current = fps_frames;
 		fps_frames = 0;
 	}
-	//Fps test end
-
 	if (world->gameOver()) {
 		endGame();
 	}

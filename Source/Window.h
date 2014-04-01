@@ -24,6 +24,7 @@ using namespace std;
 
 class Window {
 private:
+	bool tempOFFON;
 	World *world;
 	bool running;
 	bool isFullscreen;

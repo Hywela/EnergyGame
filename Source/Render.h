@@ -70,7 +70,8 @@ private:
 	GLint lightpos;
 	GLint platformLightpos;
 	GLint numLigth;
-	
+	GLint platformNumLitLigth;
+	GLint platformNumUnlitLigth;
 
 public:
 	//constructor

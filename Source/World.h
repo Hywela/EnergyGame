@@ -65,7 +65,7 @@ public:
 
 	//Main world functions
 	void setupWorld();
-	void step();
+	void step(int fps);
 	b2Body* addCircle(int x, int y, float radius, bool dyn, int grp = 1);
 	b2Body* addMainChar(int x, int y, float radius, bool dyn, int grp = 1);
 	b2Body* addRect(int x, int y, int w, int h, bool dyn, int grp = 1);
