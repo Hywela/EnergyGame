@@ -801,14 +801,13 @@ void World::applyForce(int x, int y) {
 				b2Vec2 dist = mouseXY - tempXY;
 
 				//Calculate force
-				const float SPEED = 40; //TODO: Move this into the class
 				float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
 				float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
 				float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
 				float xGravityForce = 3; //Force to counteract friction
 				float yGravityForce = 6; //Force to counteract gravity
 				b2Vec2 direction = b2Vec2((dist.x / divider) * xGravityForce, (dist.y / divider) * yGravityForce);
-				direction *= SPEED; //Apply base speed of the object
+				direction *= MOVEMENT_SPEED_GAIN; //Apply base speed of the object
 
 				//Apply force
 				tempBody->ApplyForce(-direction, tempXY, true);
@@ -867,14 +866,13 @@ int World::shootParticle(int x, int y) {
 	b2Vec2 dist = mouseXY - mainXY;
 
 	//Calculate force
-	const float SPEED = 400; //TODO: Move this into the class
 	float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
 	float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
 	float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
 	float xGravityForce = 1; //Force to counteract friction
 	float yGravityForce = 1; //Force to counteract gravity
 	b2Vec2 direction = b2Vec2(dist.x / divider, dist.y / divider);
-	direction *= SPEED; //Apply base speed of the object
+	direction *= PARTICLE_SPEED; //Apply base speed of the object
 
 	int closestParticle = -1;
 	int closestTotDist = 0;

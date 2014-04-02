@@ -36,6 +36,8 @@ const int PICKUP_RANGE = 50;
 const int DEATHWALL_SIZE = 30;
 const int CAMERA_SPEEDUP_RANGE = 800;
 const int HIGHSCORES = 5;
+const float PARTICLE_SPEED = 2000;
+const float MOVEMENT_SPEED_GAIN = PARTICLE_SPEED / 10;
 //Audio variables
 const int AUDIO_RATE = 22050;
 const Uint16 AUDIO_FORMAT = AUDIO_S16; /* 16-bit stereo */
