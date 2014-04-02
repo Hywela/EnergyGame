@@ -20,6 +20,7 @@ private:
 	bool activated;
 	int bonusParticles;
 	int challengeParticles;
+	float scale;
 
 public:
 	Puzzle();
@@ -44,5 +45,6 @@ public:
 	int getChallenge();
 	int getBonus();
 	bool hasFailed();
+	void setScale(int screenW);
 };
 

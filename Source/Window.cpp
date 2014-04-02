@@ -311,39 +311,43 @@ void Window::startWorld() {
 	//world->setupWorld();
 }
 void Window::buildMenu(){
-	int fontSizeOffsett = 250;
-	int screenW = ren->getInit()->getScreenWidth()/3;
-	int screenH = ren->getInit()->getScreenHeight() / 20 + fontSizeOffsett;
+	int screenW = ren->getInit()->getScreenWidth();
+	int screenH = ren->getInit()->getScreenHeight();
+	float scale = 1080.0 / screenH;
+	int fontSizeOffsett = 250 / scale;
+
+	int offX = screenW / 3;
+	int offY = screenH / 20 + fontSizeOffsett;
 
 	//Main menu objects
-	ren->pushBackMenuObj(screenW, screenH*0.5, "Play");
-	ren->pushBackMenuObj(screenW, screenH*1, "Settings");
-	ren->pushBackMenuObj(screenW, screenH*1.5, "Highscores");
-	ren->pushBackMenuObj(screenW, screenH*2.5, "Quit");
+	ren->pushBackMenuObj(offX, offY * 0.5, "Play");
+	ren->pushBackMenuObj(offX, offY * 1, "Settings");
+	ren->pushBackMenuObj(offX, offY * 1.5, "Highscores");
+	ren->pushBackMenuObj(offX, offY * 2.5, "Quit");
 
 	//Pause objects
-	ren->pushBackPauseObj(screenW, screenH*0.5, "Resume");
-	ren->pushBackPauseObj(screenW, screenH * 1, "Restart");
-	ren->pushBackPauseObj(screenW, screenH*1.5, "Main Menu");
+	ren->pushBackPauseObj(offX, offY * 0.5, "Resume");
+	ren->pushBackPauseObj(offX, offY * 1, "Restart");
+	ren->pushBackPauseObj(offX, offY * 1.5, "Main Menu");
 	
 	int scoreLeft = 80;
-	int scoreRight = ren->getInit()->getScreenWidth() / 2 + 80;
-	int scoreTop = screenH * 0.5;
+	int scoreRight = (screenW / 2) + 80;
+	int scoreTop = offY * 0.5;
 
 	//Highscore objects
 	ren->pushBackScoreTxt(scoreRight, scoreTop, "Score: 0");
 	int highscoreY = scoreTop;
 	ren->pushBackScoreTxt(scoreLeft, highscoreY, "HIGHSCORES");
 	for (int i = 0; i < HIGHSCORES; i++) {
-		ren->pushBackScoreTxt(scoreLeft, highscoreY + (screenH * 0.4 * (i + 1)), "1: 1337");
+		ren->pushBackScoreTxt(scoreLeft, highscoreY + (offY * 0.4 * (i + 1)), "1: 1337");
 	}
-	ren->pushBackScoreBtn(scoreRight, scoreTop + (screenH * 1.5), "Retry?");
-	ren->pushBackScoreBtn(scoreRight, scoreTop + (screenH * 2), "Main Menu");
+	ren->pushBackScoreBtn(scoreRight, scoreTop + (offY * 1.5), "Retry?");
+	ren->pushBackScoreBtn(scoreRight, scoreTop + (offY * 2), "Main Menu");
 
 	//Settings objects
 	ren->pushBackSettingsBtn(scoreLeft, scoreTop, "Music volume: 0");
-	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (screenH * 0.5), "Effects volume: 0");
-	ren->pushBackSettingsBtn(scoreRight + (screenW * 0.75), screenH * 2.5, "Back");
+	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (offY * 0.5), "Effects volume: 0");
+	ren->pushBackSettingsBtn(scoreRight + (offX * 0.75), offY * 2.5, "Back");
 
 
 

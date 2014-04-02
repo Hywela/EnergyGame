@@ -15,11 +15,12 @@ Render::Render(Init *init){
 	settingsButtons = new vector<button>;
 	//popupButtons = new vector<button>;
 	TTF_Init();
-	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42);
-	menuFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
-	popupFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 20);
 	screenHeight = init->getScreenHeight();
 	screenWidth = init->getScreenWidth();
+	float scale = 1080.0 / screenHeight;
+	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42 / scale);
+	menuFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100 / scale);
+	popupFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 20 / scale);
 	renderNow = false;
 	shutDown = false;
 	

@@ -97,6 +97,8 @@ void World::checkForInput() {
 	}*/
 }
 
+
+
 //Main world functions
 void World::setupWorld() {
 	//Create world objects
@@ -512,6 +514,8 @@ void World::updatePlatforms() {
 	}
 }
 
+
+
 //Puzzle functions
 void World::loadPuzzles(string file) {
 	//Load puzzles
@@ -547,6 +551,7 @@ void World::loadPuzzles(string file) {
 				puzzle->setParts(parts);
 				puzzle->setChallenge(challenge);
 				puzzle->setBonus(bonus);
+				puzzle->setScale(screenwidth);
 				puzzles->push_back(puzzle);
 			}
 			puzzle = new Puzzle();
@@ -594,6 +599,7 @@ void World::loadPuzzles(string file) {
 	puzzle->setParts(parts);
 	puzzle->setChallenge(challenge);
 	puzzle->setBonus(bonus);
+	puzzle->setScale(screenwidth);
 	puzzles->push_back(puzzle);
 }
 

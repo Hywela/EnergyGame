@@ -11,6 +11,7 @@ Puzzle::Puzzle() {
 	activated = true;
 	bonusParticles = 0;
 	challengeParticles = 0;
+	scale = 1;
 }
 
 Puzzle::~Puzzle() {
@@ -24,7 +25,7 @@ vector <PartData> Puzzle::getParts() {
 bool Puzzle::isPlayerInside(b2Vec2 position) {
 	bool found = false;
 
-	if (position.x >= spawnX + 700) {
+	if (position.x >= spawnX + (700 / scale)) {
 		found = true;
 		activated = true;
 	}
@@ -111,7 +112,7 @@ void Puzzle::updateExitId(int deletedId) {
 bool Puzzle::cameraAtCenter(b2Vec2 position) {
 	bool found = false;
 
-	if (position.x >= spawnX + 900) {
+	if (position.x >= spawnX + (900 / scale)) {
 		found = true;
 	}
 
@@ -142,4 +143,8 @@ int Puzzle::getBonus() {
 
 bool Puzzle::hasFailed() {
 	return false;
+}
+
+void Puzzle::setScale(int screenW) {
+	scale = 1920.0 / screenW;
 }
