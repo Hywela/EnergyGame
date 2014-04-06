@@ -53,7 +53,7 @@ private:
 
 	//Audio variables
 	Mix_Music *bg_music;
-	Mix_Chunk *snd_Shoot;
+	Mix_Chunk *snd_Shoot, *snd_PuzzleClear, *snd_PuzzleFail;
 
 	//InputQueue *inputQueue;
 	//RenderQue *renderQueue;
@@ -70,6 +70,7 @@ public:
 	b2Body* addMainChar(int x, int y, float radius, bool dyn, int grp = 1);
 	b2Body* addRect(int x, int y, int w, int h, bool dyn, int grp = 1);
 	b2Body* addInvisibleWall(int x, int y, int w, int h, bool dyn, int grp = 1);
+	float getCameraSpeed();
 
 	//Update functions
 	void updateWorld();
@@ -84,6 +85,7 @@ public:
 	void spawnGroundParticles(int n, b2Vec2 pos, int r);
 	void setPuzzle(int id);
 	int getPuzzlesSolved();
+	int getPuzzleTimeLeft();
 
 	//Player functions
 	void applyForce(int x, int y);

@@ -7,6 +7,7 @@ Window::Window() {
 	paused = false;
 	leftMouseClick = &Window::menuLeftMouseClick;
 	loopType = &Window::menuLoop;
+	showDebug = false;
 
 	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
 
@@ -86,6 +87,10 @@ void Window::checkForMouseInput(){
 			if (e.key.keysym.sym == SDLK_RETURN) {
 				endGame();
 			}
+			if (e.key.keysym.sym == SDLK_F1) {
+				//Toggle debug data
+				showDebug = !showDebug;
+			}
 			break;
 		}//End Case()
 		case SDL_MOUSEBUTTONDOWN: {
@@ -105,12 +110,23 @@ void Window::gameLoop() {
 	string puzStr = "";
 	string parStr = "";
 	string scoStr = "";
+	string timeStr = "";
+	string cSpeedStr = "";
 
 	if (world) {
-		fpsStr = "FPS: " + to_string(fps_current);
-		puzStr = "Solved: " + to_string(world->getPuzzlesSolved());
-		parStr = "Particles: " + to_string(world->getParticlesLeft());
-		scoStr = "Score: " + to_string(world->getScore());
+		if (showDebug) {
+			fpsStr = "FPS: " + to_string(fps_current);
+			puzStr = "Solved: " + to_string(world->getPuzzlesSolved());
+			parStr = "Particles: " + to_string(world->getParticlesLeft());
+			scoStr = "Score: " + to_string(world->getScore());
+			cSpeedStr = "Camera Speed: " + to_string(world->getCameraSpeed());
+		}
+
+		int t = world->getPuzzleTimeLeft();
+		if (t >= 0) {
+			t = 1 + floor(t / PUZZLE_TIME_TICKS);
+			timeStr = "Time Left: " + to_string(t);
+		}
 	}
 
 	world->step(fps_current);
@@ -118,7 +134,7 @@ void Window::gameLoop() {
 	ren->render();
 	ren->startRendering();
 	world->updateWorld();
-	ren->mainLoop(fpsStr, puzStr, parStr, scoStr);
+	ren->mainLoop(fpsStr, puzStr, parStr, scoStr, timeStr, cSpeedStr);
 
 	//SDL_Delay(fps);
 	//Fps test start
@@ -394,6 +410,7 @@ void Window::newGame() {
 	leftMouseClick = &Window::gameLeftMouseClick;
 	loopType = &Window::gameLoop;
 	currentMenu = MENU_NONE;
+	showDebug = true;
 }
 void Window::showSettings() {
 	leftMouseClick = &Window::settingsLeftMouseClick;

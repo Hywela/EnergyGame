@@ -21,6 +21,7 @@ private:
 	int bonusParticles;
 	int challengeParticles;
 	float scale;
+	int time, timeChallenge;
 
 public:
 	Puzzle();
@@ -46,5 +47,8 @@ public:
 	int getBonus();
 	bool hasFailed();
 	void setScale(int screenW);
+	void setTime(int t);
+	int getTimeLeft();
+	void progressUpdate();
 };
 

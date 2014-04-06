@@ -12,6 +12,8 @@ Puzzle::Puzzle() {
 	bonusParticles = 0;
 	challengeParticles = 0;
 	scale = 1;
+	time = -1;
+	timeChallenge = -1;
 }
 
 Puzzle::~Puzzle() {
@@ -28,6 +30,12 @@ bool Puzzle::isPlayerInside(b2Vec2 position) {
 	if (position.x >= spawnX + (700 / scale)) {
 		found = true;
 		activated = true;
+
+		//If time challenge
+		if (time < 0 && timeChallenge > 0) {
+			//Start timer
+			time = 0;
+		}
 	}
 
 	return found;
@@ -75,6 +83,7 @@ bool Puzzle::isDone() {
 
 			//Reset task
 			tasksDone = 0;
+			time = -1;
 		}
 	}
 
@@ -142,9 +151,44 @@ int Puzzle::getBonus() {
 }
 
 bool Puzzle::hasFailed() {
-	return false;
+	bool fail = false;
+
+	//If timechallenge and out of time
+	if ((timeChallenge > 0 && time >= timeChallenge) || time == -2) {
+		//Reset task
+		tasksDone = 0;
+		time = -2;
+
+		fail = true;
+	}
+
+	return fail;
 }
 
 void Puzzle::setScale(int screenW) {
 	scale = 1920.0 / screenW;
+}
+
+void Puzzle::setTime(int t) {
+	timeChallenge = t;
+}
+
+int Puzzle::getTimeLeft() {
+	int t = -1;
+
+	if (time >= 0) {
+		t = (timeChallenge - time);
+	}
+
+	return t;
+}
+
+void Puzzle::progressUpdate() {
+	//Updates puzzle while player is solving it
+
+	//If started time puzzle
+	if (time >= 0 && time < timeChallenge) {
+		//Countdown time left
+		time++;
+	}
 }

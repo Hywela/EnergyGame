@@ -29,7 +29,8 @@ private:
 	bool running;
 	bool isFullscreen;
 	bool inGame;
-	bool paused; 
+	bool paused;
+	bool showDebug;
 	int timer;
 	SDL_Event e;
 	Render *ren;

@@ -48,6 +48,8 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	//Set audio variables
 	bg_music = NULL;
 	snd_Shoot = NULL;
+	snd_PuzzleClear = NULL;
+	snd_PuzzleFail = NULL;
 
 	//Start world setup
 	setupWorld();
@@ -148,8 +150,13 @@ void World::setupWorld() {
 	setPuzzle(0);
 
 	//Load sounds
-	string shootSnd = DIR_EFFECTS + "Super Mario - Fireball Effect.wav";
-	snd_Shoot = Mix_LoadWAV(shootSnd.c_str());
+	string sndPath;
+	sndPath = DIR_EFFECTS + "Super Mario - Fireball Effect.wav";
+	snd_Shoot = Mix_LoadWAV(sndPath.c_str());
+	sndPath = DIR_EFFECTS + "Super Mario - Powerup.wav";
+	snd_PuzzleClear = Mix_LoadWAV(sndPath.c_str());
+	sndPath = DIR_EFFECTS + "Super Mario - Pipe.wav";
+	snd_PuzzleFail = Mix_LoadWAV(sndPath.c_str());
 
 	//Play music
 	string song1 = DIR_MUSIC + "Tobu - Colors.mp3";
@@ -276,6 +283,10 @@ b2Body* World::addInvisibleWall(int x, int y, int w, int h, bool dyn, int grp) {
 	return body;
 }
 
+float World::getCameraSpeed() {
+	return cameraSpeed;
+}
+
 
 
 //Update functions
@@ -314,7 +325,9 @@ void World::updateWorld() {
 		//Update puzzles
 		if (!inProgress) {
 			//If too far on right side
-			if (playerPos.x >= CAMERA_SPEEDUP_RANGE) {
+			float scale = 1920.0 / screenwidth;
+			int speedBorder = (-camOffX) + (CAMERA_SPEEDUP_RANGE / scale);
+			if (playerPos.x >= speedBorder) {
 				//Speedup camera
 				cameraSpeed += 0.1;
 			}
@@ -333,7 +346,7 @@ void World::updateWorld() {
 				puzzlesSolved++;
 
 				//Spawn new
-				int randomPuzzleId = randomRange(1, 4);
+				int randomPuzzleId = randomRange(3, 4);
 				setPuzzle(randomPuzzleId);
 
 				//Spawn particles for bonus
@@ -461,37 +474,38 @@ void World::updatePlatforms() {
 
 					}
 
-
-					if (curColor.x == COLOR_UNLIT.x && curColor.y == COLOR_UNLIT.y && curColor.z == COLOR_UNLIT.z) {
-						b2Body *platBody = platforms->at(colorId);
-						b2Vec2 platPos = platBody->GetPosition();
-						b2Vec2 x1 = platPos + points[0];
-						b2Vec2 x2 = platPos + points[2];
-						platPos *= M2P;
-						x1 *= M2P;
-						x2 *= M2P;
+					if (inProgress) {
+						if (curColor.x == COLOR_UNLIT.x && curColor.y == COLOR_UNLIT.y && curColor.z == COLOR_UNLIT.z) {
+							b2Body *platBody = platforms->at(colorId);
+							b2Vec2 platPos = platBody->GetPosition();
+							b2Vec2 x1 = platPos + points[0];
+							b2Vec2 x2 = platPos + points[2];
+							platPos *= M2P;
+							x1 *= M2P;
+							x2 *= M2P;
 
 						
-						//Check if any particles collide
-						int ant = particles->size();
-						for (int i = 0; i < ant; i++) {
-							Particle *tempParticle = particles->at(i);
+							//Check if any particles collide
+							int ant = particles->size();
+							for (int i = 0; i < ant; i++) {
+								Particle *tempParticle = particles->at(i);
 
-							if (tempParticle->isFired()) {
-								//Get handle
-								b2Body *parBody = tempParticle->getBody();
-								b2Vec2 parXY = parBody->GetPosition();
-								parXY *= M2P;
+								if (tempParticle->isFired()) {
+									//Get handle
+									b2Body *parBody = tempParticle->getBody();
+									b2Vec2 parXY = parBody->GetPosition();
+									parXY *= M2P;
 
-								if (parXY.x >= x1.x - 10 && parXY.x <= x2.x + 10) {
-									if (parXY.y >= x1.y - 10 && parXY.y <= x2.y + 10) {
-										//Light platform
-										curColor = COLOR_LIT;
+									if (parXY.x >= x1.x - 10 && parXY.x <= x2.x + 10) {
+										if (parXY.y >= x1.y - 10 && parXY.y <= x2.y + 10) {
+											//Light platform
+											curColor = COLOR_LIT;
 										
-										platformColors->at(colorId) = COLOR_LIT;
+											platformColors->at(colorId) = COLOR_LIT;
 
-										Puzzle *puzzle = puzzles->at(puzzleId);
-										puzzle->taskDone();
+											Puzzle *puzzle = puzzles->at(puzzleId);
+											puzzle->taskDone();
+										}
 									}
 								}
 							}
@@ -529,8 +543,7 @@ void World::loadPuzzles(string file) {
 	string type, dynamic;
 	vector <PartData> parts;
 	Puzzle *puzzle = NULL;
-	int bonus;
-	int challenge;
+	int bonus, challenge, time;
 
 	//Load level
 	while (!lvl.eof()) {
@@ -552,17 +565,23 @@ void World::loadPuzzles(string file) {
 				puzzle->setChallenge(challenge);
 				puzzle->setBonus(bonus);
 				puzzle->setScale(screenwidth);
+				puzzle->setTime(time);
 				puzzles->push_back(puzzle);
 			}
 			puzzle = new Puzzle();
 			parts.clear();
 			bonus = 0;
 			challenge = 0;
+			time = -1;
 		}
 		else if (phase) {
 			//Check for extra data
 			if (dataText.find("Particles:") != -1) {
 				lvl >> challenge;
+			}
+			else if (dataText.find("Time:") != -1) {
+				lvl >> time;
+				time *= PUZZLE_TIME_TICKS;
 			}
 			else if (dataText.find("Bonus:") != -1) {
 				lvl >> bonus;
@@ -600,6 +619,7 @@ void World::loadPuzzles(string file) {
 	puzzle->setChallenge(challenge);
 	puzzle->setBonus(bonus);
 	puzzle->setScale(screenwidth);
+	puzzle->setTime(time);
 	puzzles->push_back(puzzle);
 }
 
@@ -705,8 +725,10 @@ bool World::startPuzzle() {
 bool World::endPuzzle() {
 	bool ended = false;
 	Puzzle *puzzle = puzzles->at(puzzleId);
+	bool done = puzzle->isDone();
+	bool fail = puzzle->hasFailed();
 
-	if (puzzle->isDone() || puzzle->hasFailed()) {
+	if (done || fail) {
 		//Open exit door
 		int exitId = puzzle->deleteExit();
 		b2Body *body = platforms->at(exitId);
@@ -726,6 +748,21 @@ bool World::endPuzzle() {
 		}
 
 		ended = true;
+
+		if (done) {
+			if (snd_PuzzleClear != NULL) {
+				Mix_PlayChannel(EFFECTS, snd_PuzzleClear, 0);
+			}
+		}
+		else {
+			if (snd_PuzzleFail != NULL) {
+				Mix_PlayChannel(EFFECTS, snd_PuzzleFail, 0);
+			}
+		}
+	}
+	else {
+		//Update puzzle
+		puzzle->progressUpdate();
 	}
 
 	return ended;
@@ -775,6 +812,10 @@ void World::setPuzzle(int id) {
 
 int World::getPuzzlesSolved() {
 	return puzzlesSolved;
+}
+
+int World::getPuzzleTimeLeft() {
+	return puzzles->at(puzzleId)->getTimeLeft();
 }
 
 
@@ -830,7 +871,7 @@ void World::applyForce(int x, int y) {
 		float xGravityForce = 3; //Force to counteract friction
 		float yGravityForce = 6; //Force to counteract gravity
 		b2Vec2 direction = b2Vec2((dist.x / divider) * xGravityForce, (dist.y / divider) * yGravityForce);
-		direction *= SPEED; //Apply base speed of the object
+		direction *= MOVEMENT_SPEED_GAIN; //Apply base speed of the object
 
 		//Apply force
 		playerBody->ApplyForce(-direction, playerPos, true);

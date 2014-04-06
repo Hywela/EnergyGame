@@ -179,7 +179,7 @@ void Render::settingsLoop(int musVol, int effVol) {
 	SDL_GL_SwapWindow(init->window);
 }
 
-void Render::mainLoop(string fps, string puz, string par, string sco){
+void Render::mainLoop(string fps, string puz, string par, string sco, string tim, string csp){
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
@@ -234,6 +234,15 @@ void Render::mainLoop(string fps, string puz, string par, string sco){
 		if (sco != "") {
 			renderText(font, MENU_COLOR_NORMAL, textX, textY, 0, sco);
 			textY += 50;
+		}
+		if (csp != "") {
+			renderText(font, MENU_COLOR_NORMAL, textX, textY, 0, csp);
+			textY += 50;
+		}
+		if (tim != "") {
+			int timeX = (screenWidth / 2) - ((tim.size() / 2) * 20);
+			int timeY = 40;
+			renderText(font, MENU_COLOR_NORMAL, timeX, timeY, 0, tim);
 		}
 
 		glDisable(GL_TEXTURE_2D);

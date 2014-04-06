@@ -31,6 +31,7 @@ puzzle 2:
 
 puzzle 3:
 Particles: 2
+Time: 10
 Bonus: 10
 5,	150,	10,	300,	false,		1,	solid,	false
 5,	450,	10,	300,	false,		1,	solid,	true
@@ -45,6 +46,7 @@ Bonus: 10
 
 puzzle 4:
 Particles: 1
+Time: 10
 Bonus: 5
 5,	150,	10,	300,	false,		1,	solid,	false
 5,	450,	10,	300,	false,		1,	solid,	true
