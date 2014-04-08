@@ -301,10 +301,6 @@ void World::updateWorld() {
 
 	//If not game over
 	if (!lost) {
-		//Update renderer
-		//RenderData update(2);
-		//renderQueue->push(update);
-
 		//Update platforms
 		updatePlatforms();
 
@@ -316,70 +312,6 @@ void World::updateWorld() {
 
 		//Clean old particles
 		cleanParticles();
-
-		/*	Tells the render that new input to the render stack is inc,
-			and to wait til the world is done outputing information 
-			to send it to the renderer. */
-		//renderQueue->push(update);
-
-		//Update puzzles
-		if (!inProgress) {
-			//If too far on right side
-			float scale = 1920.0 / screenwidth;
-			int speedBorder = (-camOffX) + (CAMERA_SPEEDUP_RANGE / scale);
-			if (playerPos.x >= speedBorder) {
-				//Speedup camera
-				cameraSpeed += 0.1;
-			}
-			else {
-				//Use normal speed
-				cameraSpeed = newSpeed;
-			}
-
-			if (startPuzzle()) {
-				inProgress = true;
-			}
-		}
-		else {
-			if (endPuzzle()) {
-				inProgress = false;
-				puzzlesSolved++;
-
-				//Spawn new
-				int randomPuzzleId = randomRange(3, 4);
-				setPuzzle(randomPuzzleId);
-
-				//Spawn particles for bonus
-				int offX = puzzles->at(puzzleId)->getSpawn() + 200;
-				int offY = 150;
-				//spawnGroundParticles(10, b2Vec2(offX, offY), 30);
-			}
-		}
-
-		//Add camera movement
-		if (cameraSpeed) {
-			b2Vec2 cameraPos = b2Vec2(cameraSpeed, 0);
-			cameraPos *= P2M;
-			world->ShiftOrigin(cameraPos);
-		
-			//Update spawn orgin
-			spawnX -= cameraSpeed;
-
-			if (puzzlesSolved) {
-				score++;
-			}
-
-			//Update puzzle orgin
-			puzzles->at(puzzleId)->shiftOrginX(-cameraSpeed);
-		}
-
-		//Refresh position of pushwall
-		b2Body *invWall = platforms->at(0);
-		int invX = (DEATHWALL_SIZE / 2) + 100;
-		int invY = (-camOffY) + (FLOOR / 2);
-		b2Vec2 moveTo = b2Vec2(invX, invY);
-		moveTo *= P2M;
-		invWall->SetTransform(moveTo, 0.0);
 	}
 }
 
@@ -398,22 +330,23 @@ void World::updateChar() {
 
 	//Update all particles
 	int ant = particles->size();
-	for (int i = 1; i < ant; i++) {
+	for (int i = 0; i < ant; i++) {
 		Particle *tempParticle = particles->at(i);
 		b2Body *tempBody = tempParticle->getBody();
 		b2Vec3 tempColor = tempParticle->getColor();
 		b2Fixture *F = tempBody->GetFixtureList();
 		b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
 	
-		//Draw circle body	
+		//Draw circle body
 		particleVBO->pushBack(tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
 	
+		//Push light
 		particleVBO->pushBackCenter(tempBody->GetWorldCenter());
 		/*if (tempParticle->isFired())
 		particleVBO->pushBackCenter(tempBody->GetWorldCenter());*/
+
 		//Update particle	
 		tempParticle->update();
-	
 
 		//Check for particles on ground
 		if (tempParticle->onGround()) {
@@ -474,7 +407,8 @@ void World::updatePlatforms() {
 
 					}
 
-					if (inProgress) {
+					Puzzle *puzzle = puzzles->at(puzzleId);
+					if (puzzle->isActivated()) {
 						if (curColor.x == COLOR_UNLIT.x && curColor.y == COLOR_UNLIT.y && curColor.z == COLOR_UNLIT.z) {
 							b2Body *platBody = platforms->at(colorId);
 							b2Vec2 platPos = platBody->GetPosition();
@@ -528,6 +462,80 @@ void World::updatePlatforms() {
 	}
 }
 
+void World::updateFixed() {
+	//This update function is run at a fixed rate
+
+	//Check if player is dead
+	b2Vec2 playerPos = playerBody->GetPosition();
+	playerPos *= M2P;
+
+	if (playerPos.x < DEATH_WALL_SPACE) {
+		lost = true;
+	}
+
+	//If not game over
+	if (!lost) {
+		//Update puzzles
+		if (!inProgress) {
+			//If too far on right side
+			float scale = 1920.0 / screenwidth;
+			int speedBorder = (-camOffX) + (CAMERA_SPEEDUP_RANGE / scale);
+			if (playerPos.x >= speedBorder) {
+				//Speedup camera
+				cameraSpeed += 0.1;
+			}
+			else {
+				//Use normal speed
+				cameraSpeed = newSpeed;
+			}
+
+			if (startPuzzle()) {
+				inProgress = true;
+			}
+		}
+		else {
+			if (endPuzzle()) {
+				inProgress = false;
+				puzzlesSolved++;
+
+				//Spawn new
+				int randomPuzzleId = randomRange(1, 4);
+				setPuzzle(randomPuzzleId);
+
+				//Spawn particles for bonus
+				int offX = puzzles->at(puzzleId)->getSpawn() + 200;
+				int offY = 150;
+				//spawnGroundParticles(10, b2Vec2(offX, offY), 30);
+			}
+		}
+
+		//Add camera movement
+		if (cameraSpeed) {
+			b2Vec2 cameraPos = b2Vec2(cameraSpeed, 0);
+			cameraPos *= P2M;
+			world->ShiftOrigin(cameraPos);
+		
+			//Update spawn orgin
+			spawnX -= cameraSpeed;
+
+			if (puzzlesSolved) {
+				score++;
+			}
+
+			//Update puzzle orgin
+			puzzles->at(puzzleId)->shiftOrginX(-cameraSpeed);
+		}
+
+		//Refresh position of pushwall
+		b2Body *invWall = platforms->at(0);
+		int invX = (DEATHWALL_SIZE / 2) + 100;
+		int invY = (-camOffY) + (FLOOR / 2);
+		b2Vec2 moveTo = b2Vec2(invX, invY);
+		moveTo *= P2M;
+		invWall->SetTransform(moveTo, 0.0);
+	}
+}
+
 
 
 //Puzzle functions
@@ -543,7 +551,7 @@ void World::loadPuzzles(string file) {
 	string type, dynamic;
 	vector <PartData> parts;
 	Puzzle *puzzle = NULL;
-	int bonus, challenge, time;
+	int bonus, challenge, time, par, parX, parY;
 
 	//Load level
 	while (!lvl.eof()) {
@@ -566,6 +574,7 @@ void World::loadPuzzles(string file) {
 				puzzle->setBonus(bonus);
 				puzzle->setScale(screenwidth);
 				puzzle->setTime(time);
+				puzzle->setParticleSpawn(par, parX, parY);
 				puzzles->push_back(puzzle);
 			}
 			puzzle = new Puzzle();
@@ -573,18 +582,24 @@ void World::loadPuzzles(string file) {
 			bonus = 0;
 			challenge = 0;
 			time = -1;
+			par = 0;
+			parX = 0;
+			parY = 0;
 		}
 		else if (phase) {
 			//Check for extra data
-			if (dataText.find("Particles:") != -1) {
+			if (dataText.find("Challenge:") != -1) {
 				lvl >> challenge;
 			}
 			else if (dataText.find("Time:") != -1) {
 				lvl >> time;
-				time *= PUZZLE_TIME_TICKS;
+				time *= WORLD_UPDATE_FPS;
 			}
 			else if (dataText.find("Bonus:") != -1) {
 				lvl >> bonus;
+			}
+			else if (dataText.find("Particles:") != -1) {
+				lvl >> par >> parX >> parY;
 			}
 			else {
 				//Read platform data
@@ -620,6 +635,7 @@ void World::loadPuzzles(string file) {
 	puzzle->setBonus(bonus);
 	puzzle->setScale(screenwidth);
 	puzzle->setTime(time);
+	puzzle->setParticleSpawn(par, parX, parY);
 	puzzles->push_back(puzzle);
 }
 
@@ -658,6 +674,13 @@ void World::spawnPuzzle(int puzzleId) {
 			}
 		}
 	}
+
+	//Spawn particles
+	int par, parX, parY;
+	puzzle->getParticleSpawn(par, parX, parY);
+	int offX = spawnX + parX;
+	int offY = parY;
+	spawnGroundParticles(par, b2Vec2(offX, offY), 30);
 }
 
 bool World::startPuzzle() {
@@ -698,7 +721,7 @@ bool World::startPuzzle() {
 					playerPos *= M2P;
 					playerPos.x += camOffX;
 					playerPos.y += camOffY;
-					spawnGroundParticles(challenge + 1, playerPos, 30);
+					spawnGroundParticles(challenge, playerPos, 30);
 				}
 			}
 
@@ -769,30 +792,33 @@ bool World::endPuzzle() {
 }
 
 void World::spawnGroundParticles(int n, b2Vec2 pos, int r) {
-	//Helper variables for creating particles
-	float degreeStep = 360 / n;
-	int posX = pos.x;
-	int posY = pos.y;
-	int fieldRadius = r;
-	float circleRadius = 0.1;
-	float pi = 3.14159265;
+	if (n) {
+		//Helper variables for creating particles
+		float degreeStep = 360 / n;
+		int posX = pos.x;
+		int posY = pos.y;
+		int fieldRadius = r;
+		float circleRadius = 0.1;
+		float pi = 3.14159265;
 
-	//Create particles
-	for (float d = 0; d < 360; d += degreeStep) {
-		float xTurn = cos(d * pi / 180.0F);
-		float yTurn = sin(d * pi / 180.0F);
-		int dX = (xTurn * fieldRadius);
-		int dY = (yTurn * fieldRadius);
-		float roll = randomRange(30, 100) / 100.0;
-		dX *= roll;
-		dY *= roll;
+		//Create particles
+		for (float d = 0; d < 360; d += degreeStep) {
+			float xTurn = cos(d * pi / 180.0F);
+			float yTurn = sin(d * pi / 180.0F);
+			int dX = (xTurn * fieldRadius);
+			int dY = (yTurn * fieldRadius);
+			float roll = randomRange(30, 100) / 100.0;
+			dX *= roll;
+			dY *= roll;
 
-		int offX = (-camOffX) + posX + dX;
-		int offY = (-camOffY) + posY + dY;
+			int offX = (-camOffX) + posX + dX;
+			int offY = (-camOffY) + posY + dY;
 
-		b2Body *newBody = addCircle(offX, offY, circleRadius, -1);
-		particles->push_back(new Particle());
-		particles->back()->setBody(newBody);
+			b2Body *newBody = addCircle(offX, offY, circleRadius, -1);
+			Particle *newParticle = new Particle();
+			newParticle->setBody(newBody);
+			particles->push_back(newParticle);
+		}
 	}
 }
 
@@ -1037,8 +1063,8 @@ void World::storeParticles() {
 	numStored = numParticles;
 	numParticles = 0;
 
-	//Spawn allocated number of particles
-
+	//Update lights
+	particleVBO->clear();
 }
 
 void World::retriveParticles() {
@@ -1118,6 +1144,9 @@ void World::cleanParticles() {
 				particles->erase(particles->begin() + i);
 				ant--;
 				delete tempParticle;
+
+				//Force light update to prevent possible leftovers
+				particleVBO->clear();
 			}
 		}
 	}

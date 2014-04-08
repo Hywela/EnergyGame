@@ -124,7 +124,7 @@ void Window::gameLoop() {
 
 		int t = world->getPuzzleTimeLeft();
 		if (t >= 0) {
-			t = 1 + floor(t / PUZZLE_TIME_TICKS);
+			t = 1 + floor(t / WORLD_UPDATE_FPS);
 			timeStr = "Time Left: " + to_string(t);
 		}
 	}
@@ -134,6 +134,14 @@ void Window::gameLoop() {
 	ren->render();
 	ren->startRendering();
 	world->updateWorld();
+
+	Uint32 ticks = SDL_GetTicks();
+	if (ticks >= lastUpdate + (1000.0 / WORLD_UPDATE_FPS)) {
+		//Update at constant rate for camera and timers
+		world->updateFixed();
+		lastUpdate = ticks;
+	}
+
 	ren->mainLoop(fpsStr, puzStr, parStr, scoStr, timeStr, cSpeedStr);
 
 	//SDL_Delay(fps);
@@ -411,6 +419,7 @@ void Window::newGame() {
 	loopType = &Window::gameLoop;
 	currentMenu = MENU_NONE;
 	showDebug = true;
+	lastUpdate = 0;
 }
 void Window::showSettings() {
 	leftMouseClick = &Window::settingsLeftMouseClick;

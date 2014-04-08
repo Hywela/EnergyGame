@@ -76,6 +76,7 @@ public:
 	void updateWorld();
 	void updatePlatforms();
 	void updateChar();
+	void updateFixed();
 
 	//Puzzle functions
 	void loadPuzzles(string file);

@@ -43,6 +43,9 @@ private:
 	Uint32 fps_lasttime;
 	Uint32 fps_current;
 	Uint32 fps_frames;
+
+	//World update variables
+	Uint32 lastUpdate;
 	
 public:
 	Window();

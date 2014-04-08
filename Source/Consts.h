@@ -47,5 +47,6 @@ const int AUDIO_BUFFERS = 2048;
 const string DIR_MUSIC = "Audio/Music/";
 const string DIR_EFFECTS = "Audio/Effects/";
 const string DATA_FILE = "GameData.txt";
+const int WORLD_UPDATE_FPS = 120;
 
 int randomRange(int min, int max);

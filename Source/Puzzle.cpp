@@ -14,6 +14,9 @@ Puzzle::Puzzle() {
 	scale = 1;
 	time = -1;
 	timeChallenge = -1;
+	par = 0;
+	parX = 0;
+	parY = 0;
 }
 
 Puzzle::~Puzzle() {
@@ -178,6 +181,9 @@ int Puzzle::getTimeLeft() {
 
 	if (time >= 0) {
 		t = (timeChallenge - time);
+		if (!time) {
+			t -= 1;	
+		}
 	}
 
 	return t;
@@ -191,4 +197,16 @@ void Puzzle::progressUpdate() {
 		//Countdown time left
 		time++;
 	}
+}
+
+void Puzzle::setParticleSpawn(int p, int x, int y) {
+	par = p;
+	parX = x;
+	parY = y;
+}
+
+void Puzzle::getParticleSpawn(int &p, int &x, int &y) {
+	p = par;
+	x = parX;
+	y = parY;
 }
