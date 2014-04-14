@@ -1,8 +1,0 @@
-MusicVolume: 20
-EffectsVolume: 85
-Highscores:
-11094
-3540
-2499
-1854
-1191
