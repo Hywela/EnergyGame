@@ -21,10 +21,13 @@ void Circle::draw(b2Vec2 center, float angle, float radius, b2Vec3 color){
 	colors.push_back(color.y);
 	colors.push_back(color.z);
 
+	int numPoints = 4;
+	float degreeStep = 360.0 / numPoints;
+
 	//Creat points for circle (fan around center)
-	for (float i = 0.0; i <= 360; i += 360.0 / 30 ) {
-		float thisX = (cos(i * M_PI / 180.0) * (radius)) * M2P;
-		float thisY = (sin(i * M_PI / 180.0) * (radius)) * M2P;
+	for (float ang = 0; ang <= 360; ang += degreeStep) {
+		float thisX = cos(ang) * radius;
+		float thisY = sin(ang) * radius;
 		
 		//Center
 		vertices.push_back(thisX);

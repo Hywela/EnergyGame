@@ -34,8 +34,9 @@ void ParticleVBO::draw()
 
 ParticleVBO::ParticleVBO()
 {
-
-	
+	// Vertices:
+	glGenBuffers(1, &vboID);
+	glGenBuffers(1, &colorID);
 }
 ParticleVBO::~ParticleVBO()
 {
@@ -47,11 +48,9 @@ ParticleVBO::~ParticleVBO()
 void ParticleVBO::setVBO()
 {
 	// Vertices:
-	glGenBuffers(1, &vboID);
 	glBindBuffer(GL_ARRAY_BUFFER, vboID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) *vertices.size(), &vertices.front(), GL_STATIC_DRAW);
 
-	glGenBuffers(1, &colorID);
 	glBindBuffer(GL_ARRAY_BUFFER, colorID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) *colors.size(), &colors.front(), GL_STATIC_DRAW);
 
@@ -81,39 +80,43 @@ int ParticleVBO::getCenterSize(){
 	return postions.size();
 }
 void ParticleVBO::pushBack(b2Vec2 pCenter, float angle, float radius, b2Vec3 color){
-	//Push central point
-	int moveX = pCenter.x*M2P;
-	int moveY = pCenter.y*M2P;
+	//Get central point in pixels
+	int moveX = pCenter.x * M2P;
+	int moveY = pCenter.y * M2P;
+	radius *= M2P;
 
-	//postions.push_back(moveX);
-	//postions.push_back(moveY);
-
-
-
+	int numPoints = 60;
+	float degreeStep = 360.0 / numPoints;
 
 	//Creat points for circle (fan around center)
-	for (float i = 0.0; i <= 360; i += 360.0 / 60) {
+	for (float ang = degreeStep; ang <= 360; ang += degreeStep) {
+		//Push back central point
 		vertices.push_back(moveX);
 		vertices.push_back(moveY);
-
-
 		colors.push_back(color.x);
 		colors.push_back(color.y);
 		colors.push_back(color.z);
-		float thisX = (cos(i * M_PI / 165) * (radius )) *M2P;
-		float thisY = (sin(i * M_PI / 165) * (radius)) *M2P;
-		vertices.push_back(thisX + (moveX));
-		vertices.push_back(thisY + (moveY));
 
+		float thisX = cos(ang) * radius;
+		float thisY = sin(ang) * radius;
+		float pointX = moveX + thisX;
+		float pointY = moveY + thisY;
+
+		//Store 2nd point
+		vertices.push_back(pointX);
+		vertices.push_back(pointY);
 		colors.push_back(color.x);
 		colors.push_back(color.y);
 		colors.push_back(color.z);
-		 thisX = (cos(i * M_PI / 180) * (radius)) *M2P;
-		 thisY = (sin(i * M_PI / 180) * (radius)) *M2P;
-		//Center
-		vertices.push_back(thisX + (moveX));
-		vertices.push_back(thisY + (moveY));
-	
+
+		float lastX = cos(ang - degreeStep) * radius;
+		float lastY = sin(ang - degreeStep) * radius;
+		float lastPointX = moveX + lastX;
+		float lastPointY = moveY + lastY;
+
+		//Store 3rd point
+		vertices.push_back(lastPointX);
+		vertices.push_back(lastPointY);
 		colors.push_back(color.x);
 		colors.push_back(color.y);
 		colors.push_back(color.z);
