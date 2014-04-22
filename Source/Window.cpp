@@ -129,6 +129,15 @@ void Window::gameLoop() {
 		}
 	}
 
+	//Fps test end
+	fps_frames++;
+	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
+	{
+		fps_lasttime = SDL_GetTicks();
+		fps_current = fps_frames;
+		fps_frames = 0;
+	}
+
 	world->step(fps_current);
 
 	ren->render();
@@ -147,14 +156,6 @@ void Window::gameLoop() {
 	//SDL_Delay(fps);
 	//Fps test start
 	
-	//Fps test end
-	fps_frames++;
-	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
-	{
-		fps_lasttime = SDL_GetTicks();
-		fps_current = fps_frames;
-		fps_frames = 0;
-	}
 	if (world->gameOver()) {
 		endGame();
 	}
