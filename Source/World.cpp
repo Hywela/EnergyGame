@@ -48,6 +48,8 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	//Set audio variables
 	bg_music = NULL;
 	snd_Shoot = NULL;
+	snd_PuzzleClear = NULL;
+	snd_PuzzleFail = NULL;
 
 	//Start world setup
 	setupWorld();
@@ -96,6 +98,8 @@ void World::checkForInput() {
 		}
 	}*/
 }
+
+
 
 //Main world functions
 void World::setupWorld() {
@@ -146,8 +150,13 @@ void World::setupWorld() {
 	setPuzzle(0);
 
 	//Load sounds
-	string shootSnd = DIR_EFFECTS + "Super Mario - Fireball Effect.wav";
-	snd_Shoot = Mix_LoadWAV(shootSnd.c_str());
+	string sndPath;
+	sndPath = DIR_EFFECTS + "Super Mario - Fireball Effect.wav";
+	snd_Shoot = Mix_LoadWAV(sndPath.c_str());
+	sndPath = DIR_EFFECTS + "Super Mario - Powerup.wav";
+	snd_PuzzleClear = Mix_LoadWAV(sndPath.c_str());
+	sndPath = DIR_EFFECTS + "Super Mario - Pipe.wav";
+	snd_PuzzleFail = Mix_LoadWAV(sndPath.c_str());
 
 	//Play music
 	string song1 = DIR_MUSIC + "Tobu - Colors.mp3";
@@ -161,9 +170,9 @@ void World::setupWorld() {
 	}
 }
 
-void World::step() {
+void World::step(int fps) {
 	//checkForInput();
-	world->Step(1.0 / 32.0, 8, 3);
+	world->Step(1.0/fps, 8, 3);
 }
 
 b2Body* World::addCircle(int x, int y, float radius, bool dyn, int grp) {
@@ -274,6 +283,10 @@ b2Body* World::addInvisibleWall(int x, int y, int w, int h, bool dyn, int grp) {
 	return body;
 }
 
+float World::getCameraSpeed() {
+	return cameraSpeed;
+}
+
 
 
 //Update functions
@@ -288,10 +301,6 @@ void World::updateWorld() {
 
 	//If not game over
 	if (!lost) {
-		//Update renderer
-		//RenderData update(2);
-		//renderQueue->push(update);
-
 		//Update platforms
 		updatePlatforms();
 
@@ -303,16 +312,175 @@ void World::updateWorld() {
 
 		//Clean old particles
 		cleanParticles();
+	}
+}
 
-		/*	Tells the render that new input to the render stack is inc,
-			and to wait til the world is done outputing information 
-			to send it to the renderer. */
-		//renderQueue->push(update);
+void World::updateChar() {
+	b2Vec2 playerPos = playerBody->GetPosition();
+	playerPos *= M2P;
+	b2Fixture *playerF = playerBody->GetFixtureList();
+	b2CircleShape* playerShape = (b2CircleShape*) playerF->GetShape();
+	int type = 1;
 
+	//Draw player body
+	particleVBO->clear();
+	mainCharParticleVBO->clear();
+	mainCharParticleVBO->setCenter(playerBody->GetWorldCenter());
+	mainCharParticleVBO->pushBack(playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
+
+	//Update all particles
+	int ant = particles->size();
+	for (int i = 0; i < ant; i++) {
+		Particle *tempParticle = particles->at(i);
+		b2Body *tempBody = tempParticle->getBody();
+		b2Vec3 tempColor = tempParticle->getColor();
+		b2Fixture *F = tempBody->GetFixtureList();
+		b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
+	
+		//Draw circle body
+		particleVBO->pushBack(tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
+	
+		//Push light
+		particleVBO->pushBackCenter(tempBody->GetWorldCenter());
+		/*if (tempParticle->isFired())
+		particleVBO->pushBackCenter(tempBody->GetWorldCenter());*/
+
+		//Update particle	
+		tempParticle->update();
+
+		//Check for particles on ground
+		if (tempParticle->onGround()) {
+			b2Vec2 parPos = tempBody->GetPosition();
+			parPos *= M2P;
+
+			b2Vec2 playerDist = playerPos - parPos;
+			int distX = ((playerDist.x < 0) ? -playerDist.x : playerDist.x);
+			int distY = ((playerDist.y < 0) ? -playerDist.y : playerDist.y);
+			int totDist = distX + distY;
+
+			//If in pickup range
+			if (totDist <= PICKUP_RANGE) {
+				//Initialize join settings
+				b2DistanceJointDef *join = new b2DistanceJointDef();
+				join->Initialize(playerBody, tempBody, playerBody->GetPosition(), tempBody->GetPosition());
+				join->collideConnected = true;
+				join->type = e_ropeJoint;
+
+				//Add joint
+				b2Joint *newJoint = world->CreateJoint(join);
+				tempParticle->setJoint(newJoint);
+
+				//printf("Picked up particle!\n");
+				numParticles++;
+			}
+		}
+	}
+}
+
+void World::updatePlatforms() {
+	platformVBO->clear();
+	b2Body *B = world->GetBodyList();
+	int colorId = platforms->size() - 1;
+	//squareVBO->clear();
+	while (B != NULL) {
+		b2Fixture* F = B->GetFixtureList();
+
+		while (F != NULL) {
+			switch (F->GetType()) {
+				case b2Shape::e_polygon: {
+					b2PolygonShape* poly = (b2PolygonShape*) F->GetShape();
+
+					b2Vec2 points[4];
+					for (int i = 0; i < 4; i++) {
+						points[i] = poly->GetVertex(i);
+					}
+
+					//Check if platform is unlit
+					b2Vec3 curColor = platformColors->at(colorId);
+					if (curColor.x == COLOR_LIT.x && curColor.y == COLOR_LIT.y && curColor.z == COLOR_LIT.z) {
+						
+						platformVBO->pushBackLigthPostionLit(B->GetWorldCenter());
+					}
+					if (curColor.x == COLOR_UNLIT.x && curColor.y == COLOR_UNLIT.y && curColor.z == COLOR_UNLIT.z) {
+
+						platformVBO->pushBackLigthPostionUnlit(B->GetWorldCenter());
+
+					}
+
+					Puzzle *puzzle = puzzles->at(puzzleId);
+					if (puzzle->isActivated()) {
+						if (curColor.x == COLOR_UNLIT.x && curColor.y == COLOR_UNLIT.y && curColor.z == COLOR_UNLIT.z) {
+							b2Body *platBody = platforms->at(colorId);
+							b2Vec2 platPos = platBody->GetPosition();
+							b2Vec2 x1 = platPos + points[0];
+							b2Vec2 x2 = platPos + points[2];
+							platPos *= M2P;
+							x1 *= M2P;
+							x2 *= M2P;
+
+						
+							//Check if any particles collide
+							int ant = particles->size();
+							for (int i = 0; i < ant; i++) {
+								Particle *tempParticle = particles->at(i);
+
+								if (tempParticle->isFired()) {
+									//Get handle
+									b2Body *parBody = tempParticle->getBody();
+									b2Vec2 parXY = parBody->GetPosition();
+									parXY *= M2P;
+
+									if (parXY.x >= x1.x - 10 && parXY.x <= x2.x + 10) {
+										if (parXY.y >= x1.y - 10 && parXY.y <= x2.y + 10) {
+											//Light platform
+											curColor = COLOR_LIT;
+										
+											platformColors->at(colorId) = COLOR_LIT;
+
+											Puzzle *puzzle = puzzles->at(puzzleId);
+											puzzle->taskDone();
+										}
+									}
+								}
+							}
+						}
+					}
+
+					//Draw platform
+					int a = 0;
+					platformVBO->pushBack( points, B->GetWorldCenter(), B->GetAngle(), curColor);
+			
+					colorId--;
+					break;
+				}
+			}
+
+			F = F->GetNext();
+		}
+
+		B = B->GetNext();
+	}
+}
+
+void World::updateFixed() {
+	//This update function is run at a fixed rate
+
+	//Check if player is dead
+	b2Vec2 playerPos = playerBody->GetPosition();
+	playerPos *= M2P;
+
+	if (playerPos.x < DEATH_WALL_SPACE) {
+		lost = true;
+	}
+
+	//If not game over
+	if (!lost) {
 		//Update puzzles
 		if (!inProgress) {
 			//If too far on right side
-			if (playerPos.x >= CAMERA_SPEEDUP_RANGE) {
+			float scale = 1920.0 / screenwidth;
+			int speedBorder = (-camOffX) + (CAMERA_SPEEDUP_RANGE / scale);
+			if (playerPos.x >= speedBorder) {
 				//Speedup camera
 				cameraSpeed += 0.1;
 			}
@@ -368,140 +536,7 @@ void World::updateWorld() {
 	}
 }
 
-void World::updateChar() {
-	b2Vec2 playerPos = playerBody->GetPosition();
-	playerPos *= M2P;
-	b2Fixture *playerF = playerBody->GetFixtureList();
-	b2CircleShape* playerShape = (b2CircleShape*) playerF->GetShape();
-	int type = 1;
 
-	//Draw player body
-	particleVBO->clear();
-	mainCharParticleVBO->clear();
-	mainCharParticleVBO->setCenter(playerBody->GetWorldCenter());
-	mainCharParticleVBO->pushBack(playerBody->GetWorldCenter(), playerBody->GetAngle(), playerShape->m_radius, playerColor);
-
-	//Update all particles
-	int ant = particles->size();
-	for (int i = 1; i < ant; i++) {
-		Particle *tempParticle = particles->at(i);
-		b2Body *tempBody = tempParticle->getBody();
-		b2Vec3 tempColor = tempParticle->getColor();
-		b2Fixture *F = tempBody->GetFixtureList();
-		b2CircleShape* circleShape = (b2CircleShape*) F->GetShape();
-	
-		//Draw circle body	
-		particleVBO->pushBack(tempBody->GetWorldCenter(), tempBody->GetAngle(), circleShape->m_radius, tempColor);
-	
-		
-		if (tempParticle->isFired())
-		particleVBO->pushBackCenter(tempBody->GetWorldCenter());
-		//Update particle	
-		tempParticle->update();
-	
-
-		//Check for particles on ground
-		if (tempParticle->onGround()) {
-			b2Vec2 parPos = tempBody->GetPosition();
-			parPos *= M2P;
-
-			b2Vec2 playerDist = playerPos - parPos;
-			int distX = ((playerDist.x < 0) ? -playerDist.x : playerDist.x);
-			int distY = ((playerDist.y < 0) ? -playerDist.y : playerDist.y);
-			int totDist = distX + distY;
-
-			//If in pickup range
-			if (totDist <= PICKUP_RANGE) {
-				//Initialize join settings
-				b2DistanceJointDef *join = new b2DistanceJointDef();
-				join->Initialize(playerBody, tempBody, playerBody->GetPosition(), tempBody->GetPosition());
-				join->collideConnected = true;
-				join->type = e_ropeJoint;
-
-				//Add joint
-				b2Joint *newJoint = world->CreateJoint(join);
-				tempParticle->setJoint(newJoint);
-
-				//printf("Picked up particle!\n");
-				numParticles++;
-			}
-		}
-	}
-}
-
-void World::updatePlatforms() {
-	platformVBO->clear();
-	b2Body *B = world->GetBodyList();
-	int colorId = platforms->size() - 1;
-	//squareVBO->clear();
-	while (B != NULL) {
-		b2Fixture* F = B->GetFixtureList();
-
-		while (F != NULL) {
-			switch (F->GetType()) {
-				case b2Shape::e_polygon: {
-					b2PolygonShape* poly = (b2PolygonShape*) F->GetShape();
-
-					b2Vec2 points[4];
-					for (int i = 0; i < 4; i++) {
-						points[i] = poly->GetVertex(i);
-					}
-
-					//Check if platform is unlit
-					b2Vec3 curColor = platformColors->at(colorId);
-					if (curColor.x == COLOR_LIT.x && curColor.y == COLOR_LIT.y && curColor.z == COLOR_LIT.z) {
-						platformVBO->pushBackLigthPostion(B->GetWorldCenter());
-					}
-					if (curColor.x == COLOR_UNLIT.x && curColor.y == COLOR_UNLIT.y && curColor.z == COLOR_UNLIT.z) {
-						b2Body *platBody = platforms->at(colorId);
-						b2Vec2 platPos = platBody->GetPosition();
-						b2Vec2 x1 = platPos + points[0];
-						b2Vec2 x2 = platPos + points[2];
-						platPos *= M2P;
-						x1 *= M2P;
-						x2 *= M2P;
-
-						//Check if any particles collide
-						int ant = particles->size();
-						for (int i = 0; i < ant; i++) {
-							Particle *tempParticle = particles->at(i);
-
-							if (tempParticle->isFired()) {
-								//Get handle
-								b2Body *parBody = tempParticle->getBody();
-								b2Vec2 parXY = parBody->GetPosition();
-								parXY *= M2P;
-
-								if (parXY.x >= x1.x - 10 && parXY.x <= x2.x + 10) {
-									if (parXY.y >= x1.y - 10 && parXY.y <= x2.y + 10) {
-										//Light platform
-										curColor = COLOR_LIT;
-										
-										platformColors->at(colorId) = COLOR_LIT;
-
-										Puzzle *puzzle = puzzles->at(puzzleId);
-										puzzle->taskDone();
-									}
-								}
-							}
-						}
-					}
-
-					//Draw platform
-					int a = 0;
-					platformVBO->pushBack( points, B->GetWorldCenter(), B->GetAngle(), curColor);
-			
-					colorId--;
-					break;
-				}
-			}
-
-			F = F->GetNext();
-		}
-
-		B = B->GetNext();
-	}
-}
 
 //Puzzle functions
 void World::loadPuzzles(string file) {
@@ -516,8 +551,7 @@ void World::loadPuzzles(string file) {
 	string type, dynamic;
 	vector <PartData> parts;
 	Puzzle *puzzle = NULL;
-	int bonus;
-	int challenge;
+	int bonus, challenge, time, par, parX, parY;
 
 	//Load level
 	while (!lvl.eof()) {
@@ -538,20 +572,34 @@ void World::loadPuzzles(string file) {
 				puzzle->setParts(parts);
 				puzzle->setChallenge(challenge);
 				puzzle->setBonus(bonus);
+				puzzle->setScale(screenwidth);
+				puzzle->setTime(time);
+				puzzle->setParticleSpawn(par, parX, parY);
 				puzzles->push_back(puzzle);
 			}
 			puzzle = new Puzzle();
 			parts.clear();
 			bonus = 0;
 			challenge = 0;
+			time = -1;
+			par = 0;
+			parX = 0;
+			parY = 0;
 		}
 		else if (phase) {
 			//Check for extra data
-			if (dataText.find("Particles:") != -1) {
+			if (dataText.find("Challenge:") != -1) {
 				lvl >> challenge;
+			}
+			else if (dataText.find("Time:") != -1) {
+				lvl >> time;
+				time *= WORLD_UPDATE_FPS;
 			}
 			else if (dataText.find("Bonus:") != -1) {
 				lvl >> bonus;
+			}
+			else if (dataText.find("Particles:") != -1) {
+				lvl >> par >> parX >> parY;
 			}
 			else {
 				//Read platform data
@@ -585,6 +633,9 @@ void World::loadPuzzles(string file) {
 	puzzle->setParts(parts);
 	puzzle->setChallenge(challenge);
 	puzzle->setBonus(bonus);
+	puzzle->setScale(screenwidth);
+	puzzle->setTime(time);
+	puzzle->setParticleSpawn(par, parX, parY);
 	puzzles->push_back(puzzle);
 }
 
@@ -623,6 +674,13 @@ void World::spawnPuzzle(int puzzleId) {
 			}
 		}
 	}
+
+	//Spawn particles
+	int par, parX, parY;
+	puzzle->getParticleSpawn(par, parX, parY);
+	int offX = spawnX + parX;
+	int offY = parY;
+	spawnGroundParticles(par, b2Vec2(offX, offY), 30);
 }
 
 bool World::startPuzzle() {
@@ -663,7 +721,7 @@ bool World::startPuzzle() {
 					playerPos *= M2P;
 					playerPos.x += camOffX;
 					playerPos.y += camOffY;
-					spawnGroundParticles(challenge + 1, playerPos, 30);
+					spawnGroundParticles(challenge, playerPos, 30);
 				}
 			}
 
@@ -690,8 +748,10 @@ bool World::startPuzzle() {
 bool World::endPuzzle() {
 	bool ended = false;
 	Puzzle *puzzle = puzzles->at(puzzleId);
+	bool done = puzzle->isDone();
+	bool fail = puzzle->hasFailed();
 
-	if (puzzle->isDone() || puzzle->hasFailed()) {
+	if (done || fail) {
 		//Open exit door
 		int exitId = puzzle->deleteExit();
 		b2Body *body = platforms->at(exitId);
@@ -711,36 +771,54 @@ bool World::endPuzzle() {
 		}
 
 		ended = true;
+
+		if (done) {
+			if (snd_PuzzleClear != NULL) {
+				Mix_PlayChannel(EFFECTS, snd_PuzzleClear, 0);
+			}
+		}
+		else {
+			if (snd_PuzzleFail != NULL) {
+				Mix_PlayChannel(EFFECTS, snd_PuzzleFail, 0);
+			}
+		}
+	}
+	else {
+		//Update puzzle
+		puzzle->progressUpdate();
 	}
 
 	return ended;
 }
 
 void World::spawnGroundParticles(int n, b2Vec2 pos, int r) {
-	//Helper variables for creating particles
-	float degreeStep = 360 / n;
-	int posX = pos.x;
-	int posY = pos.y;
-	int fieldRadius = r;
-	float circleRadius = 0.1;
-	float pi = 3.14159265;
+	if (n) {
+		//Helper variables for creating particles
+		float degreeStep = 360 / n;
+		int posX = pos.x;
+		int posY = pos.y;
+		int fieldRadius = r;
+		float circleRadius = 0.1;
+		float pi = 3.14159265;
 
-	//Create particles
-	for (float d = 0; d < 360; d += degreeStep) {
-		float xTurn = cos(d * pi / 180.0F);
-		float yTurn = sin(d * pi / 180.0F);
-		int dX = (xTurn * fieldRadius);
-		int dY = (yTurn * fieldRadius);
-		float roll = randomRange(30, 100) / 100.0;
-		dX *= roll;
-		dY *= roll;
+		//Create particles
+		for (float d = 0; d < 360; d += degreeStep) {
+			float xTurn = cos(d * pi / 180.0F);
+			float yTurn = sin(d * pi / 180.0F);
+			int dX = (xTurn * fieldRadius);
+			int dY = (yTurn * fieldRadius);
+			float roll = randomRange(30, 100) / 100.0;
+			dX *= roll;
+			dY *= roll;
 
-		int offX = (-camOffX) + posX + dX;
-		int offY = (-camOffY) + posY + dY;
+			int offX = (-camOffX) + posX + dX;
+			int offY = (-camOffY) + posY + dY;
 
-		b2Body *newBody = addCircle(offX, offY, circleRadius, -1);
-		particles->push_back(new Particle());
-		particles->back()->setBody(newBody);
+			b2Body *newBody = addCircle(offX, offY, circleRadius, -1);
+			Particle *newParticle = new Particle();
+			newParticle->setBody(newBody);
+			particles->push_back(newParticle);
+		}
 	}
 }
 
@@ -760,6 +838,10 @@ void World::setPuzzle(int id) {
 
 int World::getPuzzlesSolved() {
 	return puzzlesSolved;
+}
+
+int World::getPuzzleTimeLeft() {
+	return puzzles->at(puzzleId)->getTimeLeft();
 }
 
 
@@ -786,14 +868,13 @@ void World::applyForce(int x, int y) {
 				b2Vec2 dist = mouseXY - tempXY;
 
 				//Calculate force
-				const float SPEED = 40; //TODO: Move this into the class
 				float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
 				float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
 				float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
 				float xGravityForce = 3; //Force to counteract friction
 				float yGravityForce = 6; //Force to counteract gravity
 				b2Vec2 direction = b2Vec2((dist.x / divider) * xGravityForce, (dist.y / divider) * yGravityForce);
-				direction *= SPEED; //Apply base speed of the object
+				direction *= MOVEMENT_SPEED_GAIN; //Apply base speed of the object
 
 				//Apply force
 				tempBody->ApplyForce(-direction, tempXY, true);
@@ -816,7 +897,7 @@ void World::applyForce(int x, int y) {
 		float xGravityForce = 3; //Force to counteract friction
 		float yGravityForce = 6; //Force to counteract gravity
 		b2Vec2 direction = b2Vec2((dist.x / divider) * xGravityForce, (dist.y / divider) * yGravityForce);
-		direction *= SPEED; //Apply base speed of the object
+		direction *= MOVEMENT_SPEED_GAIN; //Apply base speed of the object
 
 		//Apply force
 		playerBody->ApplyForce(-direction, playerPos, true);
@@ -852,14 +933,13 @@ int World::shootParticle(int x, int y) {
 	b2Vec2 dist = mouseXY - mainXY;
 
 	//Calculate force
-	const float SPEED = 400; //TODO: Move this into the class
 	float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
 	float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
 	float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
 	float xGravityForce = 1; //Force to counteract friction
 	float yGravityForce = 1; //Force to counteract gravity
 	b2Vec2 direction = b2Vec2(dist.x / divider, dist.y / divider);
-	direction *= SPEED; //Apply base speed of the object
+	direction *= PARTICLE_SPEED; //Apply base speed of the object
 
 	int closestParticle = -1;
 	int closestTotDist = 0;
@@ -983,8 +1063,8 @@ void World::storeParticles() {
 	numStored = numParticles;
 	numParticles = 0;
 
-	//Spawn allocated number of particles
-
+	//Update lights
+	particleVBO->clear();
 }
 
 void World::retriveParticles() {
@@ -1064,6 +1144,9 @@ void World::cleanParticles() {
 				particles->erase(particles->begin() + i);
 				ant--;
 				delete tempParticle;
+
+				//Force light update to prevent possible leftovers
+				particleVBO->clear();
 			}
 		}
 	}

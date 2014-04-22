@@ -24,11 +24,13 @@ using namespace std;
 
 class Window {
 private:
+	bool tempOFFON;
 	World *world;
 	bool running;
 	bool isFullscreen;
 	bool inGame;
-	bool paused; 
+	bool paused;
+	bool showDebug;
 	int timer;
 	SDL_Event e;
 	Render *ren;
@@ -41,6 +43,9 @@ private:
 	Uint32 fps_lasttime;
 	Uint32 fps_current;
 	Uint32 fps_frames;
+
+	//World update variables
+	Uint32 lastUpdate;
 	
 public:
 	Window();

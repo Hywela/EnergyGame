@@ -11,6 +11,7 @@ void Init::OpenGL()
 	std::cout << ::glGetString(GL_VENDOR) << "\n";
 	std::cout << ::glGetString(GL_RENDERER) << "\n";
 	std::cout << ::glGetString(GL_VERSION) << "\n";
+
 	glViewport(0, 0, screenWidth, screenHeight);
 	gluPerspective(0.0f, (GLfloat) (screenWidth / screenHeight), 5.0f, 100);
 	//Initialize clear color

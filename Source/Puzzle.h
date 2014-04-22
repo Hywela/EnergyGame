@@ -20,6 +20,9 @@ private:
 	bool activated;
 	int bonusParticles;
 	int challengeParticles;
+	float scale;
+	int time, timeChallenge;
+	int par, parX, parY;
 
 public:
 	Puzzle();
@@ -44,5 +47,11 @@ public:
 	int getChallenge();
 	int getBonus();
 	bool hasFailed();
+	void setScale(int screenW);
+	void setTime(int t);
+	int getTimeLeft();
+	void progressUpdate();
+	void setParticleSpawn(int p, int x, int y);
+	void getParticleSpawn(int &p, int &x, int &y);
 };
 

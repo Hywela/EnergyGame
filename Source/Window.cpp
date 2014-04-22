@@ -7,11 +7,12 @@ Window::Window() {
 	paused = false;
 	leftMouseClick = &Window::menuLeftMouseClick;
 	loopType = &Window::menuLoop;
+	showDebug = false;
 
 	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
 
 	ren = new Render(new Init( flags));
-
+	tempOFFON = false;
 	buildMenu();
 
 	//fps test variables
@@ -63,7 +64,7 @@ void Window::checkForMouseInput(){
 	while (SDL_PollEvent(&e)) {
 		switch (e.type) {
 		case SDL_MOUSEMOTION:{
-			if (inGame)
+			if (inGame && tempOFFON)
 				ren->setMousePointLigth(e.button.x, e.button.y);
 			if (currentMenu) {
 				ren->menuMouseHoverCheck(e.button.x, e.button.y, currentMenu);
@@ -71,6 +72,9 @@ void Window::checkForMouseInput(){
 			break;
 		}//End Case()
 		case SDL_KEYDOWN: {
+			if (e.key.keysym.sym == SDLK_t) {
+				tempOFFON = !tempOFFON;
+			}
 			if (e.key.keysym.sym == SDLK_ESCAPE) {
 				if (paused) {  
 					resumeGame();
@@ -82,6 +86,10 @@ void Window::checkForMouseInput(){
 
 			if (e.key.keysym.sym == SDLK_RETURN) {
 				endGame();
+			}
+			if (e.key.keysym.sym == SDLK_F1) {
+				//Toggle debug data
+				showDebug = !showDebug;
 			}
 			break;
 		}//End Case()
@@ -102,23 +110,44 @@ void Window::gameLoop() {
 	string puzStr = "";
 	string parStr = "";
 	string scoStr = "";
+	string timeStr = "";
+	string cSpeedStr = "";
 
 	if (world) {
-		fpsStr = "FPS: " + to_string(fps_current);
-		puzStr = "Solved: " + to_string(world->getPuzzlesSolved());
-		parStr = "Particles: " + to_string(world->getParticlesLeft());
-		scoStr = "Score: " + to_string(world->getScore());
+		if (showDebug) {
+			fpsStr = "FPS: " + to_string(fps_current);
+			puzStr = "Solved: " + to_string(world->getPuzzlesSolved());
+			parStr = "Particles: " + to_string(world->getParticlesLeft());
+			scoStr = "Score: " + to_string(world->getScore());
+			cSpeedStr = "Camera Speed: " + to_string(world->getCameraSpeed());
+		}
+
+		int t = world->getPuzzleTimeLeft();
+		if (t >= 0) {
+			t = 1 + floor(t / WORLD_UPDATE_FPS);
+			timeStr = "Time Left: " + to_string(t);
+		}
 	}
 
-	world->step();
+	world->step(fps_current);
 
 	ren->render();
 	ren->startRendering();
 	world->updateWorld();
-	ren->mainLoop(fpsStr, puzStr, parStr, scoStr);
 
-	SDL_Delay(fps);
+	Uint32 ticks = SDL_GetTicks();
+	if (ticks >= lastUpdate + (1000.0 / WORLD_UPDATE_FPS)) {
+		//Update at constant rate for camera and timers
+		world->updateFixed();
+		lastUpdate = ticks;
+	}
+
+	ren->mainLoop(fpsStr, puzStr, parStr, scoStr, timeStr, cSpeedStr);
+
+	//SDL_Delay(fps);
 	//Fps test start
+	
+	//Fps test end
 	fps_frames++;
 	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
 	{
@@ -126,8 +155,6 @@ void Window::gameLoop() {
 		fps_current = fps_frames;
 		fps_frames = 0;
 	}
-	//Fps test end
-
 	if (world->gameOver()) {
 		endGame();
 	}
@@ -308,39 +335,43 @@ void Window::startWorld() {
 	//world->setupWorld();
 }
 void Window::buildMenu(){
-	int fontSizeOffsett = 250;
-	int screenW = ren->getInit()->getScreenWidth()/3;
-	int screenH = ren->getInit()->getScreenHeight() / 20 + fontSizeOffsett;
+	int screenW = ren->getInit()->getScreenWidth();
+	int screenH = ren->getInit()->getScreenHeight();
+	float scale = 1080.0 / screenH;
+	int fontSizeOffsett = 250 / scale;
+
+	int offX = screenW / 3;
+	int offY = screenH / 20 + fontSizeOffsett;
 
 	//Main menu objects
-	ren->pushBackMenuObj(screenW, screenH*0.5, "Play");
-	ren->pushBackMenuObj(screenW, screenH*1, "Settings");
-	ren->pushBackMenuObj(screenW, screenH*1.5, "Highscores");
-	ren->pushBackMenuObj(screenW, screenH*2.5, "Quit");
+	ren->pushBackMenuObj(offX, offY * 0.5, "Play");
+	ren->pushBackMenuObj(offX, offY * 1, "Settings");
+	ren->pushBackMenuObj(offX, offY * 1.5, "Highscores");
+	ren->pushBackMenuObj(offX, offY * 2.5, "Quit");
 
 	//Pause objects
-	ren->pushBackPauseObj(screenW, screenH*0.5, "Resume");
-	ren->pushBackPauseObj(screenW, screenH * 1, "Restart");
-	ren->pushBackPauseObj(screenW, screenH*1.5, "Main Menu");
+	ren->pushBackPauseObj(offX, offY * 0.5, "Resume");
+	ren->pushBackPauseObj(offX, offY * 1, "Restart");
+	ren->pushBackPauseObj(offX, offY * 1.5, "Main Menu");
 	
 	int scoreLeft = 80;
-	int scoreRight = ren->getInit()->getScreenWidth() / 2 + 80;
-	int scoreTop = screenH * 0.5;
+	int scoreRight = (screenW / 2) + 80;
+	int scoreTop = offY * 0.5;
 
 	//Highscore objects
 	ren->pushBackScoreTxt(scoreRight, scoreTop, "Score: 0");
 	int highscoreY = scoreTop;
 	ren->pushBackScoreTxt(scoreLeft, highscoreY, "HIGHSCORES");
 	for (int i = 0; i < HIGHSCORES; i++) {
-		ren->pushBackScoreTxt(scoreLeft, highscoreY + (screenH * 0.4 * (i + 1)), "1: 1337");
+		ren->pushBackScoreTxt(scoreLeft, highscoreY + (offY * 0.4 * (i + 1)), "1: 1337");
 	}
-	ren->pushBackScoreBtn(scoreRight, scoreTop + (screenH * 1.5), "Retry?");
-	ren->pushBackScoreBtn(scoreRight, scoreTop + (screenH * 2), "Main Menu");
+	ren->pushBackScoreBtn(scoreRight, scoreTop + (offY * 1.5), "Retry?");
+	ren->pushBackScoreBtn(scoreRight, scoreTop + (offY * 2), "Main Menu");
 
 	//Settings objects
 	ren->pushBackSettingsBtn(scoreLeft, scoreTop, "Music volume: 0");
-	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (screenH * 0.5), "Effects volume: 0");
-	ren->pushBackSettingsBtn(scoreRight + (screenW * 0.75), screenH * 2.5, "Back");
+	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (offY * 0.5), "Effects volume: 0");
+	ren->pushBackSettingsBtn(scoreRight + (offX * 0.75), offY * 2.5, "Back");
 
 
 
@@ -387,6 +418,8 @@ void Window::newGame() {
 	leftMouseClick = &Window::gameLeftMouseClick;
 	loopType = &Window::gameLoop;
 	currentMenu = MENU_NONE;
+	showDebug = true;
+	lastUpdate = 0;
 }
 void Window::showSettings() {
 	leftMouseClick = &Window::settingsLeftMouseClick;

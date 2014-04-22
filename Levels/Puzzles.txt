@@ -1,5 +1,9 @@
 x,	y,	w,	h,	dynamic,	group,	type,	door
 
+
+
+
+
 puzzle 0:
 5,	150,	10,	300,	false,		1,	solid,	true
 5,	450,	10,	300,	false,		1,	solid,	false
@@ -12,26 +16,48 @@ puzzle 0:
 
 
 
+
+
 puzzle 1:
+Challenge: 1
+Time: 10
+Bonus: 5
+Particles: 5 200 450
+
 5,	150,	10,	300,	false,		1,	solid,	true
 5,	450,	10,	300,	false,		1,	solid,	false
 795,	150,	10,	300,	false,		1,	solid,	false
 795,	450,	10,	300,	false,		1,	solid,	true
 
-400,	150,	50,	50,	false,		1,	unlit,	false
+400,	150,	10,	300,	false,		1,	solid,	false
+600,	150,	50,	50,	false,		1,	unlit,	false
+
+
+
+
 
 puzzle 2:
+Time: 10
+Bonus: 5
 5,	150,	10,	300,	false,		1,	solid,	true
 5,	450,	10,	300,	false,		1,	solid,	false
 795,	150,	10,	300,	false,		1,	solid,	false
 795,	450,	10,	300,	false,		1,	solid,	true
 
-300,	550,	50,	50,	false,		1,	unlit,	false
-500,	550,	50,	50,	false,		1,	unlit,	false
+533,	150,	10,	300,	false,		1,	solid,	false
+150,	333,	300,	10,	false,		1,	solid,	false
+
+666,	150,	50,	50,	false,		1,	unlit,	false
+150,	466,	50,	50,	false,		1,	unlit,	false
+
+
+
+
 
 puzzle 3:
-Particles: 2
-Bonus: 10
+Challenge: 2
+Time: 10
+Bonus: 5
 5,	150,	10,	300,	false,		1,	solid,	false
 5,	450,	10,	300,	false,		1,	solid,	true
 795,	150,	10,	300,	false,		1,	solid,	true
@@ -43,16 +69,22 @@ Bonus: 10
 360,	340,	50,	50,	false,		1,	unlit,	false
 440,	340,	50,	50,	false,		1,	unlit,	false
 
+
+
+
+
 puzzle 4:
-Particles: 1
+Challenge: 1
+Time: 15
 Bonus: 5
+Particles: 5 400 100
 5,	150,	10,	300,	false,		1,	solid,	false
 5,	450,	10,	300,	false,		1,	solid,	true
 795,	150,	10,	300,	false,		1,	solid,	false
 795,	450,	10,	300,	false,		1,	solid,	true
 
-400,	100,	600,	10,	false,		1,	solid,	false
-100,	300,	10,	400,	false,		1,	solid,	false
+400,	200,	600,	10,	false,		1,	solid,	false
+100,	300,	10,	200,	false,		1,	solid,	false
 400,	400,	600,	10,	false,		1,	solid,	false
 
-440,	340,	50,	50,	false,		1,	unlit,	false
+175,	300,	50,	50,	false,		1,	unlit,	false

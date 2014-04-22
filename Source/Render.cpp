@@ -15,11 +15,12 @@ Render::Render(Init *init){
 	settingsButtons = new vector<button>;
 	//popupButtons = new vector<button>;
 	TTF_Init();
-	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42);
-	menuFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100);
-	popupFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 20);
 	screenHeight = init->getScreenHeight();
 	screenWidth = init->getScreenWidth();
+	float scale = 1080.0 / screenHeight;
+	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42 / scale);
+	menuFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100 / scale);
+	popupFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 20 / scale);
 	renderNow = false;
 	shutDown = false;
 	
@@ -44,15 +45,17 @@ Render::Render(Init *init){
 	
 	//pauseVBO->pushBackground(vx, b2Vec2(screenHeight / 2, screenWidth / 2), b2Vec3(0, 0, 255));
 	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
-	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0.7, 0.7, 0.7), backgroundVBO);
+	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 255, 255), backgroundVBO);
 	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
 
 	lightColor = glGetUniformLocation(*shader->GetShaderProgram(), "lightColor");
 	mUniformscreenHeight = glGetUniformLocation(*shader->GetShaderProgram(), "screenHeight");
 	lightAttenuation = glGetUniformLocation(*shader->GetShaderProgram(), "lightAttenuation");
 	radius = glGetUniformLocation(*shader->GetShaderProgram(), "radius");
-	numLigth = glGetUniformLocation(*shader->GetShaderProgram(), "numLigth");
-
+	
+	numLigth = glGetUniformLocation(*shader->GetShaderProgram(), "particleNumLigth");
+	platformNumLitLigth = glGetUniformLocation(*shader->GetShaderProgram(), "platformNumLitLigth");
+	platformNumUnlitLigth = glGetUniformLocation(*shader->GetShaderProgram(), "platformNumUnlitLigth");
 }
 Render::~Render()
 {
@@ -176,33 +179,36 @@ void Render::settingsLoop(int musVol, int effVol) {
 	SDL_GL_SwapWindow(init->window);
 }
 
-void Render::mainLoop(string fps, string puz, string par, string sco){
-	//backgroundVBO->draw();
+void Render::mainLoop(string fps, string puz, string par, string sco, string tim, string csp){
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
 	glUseProgram(*shader->GetShaderProgram());	
-	
+	//backgroundVBO->draw();
+
 	platformVBO->draw();
 
 	glUniform1i(numLigth, particleVBO->getCenterSize());
+	glUniform1i(platformNumLitLigth, platformVBO->getCenterLitSize());
+	glUniform1i(platformNumUnlitLigth, platformVBO->getCenterUnlitSize());
 
 	glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "MainCharLightpos"), mainCharParticleVBO->getMainCenter().x,
 		mainCharParticleVBO->getMainCenter().y);
-	glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "mousePointerLigthpos"), mousePointer.x,
-		mousePointer.y);
+	//glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "mousePointerLigthpos"), mousePointer.x, mousePointer.y);
 	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), particleVBO->getCenterSize(), particleVBO->getCenter());
-	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "platformLightpos"), platformVBO->getCenterSize(), platformVBO->getCenter());
+
+	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "litPlatformLightpos"), platformVBO->getCenterLitSize(), platformVBO->getCenterLit());
+	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "unlitPlatformLightpos"), platformVBO->getCenterUnlitSize(), platformVBO->getCenterUnlit());
 	//glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), mainCharParticleVBO->getCenter().x, mainCharParticleVBO->getCenter().y);
 	glUniform3f(lightColor, 1, 1, 0.81);
 	glUniform1f(mUniformscreenHeight, screenHeight);
 	glUniform3f(lightAttenuation, -1, 1, 1);
-	glUniform1f(radius,40);
+	glUniform1f(radius,60);
 
 	glUseProgram(0);
 
 	glDisable(GL_BLEND);
-
+	
 	particleVBO->draw();
 	mainCharParticleVBO->draw();
 
@@ -228,6 +234,15 @@ void Render::mainLoop(string fps, string puz, string par, string sco){
 		if (sco != "") {
 			renderText(font, MENU_COLOR_NORMAL, textX, textY, 0, sco);
 			textY += 50;
+		}
+		if (csp != "") {
+			renderText(font, MENU_COLOR_NORMAL, textX, textY, 0, csp);
+			textY += 50;
+		}
+		if (tim != "") {
+			int timeX = (screenWidth / 2) - ((tim.size() / 2) * 20);
+			int timeY = 40;
+			renderText(font, MENU_COLOR_NORMAL, timeX, timeY, 0, tim);
 		}
 
 		glDisable(GL_TEXTURE_2D);
@@ -469,7 +484,6 @@ int Render::menuMouseClickCheck(int x, int y){
 	for (int i = 0; i < menuObjects->size(); i++){
 		if(menuObjects->at(i).buttonBox[0].x <= x && menuObjects->at(i).buttonBox[2].y >= y){
 			if (menuObjects->at(i).buttonBox[2].x >= x && menuObjects->at(i).buttonBox[0].y <= y){
-				cout << " ddd";
 				if (!menuObjects->at(i).disabled) {
 					menuObjects->at(i).color = MENU_COLOR_NORMAL;
 					return i + 1;

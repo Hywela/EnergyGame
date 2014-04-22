@@ -20,7 +20,7 @@ private:
 	GLuint  vboID, colorID;
 	std::vector<GLfloat> vertices;
 	std::vector <GLfloat> colors;
-	std::vector <GLfloat> postions;
+	std::vector <GLfloat> litPostions, unlitPostions;
 	void setVBO();
 public:
 	PlatformVBO();
@@ -30,12 +30,15 @@ public:
 	//Setters
 	void pushBack(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 color);
 	void pushBackground(b2Vec2* points, b2Vec2 center, b2Vec3 color);
-	void pushBackLigthPostion(b2Vec2 center);
+	void pushBackLigthPostionLit(b2Vec2 center);
+	void pushBackLigthPostionUnlit(b2Vec2 center);
 	void setCenter(b2Vec2 center);
 	//Clear
 	void clear();
 	//Getters
-	int getCenterSize();
-	GLfloat *getCenter();
+	int getCenterUnlitSize();
+	int getCenterLitSize();
+	GLfloat *getCenterLit();
+	GLfloat *getCenterUnlit();
 	
 };

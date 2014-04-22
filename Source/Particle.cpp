@@ -8,16 +8,30 @@ Particle::Particle() {
 	joint = NULL;
 
 	//Set random color
-	float rollR = randomRange(1, 100) / 100.0;
-	float rollG = randomRange(1, 100) / 100.0;
-	float rollB = randomRange(1, 100) / 100.0;
+	float totCol = 0;
+	float rollR, rollG, rollB;
+	while (totCol < 0.3) {
+		//While dim color
+		rollR = randomRange(1, 100) / 100.0;
+		rollG = randomRange(1, 100) / 100.0;
+		rollB = randomRange(1, 100) / 100.0;
+		totCol = rollR + rollG + rollB;
+	}
 	color = b2Vec3(rollR, rollG, rollB);
 
 	timeFired = -1;
 }
 
 Particle::~Particle() {
+	if (body != NULL) {
+		body = NULL;
+	}
 
+	if (joint != NULL) {
+		joint = NULL;
+	}
+
+	timeFired = -1;
 }
 
 void Particle::setJoint(b2Joint *joint) {
@@ -49,7 +63,7 @@ b2Vec3 Particle::getColor() {
 bool Particle::onGround() {
 	bool grounded = false;
 
-	if ((timeFired == -1) || (timeFired >= 30)) {
+	if ((timeFired == -1) || (timeFired >= 60)) {
 		grounded = true;
 	}
 

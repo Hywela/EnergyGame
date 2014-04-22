@@ -24,7 +24,7 @@ const b2Vec3 COLOR_BLACK = b2Vec3(0.1, 0.1, 0.1);
 const int ROOF = 0;
 const int FLOOR = 600;
 const int WALLSIZE = 10;
-const float START_CAMERASPEED = 2;
+const float START_CAMERASPEED = 1.5;
 const float CAMERASPEED_INCREASE = 0;
 const int START_WALLS = 10;
 const int WALL_INCREASE = 4;
@@ -36,6 +36,9 @@ const int PICKUP_RANGE = 50;
 const int DEATHWALL_SIZE = 30;
 const int CAMERA_SPEEDUP_RANGE = 800;
 const int HIGHSCORES = 5;
+const float PARTICLE_SPEED = 2000;
+const float MOVEMENT_SPEED_GAIN = PARTICLE_SPEED / 10;
+const int PUZZLE_TIME_TICKS = 360;
 //Audio variables
 const int AUDIO_RATE = 22050;
 const Uint16 AUDIO_FORMAT = AUDIO_S16; /* 16-bit stereo */
@@ -44,5 +47,6 @@ const int AUDIO_BUFFERS = 2048;
 const string DIR_MUSIC = "Audio/Music/";
 const string DIR_EFFECTS = "Audio/Effects/";
 const string DATA_FILE = "GameData.txt";
+const int WORLD_UPDATE_FPS = 120;
 
 int randomRange(int min, int max);

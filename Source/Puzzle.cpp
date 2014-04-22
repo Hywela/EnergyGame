@@ -11,6 +11,12 @@ Puzzle::Puzzle() {
 	activated = true;
 	bonusParticles = 0;
 	challengeParticles = 0;
+	scale = 1;
+	time = -1;
+	timeChallenge = -1;
+	par = 0;
+	parX = 0;
+	parY = 0;
 }
 
 Puzzle::~Puzzle() {
@@ -24,9 +30,15 @@ vector <PartData> Puzzle::getParts() {
 bool Puzzle::isPlayerInside(b2Vec2 position) {
 	bool found = false;
 
-	if (position.x >= spawnX + 700) {
+	if (position.x >= spawnX + (700 / scale)) {
 		found = true;
 		activated = true;
+
+		//If time challenge
+		if (time < 0 && timeChallenge > 0) {
+			//Start timer
+			time = 0;
+		}
 	}
 
 	return found;
@@ -74,6 +86,7 @@ bool Puzzle::isDone() {
 
 			//Reset task
 			tasksDone = 0;
+			time = -1;
 		}
 	}
 
@@ -111,7 +124,7 @@ void Puzzle::updateExitId(int deletedId) {
 bool Puzzle::cameraAtCenter(b2Vec2 position) {
 	bool found = false;
 
-	if (position.x >= spawnX + 900) {
+	if (position.x >= spawnX + (900 / scale)) {
 		found = true;
 	}
 
@@ -141,5 +154,59 @@ int Puzzle::getBonus() {
 }
 
 bool Puzzle::hasFailed() {
-	return false;
+	bool fail = false;
+
+	//If timechallenge and out of time
+	if ((timeChallenge > 0 && time >= timeChallenge) || time == -2) {
+		//Reset task
+		tasksDone = 0;
+		time = -2;
+
+		fail = true;
+	}
+
+	return fail;
+}
+
+void Puzzle::setScale(int screenW) {
+	scale = 1920.0 / screenW;
+}
+
+void Puzzle::setTime(int t) {
+	timeChallenge = t;
+}
+
+int Puzzle::getTimeLeft() {
+	int t = -1;
+
+	if (time >= 0) {
+		t = (timeChallenge - time);
+		if (!time) {
+			t -= 1;	
+		}
+	}
+
+	return t;
+}
+
+void Puzzle::progressUpdate() {
+	//Updates puzzle while player is solving it
+
+	//If started time puzzle
+	if (time >= 0 && time < timeChallenge) {
+		//Countdown time left
+		time++;
+	}
+}
+
+void Puzzle::setParticleSpawn(int p, int x, int y) {
+	par = p;
+	parX = x;
+	parY = y;
+}
+
+void Puzzle::getParticleSpawn(int &p, int &x, int &y) {
+	p = par;
+	x = parX;
+	y = parY;
 }

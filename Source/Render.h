@@ -70,7 +70,8 @@ private:
 	GLint lightpos;
 	GLint platformLightpos;
 	GLint numLigth;
-	
+	GLint platformNumLitLigth;
+	GLint platformNumUnlitLigth;
 
 public:
 	//constructor
@@ -78,7 +79,7 @@ public:
 	~Render();
 	//Loops //call for rendering 
 	void (Render::*loop)();
-	void mainLoop(string fps = "", string puz = "", string par = "", string sco = "");
+	void mainLoop(string fps = "", string puz = "", string par = "", string sco = "", string tim = "", string csp = "");
 	void renderLoop(RenderQue *renQue, InputQueue *que);
 	void mainMenu(string fps);
 	//init
