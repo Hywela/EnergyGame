@@ -3,6 +3,7 @@
 
 
 World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, ParticleVBO *particleRendering, ParticleVBO *mainCharRendering) {
+	//Initialize data
 	//Initialize world variables
 	this->screenwidth = screenwidth;
 	this->screenheight = screenheight;
