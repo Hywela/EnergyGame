@@ -92,7 +92,7 @@ void ParticleVBO::pushBack(b2Vec2 pCenter, float angle, float radius, b2Vec3 col
 
 
 	//Creat points for circle (fan around center)
-	for (float i = 0.0; i <= 360; i += 360.0 / 60) {
+	for (float i = 0.0; i <= 360; i += 360.0 / 30) {
 		vertices.push_back(moveX);
 		vertices.push_back(moveY);
 
