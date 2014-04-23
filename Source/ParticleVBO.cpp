@@ -5,9 +5,7 @@ void ParticleVBO::draw()
 
 	if (vertices.size() > 0){
 		setVBO();
-		glEnable(GL_PROGRAM_POINT_SIZE_EXT);
-		glPointSize(65);
-
+		
 		glEnableClientState(GL_VERTEX_ARRAY);
 
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
@@ -17,16 +15,15 @@ void ParticleVBO::draw()
 		glBindBuffer(GL_ARRAY_BUFFER, colorID);
 		glColorPointer(3, GL_FLOAT, 0, 0);
 		
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 2);
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size()/2);
 
-		glDisableClientState(GL_COLOR_ARRAY);
+	
 		//restore the GL state back
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_COLOR_ARRAY);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0); //Restore non VBO mode
-		glDisable(GL_PROGRAM_POINT_SIZE_EXT);
-
+		
 
 	}
 
@@ -97,8 +94,8 @@ void ParticleVBO::pushBack(b2Vec2 pCenter, float angle, float radius, b2Vec3 col
 		colors.push_back(color.y);
 		colors.push_back(color.z);
 
-		float thisX = cos(ang) * radius;
-		float thisY = sin(ang) * radius;
+		float thisX = cosf(ang) * radius;
+		float thisY = sinf(ang) * radius;
 		float pointX = moveX + thisX;
 		float pointY = moveY + thisY;
 
@@ -109,8 +106,8 @@ void ParticleVBO::pushBack(b2Vec2 pCenter, float angle, float radius, b2Vec3 col
 		colors.push_back(color.y);
 		colors.push_back(color.z);
 
-		float lastX = cos(ang - degreeStep) * radius;
-		float lastY = sin(ang - degreeStep) * radius;
+		float lastX = cosf(ang - degreeStep) * radius;
+		float lastY = sinf(ang - degreeStep) * radius;
 		float lastPointX = moveX + lastX;
 		float lastPointY = moveY + lastY;
 

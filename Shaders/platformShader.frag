@@ -20,13 +20,13 @@ vec2 pixel=gl_FragCoord.xy;
 
 	vec2 aux=lightpos[i]-pixel;
 
-	float distance=length(aux)/2;
-
+	float distance=length(aux)/20;
+		
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 
 	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*vec4(vec3(gl_Color),1.0);	
 
-  return color*40;
+  return color;
 }
 
 vec4 mainCharLight ()
@@ -40,7 +40,7 @@ vec2 pixel=gl_FragCoord.xy;
 
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 
-	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*vec4(lightColor,1.0);	
+	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*vec4(vec3(gl_Color),1.0);	
 
   return color*radius;
 }
