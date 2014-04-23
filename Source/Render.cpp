@@ -45,7 +45,7 @@ Render::Render(Init *init){
 	
 	//pauseVBO->pushBackground(vx, b2Vec2(screenHeight / 2, screenWidth / 2), b2Vec3(0, 0, 255));
 	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
-	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 255, 255), backgroundVBO);
+	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(255, 0, 255), backgroundVBO);
 	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
 
 	lightColor = glGetUniformLocation(*shader->GetShaderProgram(), "lightColor");
@@ -184,10 +184,10 @@ void Render::mainLoop(string fps, string puz, string par, string sco, string tim
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
 	glUseProgram(*shader->GetShaderProgram());	
-	//backgroundVBO->draw();
-
+	
+    backgroundVBO->draw();
 	platformVBO->draw();
-
+	
 	glUniform1i(numLigth, particleVBO->getCenterSize());
 	glUniform1i(platformNumLitLigth, platformVBO->getCenterLitSize());
 	glUniform1i(platformNumUnlitLigth, platformVBO->getCenterUnlitSize());
@@ -200,17 +200,17 @@ void Render::mainLoop(string fps, string puz, string par, string sco, string tim
 	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "litPlatformLightpos"), platformVBO->getCenterLitSize(), platformVBO->getCenterLit());
 	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "unlitPlatformLightpos"), platformVBO->getCenterUnlitSize(), platformVBO->getCenterUnlit());
 	//glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), mainCharParticleVBO->getCenter().x, mainCharParticleVBO->getCenter().y);
-	glUniform3f(lightColor, 1, 1, 0.81);
+	glUniform3f(lightColor, 0, 1, 0.81);
 	glUniform1f(mUniformscreenHeight, screenHeight);
-	glUniform3f(lightAttenuation, -1, 1, 1);
+	glUniform3f(lightAttenuation, 1, 1, 1);
 	glUniform1f(radius,60);
 
 	glUseProgram(0);
 
 	glDisable(GL_BLEND);
-	
 	particleVBO->draw();
-	mainCharParticleVBO->draw();
+
+	//mainCharParticleVBO->draw();
 
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);

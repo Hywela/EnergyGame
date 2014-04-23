@@ -27,6 +27,9 @@ void PlatformVBO::draw(){
 }
 
 PlatformVBO::PlatformVBO() {
+	glGenBuffers(1, &vboID);
+	glGenBuffers(1, &colorID);
+
 }
 PlatformVBO::~PlatformVBO(){
 	glDeleteBuffers(1, &vboID);
@@ -35,11 +38,10 @@ PlatformVBO::~PlatformVBO(){
 
 void PlatformVBO::setVBO(){
 	// Vertices:
-	glGenBuffers(1, &vboID);
 	glBindBuffer(GL_ARRAY_BUFFER, vboID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) *vertices.size(), &vertices.front(), GL_STATIC_DRAW);
 
-	glGenBuffers(1, &colorID);
+
 	glBindBuffer(GL_ARRAY_BUFFER, colorID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) *colors.size(), &colors.front(), GL_STATIC_DRAW);
 
