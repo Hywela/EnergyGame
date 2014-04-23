@@ -17,7 +17,7 @@ void ParticleVBO::draw()
 		glBindBuffer(GL_ARRAY_BUFFER, colorID);
 		glColorPointer(3, GL_FLOAT, 0, 0);
 		
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 2);
 
 		glDisableClientState(GL_COLOR_ARRAY);
 		//restore the GL state back
