@@ -140,7 +140,7 @@ PlatformVBO::PlatformVBO() {
 	
 
 	bgTexture = new Texture("./Texture/shiphull.bmp");
-	platform = new Texture("./Texture/coke_label.bmp");
+	platform = new Texture("./Texture/Abstract-Design-Vector-Background-Art.jpg");
 	// Give the image to OpenGL
 
 

@@ -5,6 +5,7 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include <SDL.h>
+#include <SDL_image.h>
 class Texture
 {
 	private:

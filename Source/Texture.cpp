@@ -3,8 +3,9 @@
 
 Texture::Texture(const char* imagepath)
 {
-	
-	textureImage = SDL_LoadBMP(imagepath);
+
+
+	textureImage = IMG_Load(imagepath);
 	if (!textureImage)
 	{
 		fprintf(stderr, "Couldn't load %s.\n", "123.bmp");
