@@ -59,10 +59,11 @@ private:
 	ParticleVBO *particleVBO, *mainCharParticleVBO;
 	
 	//shader
-	Shader *shader;
+	Shader *shader, *colorShader;
 	GLint mUniform;
 	
 	//Unifroms
+	GLint mUniformTexture;
 	GLint lightColor;
 	GLint mUniformscreenHeight;
 	GLint lightAttenuation;
@@ -122,5 +123,6 @@ public:
 	PlatformVBO* getPlatformVBO();
 	ParticleVBO* getParticleVBO();
 	ParticleVBO* getMainCharParticleVBO();
+	void mainLoopShading(Shader *sh, int i);
 };
 

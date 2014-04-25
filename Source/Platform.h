@@ -10,6 +10,7 @@
 #define _USE_MATH_DEFINES // for C
 #include <math.h>
 #include "Consts.h"
+#include "Texture.h"
 using namespace std;
 
 

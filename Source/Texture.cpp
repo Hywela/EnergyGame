@@ -1,31 +1,45 @@
 #include "Texture.h"
-/*
-Texture::Texture(const char* texturefilename)
+
+
+Texture::Texture(const char* imagepath)
 {
-	texture = IMG_Load(texturefilename);
-	textureID = 0;
 	
+	textureImage = SDL_LoadBMP(imagepath);
+	if (!textureImage)
+	{
+		fprintf(stderr, "Couldn't load %s.\n", "123.bmp");
+	
+	}
+	textureID = 0;
+
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	glTexImage2D(GL_TEXTURE_2D, 
-				 0, GL_RGB, 
-				 texture->w, 
-				 texture->h, 
-				 0, 
-				 GL_RGB, 
-				 GL_UNSIGNED_BYTE, 
-				 texture->pixels);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D,
+		0, GL_RGB,
+		textureImage->w,
+		textureImage->h,
+		0,
+		GL_RGB,
+		GL_UNSIGNED_BYTE,
+		textureImage->pixels);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
 }
+
+
+Texture::~Texture()
+{
+}
+
 
 GLuint Texture::GetTexture()
 {
 	return textureID;
 }
 
-void Texture::EnableTexture(GLhandleARB shaderprogram, 
-							const char* textureVariable)
+void Texture::EnableTexture(GLhandleARB shaderprogram,
+	const char* textureVariable)
 {
 	int texUnitLoc = glGetUniformLocation(shaderprogram, textureVariable);
 
@@ -33,4 +47,4 @@ void Texture::EnableTexture(GLhandleARB shaderprogram,
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
-}*/
+}
