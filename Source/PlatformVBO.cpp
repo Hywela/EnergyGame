@@ -224,35 +224,35 @@ GLfloat *PlatformVBO::getCenterUnlit( ){
 
 
 	int s = unlitPostions.size();
-	GLfloat *dd;
+	GLfloat *temp;
 	//std::cout << " " << s;
-	dd = new GLfloat[s * 2];
+	temp = new GLfloat[s];
 	for (int i = 0; i < s; i += 1){
-		dd[i] = unlitPostions.at(i);
+		temp[i] = unlitPostions.at(i);
 	}
 	
-	return dd;
+	return temp;
 }
 GLfloat *PlatformVBO::getCenterLit(){
 
 
 int s = litPostions.size();
-	GLfloat *dd;
+GLfloat *temp;
 	//std::cout << " " << s;
-	dd = new GLfloat[s * 2];
+	temp = new GLfloat[s];
 	for (int i = 0; i < s; i += 1){
-		dd[i] = litPostions.at(i);
+		temp[i] = litPostions.at(i);
 	}
 
-	return dd;
+	return temp;
 }
 int PlatformVBO::getCenterLitSize(){
 
 
-	return litPostions.size();
+	return litPostions.size()/2;
 }
 int PlatformVBO::getCenterUnlitSize(){
 
 
-	return unlitPostions.size();
+	return unlitPostions.size()/2;
 }

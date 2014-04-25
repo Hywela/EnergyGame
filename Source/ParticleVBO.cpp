@@ -62,19 +62,19 @@ void ParticleVBO::pushBackCenter(b2Vec2 pcenter){
 }
 GLfloat *ParticleVBO::getCenter(){
 	int s = postions.size();
-	GLfloat *dd;
-	dd = new GLfloat[s*2];
+	GLfloat *temp;
+	temp = new GLfloat[s];
 //	std::cout << " " <<s;
 	for (int i = 0; i < s; i +=1){
-		dd[i] = postions.at(i);
+		temp[i] = postions.at(i);
 	}
-	return dd;
+	return temp;
 }
 b2Vec2 ParticleVBO::getMainCenter(){
 	return center;
 }
 int ParticleVBO::getCenterSize(){
-	return postions.size();
+	return postions.size()/2;
 }
 void ParticleVBO::pushBack(b2Vec2 pCenter, float angle, float radius, b2Vec3 color){
 	//Get central point in pixels
