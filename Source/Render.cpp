@@ -47,7 +47,7 @@ Render::Render(Init *init){
 	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
 	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 255, 255), backgroundVBO);
 	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
-	colorShader = new Shader("./Shaders/colorShader.vert", "./Shaders/colorShader.frag");
+
 
 	lightColor = glGetUniformLocation(*shader->GetShaderProgram(), "lightColor");
 	mUniformscreenHeight = glGetUniformLocation(*shader->GetShaderProgram(), "screenHeight");
@@ -58,14 +58,7 @@ Render::Render(Init *init){
 	platformNumLitLigth = glGetUniformLocation(*shader->GetShaderProgram(), "platformNumLitLigth");
 	platformNumUnlitLigth = glGetUniformLocation(*shader->GetShaderProgram(), "platformNumUnlitLigth");
 
-	lightColor = glGetUniformLocation(*colorShader->GetShaderProgram(), "lightColor");
-	mUniformscreenHeight = glGetUniformLocation(*colorShader->GetShaderProgram(), "screenHeight");
-	lightAttenuation = glGetUniformLocation(*colorShader->GetShaderProgram(), "lightAttenuation");
-	radius = glGetUniformLocation(*colorShader->GetShaderProgram(), "radius");
-	//mUniformTexture= glGetUniformLocation(*shader->GetShaderProgram(), "myTexture");
-	numLigth = glGetUniformLocation(*colorShader->GetShaderProgram(), "particleNumLigth");
-	platformNumLitLigth = glGetUniformLocation(*colorShader->GetShaderProgram(), "platformNumLitLigth");
-	platformNumUnlitLigth = glGetUniformLocation(*colorShader->GetShaderProgram(), "platformNumUnlitLigth");
+	
 }
 Render::~Render()
 {

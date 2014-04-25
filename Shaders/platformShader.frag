@@ -59,8 +59,9 @@ vec2 pixel=gl_FragCoord.xy;
 
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 
-	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*texture2D(tex, gl_TexCoord[1].st)+vec4(vec3(gl_Color),1.0);	
-
+		vec4 color1=vec4(attenuation,attenuation,attenuation,1.0);	
+	
+	vec4 color  = texture2D(tex, gl_TexCoord[1].st)*color1;
   return color*radius;
 }
 
@@ -75,7 +76,9 @@ vec2 pixel=gl_FragCoord.xy;
 
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 
-	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*texture2D(tex, gl_TexCoord[1].st);	
+	vec4 color1=vec4(attenuation,attenuation,attenuation,1.0);	
+	
+	vec4 color  = texture2D(tex, gl_TexCoord[1].st)*color1;
 
   return color;
 }
