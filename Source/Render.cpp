@@ -48,8 +48,8 @@ Render::Render(Init *init){
 	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 255, 255), backgroundVBO);
 	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
 
-
-	lightColor = glGetUniformLocation(*shader->GetShaderProgram(), "lightColor");
+	litLightColor = glGetUniformLocation(*shader->GetShaderProgram(), "litLightColor");
+	unlitLightColor = glGetUniformLocation(*shader->GetShaderProgram(), "unlitLightColor");
 	mUniformscreenHeight = glGetUniformLocation(*shader->GetShaderProgram(), "screenHeight");
 	lightAttenuation = glGetUniformLocation(*shader->GetShaderProgram(), "lightAttenuation");
 	radius = glGetUniformLocation(*shader->GetShaderProgram(), "radius");
@@ -253,10 +253,11 @@ void Render::mainLoopShading(Shader *sh , int i){
 	glUniform2fv(glGetUniformLocation(*sh->GetShaderProgram(), "litPlatformLightpos"), platformVBO->getCenterLitSize(), platformVBO->getCenterLit());
 	glUniform2fv(glGetUniformLocation(*sh->GetShaderProgram(), "unlitPlatformLightpos"), platformVBO->getCenterUnlitSize(), platformVBO->getCenterUnlit());
 	//glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), mainCharParticleVBO->getCenter().x, mainCharParticleVBO->getCenter().y);
-	glUniform3f(lightColor, 0, 1, 0.81);
+	glUniform3f(litLightColor, 0, 255, 255);
+	glUniform3f(unlitLightColor, 20, 0, 0);
 	glUniform1f(mUniformscreenHeight, screenHeight);
 	glUniform3f(lightAttenuation, 1, 1, 1);
-	glUniform1f(radius, 60);
+	glUniform1f(radius, 10);
 
 	glUseProgram(0);
 

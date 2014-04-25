@@ -63,8 +63,8 @@ private:
 	GLint mUniform;
 	
 	//Unifroms
-	GLint mUniformTexture;
-	GLint lightColor;
+	GLint unlitLightColor;
+	GLint litLightColor;
 	GLint mUniformscreenHeight;
 	GLint lightAttenuation;
 	GLint radius;

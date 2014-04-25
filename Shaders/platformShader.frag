@@ -7,7 +7,8 @@ uniform vec2 unlitPlatformLightpos[20];
 uniform vec2 litPlatformLightpos[20];
 uniform vec2 MainCharLightpos;
 
-uniform vec3 lightColor;
+uniform vec3 unlitLightColor;
+uniform vec3 litLightColor;
 uniform float screenHeight;
 uniform vec3 lightAttenuation;
 uniform float radius;
@@ -61,7 +62,7 @@ vec2 pixel=gl_FragCoord.xy;
 
 		vec4 color1=vec4(attenuation,attenuation,attenuation,1.0);	
 	
-	vec4 color  = texture2D(tex, gl_TexCoord[1].st)*color1;
+	vec4 color  = texture2D(tex, gl_TexCoord[1].st)*color1*vec4(litLightColor,1);
   return color*radius;
 }
 
@@ -78,7 +79,7 @@ vec2 pixel=gl_FragCoord.xy;
 
 	vec4 color1=vec4(attenuation,attenuation,attenuation,1.0);	
 	
-	vec4 color  = texture2D(tex, gl_TexCoord[1].st)*color1;
+vec4 color  = texture2D(tex, gl_TexCoord[1].st)*color1*vec4(unlitLightColor,1);
 
   return color;
 }
