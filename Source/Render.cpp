@@ -183,11 +183,11 @@ void Render::settingsLoop(int musVol, int effVol) {
 
 void Render::mainLoop(string fps, string puz, string par, string sco, string tim, string csp){
 
-	glEnable(GL_BLEND);
+	
 	mainLoopShading(shader, 0);
 	//mainLoopShading(colorShader, 1);
 	particleVBO->draw();
-	glDisable(GL_BLEND);
+	
 	//mainCharParticleVBO->draw();
 
 		glEnable(GL_TEXTURE_2D);
@@ -232,13 +232,8 @@ void Render::mainLoop(string fps, string puz, string par, string sco, string tim
 }
 void Render::mainLoopShading(Shader *sh , int i){
 	
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
+	
 	glUseProgram(*sh->GetShaderProgram());
-
-	//if (i == 0)
-	backgroundVBO->drawTexture();
-	//else
-	platformVBO->drawTXT();
 
 	glUniform1i(numLigth, particleVBO->getCenterSize());
 	glUniform1i(platformNumLitLigth, platformVBO->getCenterLitSize());
@@ -257,6 +252,13 @@ void Render::mainLoopShading(Shader *sh , int i){
 	glUniform1f(mUniformscreenHeight, screenHeight);
 	glUniform3f(lightAttenuation, 1, 1, 1);
 	glUniform1f(radius, 10);
+
+	
+	//if (i == 0)
+	backgroundVBO->drawTexture();
+	//else
+	
+	platformVBO->drawTXT();
 
 	glUseProgram(0);
 

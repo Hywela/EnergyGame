@@ -4,7 +4,7 @@
 Texture::Texture(const char* imagepath)
 {
 
-
+	
 	textureImage = IMG_Load(imagepath);
 	if (!textureImage)
 	{
@@ -44,10 +44,11 @@ GLuint Texture::GetTexture()
 void Texture::EnableTexture(GLhandleARB shaderprogram,
 	const char* textureVariable)
 {
+
 	int texUnitLoc = glGetUniformLocation(shaderprogram, textureVariable);
 
 	glProgramUniform1i(shaderprogram, texUnitLoc, 0);
-	glActiveTexture(GL_TEXTURE0);
+
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 }

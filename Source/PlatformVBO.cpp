@@ -13,10 +13,6 @@ void PlatformVBO::draw(){
 		glBindBuffer(GL_ARRAY_BUFFER, colorID);
 		glColorPointer(3, GL_FLOAT, 0, 0);
 
-
-		
-
-		
 		glDrawArrays(GL_QUADS, 0, vertices.size()/2);
 
 		glDisableClientState(GL_COLOR_ARRAY);
@@ -71,6 +67,7 @@ void PlatformVBO::drawTexture(){
 	if (vertices.size() > 0){
 		setVBO();
 
+
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indID);
 
 			//Enable states, and render (as if using vertex arrays directly)
@@ -85,7 +82,7 @@ void PlatformVBO::drawTexture(){
 
 			if (bgTexture->GetTexture() >= 0) {
 				glEnable(GL_TEXTURE_2D);      // Turn on Texturing
-				//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+			//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 				glBindTexture(GL_TEXTURE_2D, bgTexture->GetTexture());
 			}
 
