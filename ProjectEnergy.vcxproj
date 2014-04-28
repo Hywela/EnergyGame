@@ -53,6 +53,14 @@
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\World.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Texture\Abstract-Design-Vector-Background-Art.jpg" />
+    <Image Include="Texture\Abstract_Vector_Background.jpg" />
+    <Image Include="Texture\coke_label.bmp" />
+    <Image Include="Texture\shiphull.bmp" />
+    <Image Include="Texture\shiphull.jpg" />
+    <Image Include="Texture\techmb.jpg" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1950523D-860B-4A77-9B9B-705A3CB75F1D}</ProjectGuid>
     <RootNamespace>ProjectEnergy</RootNamespace>
@@ -87,12 +95,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\EnergyGameDependencies\SDL2_mixer-2.0.0\include;C:\EnergyGameDependencies\SDL_image\include;C:\EnergyGameDependencies\SDL2_ttf\include;C:\EnergyGameDependencies\Box2D;C:\EnergyGameDependencies\glew\include\GL;C:\EnergyGameDependencies\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\EnergyGameDependencies\SDL2_image\include;C:\EnergyGameDependencies\SDL2_mixer-2.0.0\include;C:\EnergyGameDependencies\SDL_image\include;C:\EnergyGameDependencies\SDL2_ttf\include;C:\EnergyGameDependencies\Box2D;C:\EnergyGameDependencies\glew\include\GL;C:\EnergyGameDependencies\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\EnergyGameDependencies\SDL2_mixer-2.0.0\lib\x86;C:\EnergyGameDependencies\SDL_image\lib\x86;C:\EnergyGameDependencies\SDL2_ttf\lib\x86;C:\EnergyGameDependencies\Box2D\Build\vs2012\bin\Debug;C:\EnergyGameDependencies\glew\lib\Release\Win32\;C:\EnergyGameDependencies\SDL2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\EnergyGameDependencies\SDL2_image\lib\x86;C:\EnergyGameDependencies\SDL2_mixer-2.0.0\lib\x86;C:\EnergyGameDependencies\SDL_image\lib\x86;C:\EnergyGameDependencies\SDL2_ttf\lib\x86;C:\EnergyGameDependencies\Box2D\Build\vs2012\bin\Debug;C:\EnergyGameDependencies\glew\lib\Release\Win32\;C:\EnergyGameDependencies\SDL2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Box2D.lib;SDL2_ttf.lib;SDL2main.lib;SDL2.lib;SDL2_image.lib;OpenGL32.lib;glu32.lib;glew32.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <AdditionalOptions>/ENTRY:mainCRTStartup %(AdditionalOptions)</AdditionalOptions>
