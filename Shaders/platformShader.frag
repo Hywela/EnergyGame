@@ -1,3 +1,4 @@
+#version 150 compatibility
 uniform int particleNumLigth=0;
 uniform int platformNumLitLigth=0;
 uniform int platformNumUnlitLigth=0;
@@ -44,9 +45,9 @@ vec2 pixel=gl_FragCoord.xy;
 
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 
-	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*texture2D(tex, gl_TexCoord[1].st);	
+	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*texture2D(tex, gl_TexCoord[1].st)*radius;	
 
-  return color*radius;
+  return color;
 }
 
 vec4 litPlatform (int i)
@@ -62,8 +63,8 @@ vec2 pixel=gl_FragCoord.xy;
 
 		vec4 color1=vec4(attenuation,attenuation,attenuation,1.0);	
 	
-	vec4 color  = texture2D(tex, gl_TexCoord[1].st)*color1*vec4(litLightColor,1);
-  return color*radius;
+	vec4 color  = texture2D(tex, gl_TexCoord[1].st)*color1*vec4(litLightColor,1)*radius;
+  return color;
 }
 
 vec4 unlitPlatform (int i)

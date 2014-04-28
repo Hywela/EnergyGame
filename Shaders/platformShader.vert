@@ -1,9 +1,8 @@
-     uniform sampler2D tex;                                                    
-     varying vec4 lightColor;                                                                               
+#version 150 compatibility                                                                                                                              
 void main()                                                                         
 {        
   gl_FrontColor = gl_Color;
-	gl_TexCoord[0] = gl_MultiTexCoord0;                                                                       
+  gl_TexCoord[0] = gl_MultiTexCoord0;                                                                       
     
    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;                           
                              
