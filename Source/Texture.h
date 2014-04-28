@@ -8,9 +8,9 @@
 #include <SDL_image.h>
 class Texture
 {
-	private:
-		GLuint textureID;
-		SDL_Surface* textureImage;
+private:
+	GLuint textureID;
+	SDL_Surface* textureImage;
 public:
 	Texture(const char* imagepath);
 	~Texture();

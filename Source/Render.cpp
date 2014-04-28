@@ -23,7 +23,6 @@ Render::Render(Init *init){
 	popupFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 20 / scale);
 	renderNow = false;
 	shutDown = false;
-	
 
 	platformVBO = new PlatformVBO();
 	particleVBO = new ParticleVBO();
@@ -253,8 +252,8 @@ void Render::mainLoopShading(Shader *sh , int i){
 	glUniform2fv(glGetUniformLocation(*sh->GetShaderProgram(), "litPlatformLightpos"), platformVBO->getCenterLitSize(), platformVBO->getCenterLit());
 	glUniform2fv(glGetUniformLocation(*sh->GetShaderProgram(), "unlitPlatformLightpos"), platformVBO->getCenterUnlitSize(), platformVBO->getCenterUnlit());
 	//glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), mainCharParticleVBO->getCenter().x, mainCharParticleVBO->getCenter().y);
-	glUniform3f(litLightColor, 0, 255, 255);
-	glUniform3f(unlitLightColor, 20, 0, 0);
+	glUniform3f(litLightColor, 55, 208, 81);
+	glUniform3f(unlitLightColor, 255, 0, 0);
 	glUniform1f(mUniformscreenHeight, screenHeight);
 	glUniform3f(lightAttenuation, 1, 1, 1);
 	glUniform1f(radius, 10);
@@ -586,7 +585,6 @@ void Render::setBackgroundSquare(int posX, int posY, int offsetX, int offsetY , 
 	temp[3].x = posX;
 	temp[3].y = posY + offsetY;
 
-	std::cout <<" " << (posX + offsetX)/2;
 	tempVBO->pushBackground(temp, b2Vec2(screenHeight / 2, screenWidth / 2), color);
 }
 void Render::setMousePointLigth(int x, int y){
