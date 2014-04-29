@@ -23,6 +23,7 @@ private:
 	float scale;
 	int time, timeChallenge;
 	int par, parX, parY;
+	Uint32 ticksLastSec;
 
 public:
 	Puzzle();

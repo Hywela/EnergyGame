@@ -124,7 +124,7 @@ void Window::gameLoop() {
 
 		int t = world->getPuzzleTimeLeft();
 		if (t >= 0) {
-			t = 1 + floor(t / WORLD_UPDATE_FPS);
+			t = ceil(t);
 			timeStr = "Time Left: " + to_string(t);
 		}
 	}

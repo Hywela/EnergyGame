@@ -594,7 +594,7 @@ void World::loadPuzzles(string file) {
 			}
 			else if (dataText.find("Time:") != -1) {
 				lvl >> time;
-				time *= WORLD_UPDATE_FPS;
+				time += 1;
 			}
 			else if (dataText.find("Bonus:") != -1) {
 				lvl >> bonus;
