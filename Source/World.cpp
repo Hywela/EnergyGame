@@ -168,7 +168,6 @@ void World::setupWorld() {
 	}
 	else {
 		cout << "ERROR: The background music was not loaded!\n";
-		cout << "ERROR: " << Mix_GetError() << endl;
 	}
 }
 
@@ -432,8 +431,8 @@ void World::updatePlatforms() {
 									b2Vec2 parXY = parBody->GetPosition();
 									parXY *= M2P;
 
-									if (parXY.x >= x1.x - 10 && parXY.x <= x2.x + 10) {
-										if (parXY.y >= x1.y - 10 && parXY.y <= x2.y + 10) {
+									if (parXY.x >= x1.x - BUTTON_BOX_SIZE && parXY.x <= x2.x + BUTTON_BOX_SIZE) {
+										if (parXY.y >= x1.y - BUTTON_BOX_SIZE && parXY.y <= x2.y + BUTTON_BOX_SIZE) {
 											//Light platform
 											curColor = COLOR_LIT;
 										
@@ -595,7 +594,7 @@ void World::loadPuzzles(string file) {
 			}
 			else if (dataText.find("Time:") != -1) {
 				lvl >> time;
-				time *= WORLD_UPDATE_FPS;
+				time += 1;
 			}
 			else if (dataText.find("Bonus:") != -1) {
 				lvl >> bonus;
@@ -735,7 +734,7 @@ bool World::startPuzzle() {
 	}
 
 	//Check if camera is over puzzle
-	if (puzzle->cameraAtCenter(b2Vec2((screenwidth / 2), 0))) {
+	if (puzzle->cameraAtCenter(b2Vec2((screenwidth / 2), 0)) || !puzzlesSolved) {
 		cameraSpeed = 0;
 		stopped = true;
 	}

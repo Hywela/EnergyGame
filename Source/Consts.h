@@ -41,6 +41,7 @@ const int HIGHSCORES = 5;
 const float PARTICLE_SPEED = 2000;
 const float MOVEMENT_SPEED_GAIN = PARTICLE_SPEED / 10;
 const int PUZZLE_TIME_TICKS = 360;
+const int BUTTON_BOX_SIZE = 15;
 //Audio variables
 const int AUDIO_RATE = 22050;
 const Uint16 AUDIO_FORMAT = AUDIO_S16; /* 16-bit stereo */

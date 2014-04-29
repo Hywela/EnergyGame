@@ -30,9 +30,10 @@ vector <PartData> Puzzle::getParts() {
 bool Puzzle::isPlayerInside(b2Vec2 position) {
 	bool found = false;
 
-	if (position.x >= spawnX + (700 / scale)) {
+	if (position.x >= spawnX + (500 / scale)) {
 		found = true;
 		activated = true;
+		ticksLastSec = SDL_GetTicks();
 
 		//If time challenge
 		if (time < 0 && timeChallenge > 0) {
@@ -124,7 +125,7 @@ void Puzzle::updateExitId(int deletedId) {
 bool Puzzle::cameraAtCenter(b2Vec2 position) {
 	bool found = false;
 
-	if (position.x >= spawnX + (900 / scale)) {
+	if (position.x >= spawnX + (1200 / scale)) {
 		found = true;
 	}
 
@@ -193,9 +194,11 @@ void Puzzle::progressUpdate() {
 	//Updates puzzle while player is solving it
 
 	//If started time puzzle
-	if (time >= 0 && time < timeChallenge) {
+	Uint32 ticks = SDL_GetTicks();
+	if (time >= 0 && time < timeChallenge && ticks >= ticksLastSec + 1000) {
 		//Countdown time left
 		time++;
+		ticksLastSec = ticks;
 	}
 }
 
