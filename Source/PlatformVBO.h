@@ -25,6 +25,8 @@ private:
 	std::vector <GLfloat> litPostions, unlitPostions;
 	Texture *bgTexture,*platform;
 	void setVBO();
+	GLuint arrayObject, buffers[VBO_COUNT];
+	GLenum renderMode;
 public:
 	PlatformVBO();
 	~PlatformVBO();

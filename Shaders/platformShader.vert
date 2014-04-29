@@ -1,9 +1,19 @@
-#version 150 compatibility                                                                                                                              
+
+attribute vec3 vertex;
+
+attribute vec2 texCoord;
+
+
+
+varying vec2 shared_texCoord;
+varying vec3 shared_normal;
+                                                                          
 void main()                                                                         
 {        
-  gl_FrontColor = gl_Color;
-  gl_TexCoord[0] = gl_MultiTexCoord0;                                                                       
-    
-   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;                           
+  gl_Position = gl_ModelViewProjectionMatrix * vec4(vertex,1.0);
+	//Send data to fragment shader
+	
+	shared_texCoord = texCoord;
+
                              
 }

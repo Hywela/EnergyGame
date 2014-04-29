@@ -232,9 +232,19 @@ void Render::mainLoop(string fps, string puz, string par, string sco, string tim
 }
 void Render::mainLoopShading(Shader *sh , int i){
 	
-	
+	GLint uniform_location;
 	glUseProgram(*sh->GetShaderProgram());
+	
+	uniform_location = glGetUniformLocationARB(*sh->GetShaderProgram(), "tex");
+	glUniform1iARB(uniform_location, 0);
+	glBindAttribLocation(*sh->GetShaderProgram(), VBO_VERTEX, "vertex");
+	//glBindAttribLocation(*sh->GetShaderProgram(), VBO_COLOR, "color");
+	glBindAttribLocation(*sh->GetShaderProgram(), VBO_TEXCORD, "texCoord");
 
+	
+
+
+	
 	glUniform1i(numLigth, particleVBO->getCenterSize());
 	glUniform1i(platformNumLitLigth, platformVBO->getCenterLitSize());
 	glUniform1i(platformNumUnlitLigth, platformVBO->getCenterUnlitSize());
@@ -328,6 +338,8 @@ void Render::mainMenu(string fps){
 	}
 
 	endRendering();
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
 	SDL_GL_SwapWindow(init->window);
 	/*
 	GLfloat lightpos[] = { 0.5, 1.0, 1., 0.0 };
@@ -368,6 +380,7 @@ void Render::renderText(const TTF_Font *Font, SDL_Color Color,
 	/*Clean up.*/
 	glDeleteTextures(1, &Texture);
 	SDL_FreeSurface(Message);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 void Render::pushBackMenuObj(int posX, int posY, string tekst ){
 

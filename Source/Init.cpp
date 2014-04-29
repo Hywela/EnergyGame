@@ -22,10 +22,9 @@ void Init::OpenGL()
 	glEnable(GL_DEPTH_TEST);                        // Enables Depth Testing
 	glDepthFunc(GL_LEQUAL);                         // The Type Of Depth Test To Do
 
-	//glShadeModel(GL_SMOOTH);                        // Enable Smooth Shading
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);          // Really Nice Perspective 
+	glShadeModel(GL_SMOOTH);                        // Enable Smooth Shading
 	
-	//glEnable(GL_NORMALIZE);
+	glEnable(GL_NORMALIZE);
 	/*
 	//Initialize the lights
 	GLfloat LightAmbient[] = { 0.9f, 0.9f, 0.9f, 1.0f };  // Ambient Light Values

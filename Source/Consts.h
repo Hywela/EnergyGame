@@ -5,7 +5,9 @@
 #include <string>
 using namespace std;
 
-
+enum MeshBufferPositions {
+	VBO_VERTEX, VBO_COLOR, VBO_TEXCORD, VBO_NORMAL, VBO_INDEX, VBO_COUNT
+};
 
 //Box2D variables
 const float M2P = 30;

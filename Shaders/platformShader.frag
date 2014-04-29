@@ -1,4 +1,4 @@
-#version 150 compatibility
+
 uniform int particleNumLigth=0;
 uniform int platformNumLitLigth=0;
 uniform int platformNumUnlitLigth=0;
@@ -14,8 +14,12 @@ uniform float screenHeight;
 uniform vec3 lightAttenuation;
 uniform float radius;
 
+out vec4 colorOut;
 
 uniform sampler2D tex;
+
+varying vec2 shared_texCoord;
+
 
 vec4 light (int i)
 {
@@ -45,8 +49,7 @@ vec2 pixel=gl_FragCoord.xy;
 
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 
-	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*texture2D(tex, gl_TexCoord[1].st)*radius;	
-
+ vec4 color  = texture2D(tex, shared_texCoord);
   return color;
 }
 
@@ -91,26 +94,22 @@ vec4 sum = vec4(0,0,0,0);
 vec4 lit = vec4(0,0,0,0);
 vec4 unlit = vec4(0,0,0,0);
 
-if(particleNumLigth >0){
 for(int i = 0; i < particleNumLigth; i++){
 sum+=light(i);
+}
 
-}
-}
-if(platformNumLitLigth >0){
 for(int i = 0; i < platformNumLitLigth; i++){
 	lit+=litPlatform(i);
 }
-}
-if(platformNumUnlitLigth >0){
+
 for(int i = 0; i < platformNumUnlitLigth; i++){
 	unlit+=unlitPlatform(i);
 }
-}
+
 
 	
 	
-	gl_FragColor = sum+unlit+lit+mainCharLight();
+	colorOut = mainCharLight();
 	
 
 	
