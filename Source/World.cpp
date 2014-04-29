@@ -168,6 +168,7 @@ void World::setupWorld() {
 	}
 	else {
 		cout << "ERROR: The background music was not loaded!\n";
+		cout << "ERROR: " << Mix_GetError() << endl;
 	}
 }
 

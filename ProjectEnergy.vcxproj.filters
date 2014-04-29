@@ -135,4 +135,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Texture\Abstract_Vector_Background.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Texture\Abstract-Design-Vector-Background-Art.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Texture\coke_label.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Texture\shiphull.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Texture\shiphull.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Texture\techmb.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
