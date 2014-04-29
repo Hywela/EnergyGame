@@ -21,10 +21,6 @@ uniform float screenHeight;
 uniform vec3 lightAttenuation;
 uniform float radius;
 
-
-
-
-
 vec4 light (int i)
 {
 vec2 pixel=gl_FragCoord.xy;		
@@ -38,7 +34,7 @@ vec2 pixel=gl_FragCoord.xy;
 
 	vec4 color1=vec4(attenuation,attenuation,attenuation,1.0);	
 	
-	vec4 color  = texture2D(tex, shared_texCoord)*color1;
+	vec4 color = texture2D(tex, shared_texCoord)*color1;
   return color;
 }
 

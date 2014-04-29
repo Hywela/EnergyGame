@@ -47,6 +47,5 @@ public:
 	int getCenterLitSize();
 	GLfloat *getCenterLit();
 	GLfloat *getCenterUnlit();
-	void enableTex(GLhandleARB shaderprogram,
-		const char* textureVariable, bool check);
+	
 };

@@ -9,15 +9,10 @@ void PlatformVBO::draw(bool texture){
 		glBindTexture(GL_TEXTURE_2D, bgTexture->GetTexture());
 		glEnable(GL_TEXTURE_2D);
 		}
-	
-
 
 		glBindVertexArray(arrayObject);
 
-
-
 		glDrawArrays(GL_QUADS, 0, vertices.size() / 2);
-	
 
 		if (texture){
 
@@ -55,28 +50,17 @@ void PlatformVBO::drawTXT(){
 }
 void PlatformVBO::drawTexture(){
 
-	if (vertices.size() > 0){
-		setVBO(); 
-
+	if(vertices.size() > 0)
+		setVBO();
 		glBindTexture(GL_TEXTURE_2D, platform->GetTexture());
 		glEnable(GL_TEXTURE_2D);
 
-		glEnableClientState(GL_VERTEX_ARRAY);
-
-
 		glBindVertexArray(arrayObject);
-
-
-
-		glDrawArrays(GL_QUADS, 0, vertices.size() / 2);
-		glEnableClientState(GL_VERTEX_ARRAY);
-
-
+	glDrawArrays(GL_QUADS, 0, vertices.size() / 2);
 		glBindTexture(GL_TEXTURE_2D, NULL);
 		glDisable(GL_TEXTURE_2D);
-			glBindVertexArray(NULL);
 	
-	}
+	glBindVertexArray(NULL);
 
 }
 
@@ -97,16 +81,9 @@ PlatformVBO::PlatformVBO() {
 	texCoords.push_back(0.0f);
 	texCoords.push_back(1.0f);
 
-	//
-
-	
-
 	bgTexture = new Texture("./Texture/shiphull.bmp");
-	platform = new Texture("./Texture/shiphull.bmp");
-	// Give the image to OpenGL
+	platform = new Texture("./Texture/thatch01.png");
 
-	
-	
 	//glBindBuffer(GL_ARRAY_BUFFER, texID);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) *texCoords.size() / 2, &texCoords, GL_STATIC_DRAW);
 

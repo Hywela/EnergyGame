@@ -35,7 +35,7 @@ void Init::OpenGL()
 	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);    // Position The Light
 	glEnable(GL_LIGHT1);*/
 
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	GLenum glewError = glewInit();

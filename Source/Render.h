@@ -123,6 +123,7 @@ public:
 	PlatformVBO* getPlatformVBO();
 	ParticleVBO* getParticleVBO();
 	ParticleVBO* getMainCharParticleVBO();
-	void mainLoopShading(Shader *sh, int i);
+	void gameLoopShading();
+	void colorShading();
 };
 

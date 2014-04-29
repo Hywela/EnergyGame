@@ -46,7 +46,7 @@ Render::Render(Init *init){
 	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
 	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 255, 255), backgroundVBO);
 	shader = new Shader("./Shaders/ligthShader.vert", "./Shaders/ligthShader.frag");
-
+	colorShader = new Shader("./Shaders/colorShader.vert", "./Shaders/colorShader.frag");
 	litLightColor = glGetUniformLocation(*shader->GetShaderProgram(), "litLightColor");
 	unlitLightColor = glGetUniformLocation(*shader->GetShaderProgram(), "unlitLightColor");
 	mUniformscreenHeight = glGetUniformLocation(*shader->GetShaderProgram(), "screenHeight");
@@ -83,7 +83,7 @@ void Render::pauseLoop(){
 	render();
 	startRendering();
 
-	pauseVBO->draw(false);
+	colorShading();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -101,7 +101,7 @@ void Render::scoreLoop(vector <int> scores, int scoreFinal, int scorePos, bool i
 	render();
 	startRendering();
 
-	pauseVBO->draw(false);
+	colorShading();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -161,7 +161,7 @@ void Render::settingsLoop(int musVol, int effVol) {
 	render();
 	startRendering();
 
-	pauseVBO->draw(false);
+	colorShading();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -184,7 +184,7 @@ void Render::settingsLoop(int musVol, int effVol) {
 void Render::mainLoop(string fps, string puz, string par, string sco, string tim, string csp){
 
 	
-	mainLoopShading(shader, 0);
+	gameLoopShading();
 	//mainLoopShading(colorShader, 1);
 	particleVBO->draw();
 	
@@ -230,32 +230,28 @@ void Render::mainLoop(string fps, string puz, string par, string sco, string tim
 		SDL_GL_SwapWindow(init->window);
 		
 }
-void Render::mainLoopShading(Shader *sh , int i){
+void Render::gameLoopShading(){
 	
 	GLint uniform_location;
-	glUseProgram(*sh->GetShaderProgram());
+	glUseProgram(*shader->GetShaderProgram());
 	
-	uniform_location = glGetUniformLocationARB(*sh->GetShaderProgram(), "tex");
+	uniform_location = glGetUniformLocationARB(*shader->GetShaderProgram(), "tex");
 	glUniform1iARB(uniform_location, 0);
-	glBindAttribLocation(*sh->GetShaderProgram(), VBO_VERTEX, "vertex");
-	//glBindAttribLocation(*sh->GetShaderProgram(), VBO_COLOR, "color");
-	glBindAttribLocation(*sh->GetShaderProgram(), VBO_TEXCORD, "texCoord");
+	glBindAttribLocation(*shader->GetShaderProgram(), VBO_VERTEX, "vertex");
+	glBindAttribLocation(*shader->GetShaderProgram(), VBO_COLOR, "color");
+	glBindAttribLocation(*shader->GetShaderProgram(), VBO_TEXCORD, "texCoord");
 
-	
-
-
-	
 	glUniform1i(numLigth, particleVBO->getCenterSize());
 	glUniform1i(platformNumLitLigth, platformVBO->getCenterLitSize());
 	glUniform1i(platformNumUnlitLigth, platformVBO->getCenterUnlitSize());
 
-	glUniform2f(glGetUniformLocation(*sh->GetShaderProgram(), "MainCharLightpos"), mainCharParticleVBO->getMainCenter().x,
+	glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "MainCharLightpos"), mainCharParticleVBO->getMainCenter().x,
 		mainCharParticleVBO->getMainCenter().y);
 	//glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "mousePointerLigthpos"), mousePointer.x, mousePointer.y);
-	glUniform2fv(glGetUniformLocation(*sh->GetShaderProgram(), "lightpos"), particleVBO->getCenterSize(), particleVBO->getCenter());
+	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), particleVBO->getCenterSize(), particleVBO->getCenter());
 
-	glUniform2fv(glGetUniformLocation(*sh->GetShaderProgram(), "litPlatformLightpos"), platformVBO->getCenterLitSize(), platformVBO->getCenterLit());
-	glUniform2fv(glGetUniformLocation(*sh->GetShaderProgram(), "unlitPlatformLightpos"), platformVBO->getCenterUnlitSize(), platformVBO->getCenterUnlit());
+	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "litPlatformLightpos"), platformVBO->getCenterLitSize(), platformVBO->getCenterLit());
+	glUniform2fv(glGetUniformLocation(*shader->GetShaderProgram(), "unlitPlatformLightpos"), platformVBO->getCenterUnlitSize(), platformVBO->getCenterUnlit());
 	//glUniform2f(glGetUniformLocation(*shader->GetShaderProgram(), "lightpos"), mainCharParticleVBO->getCenter().x, mainCharParticleVBO->getCenter().y);
 	glUniform3f(litLightColor, 55, 208, 81);
 	glUniform3f(unlitLightColor, 255, 0, 0);
@@ -268,12 +264,19 @@ void Render::mainLoopShading(Shader *sh , int i){
 	backgroundVBO->draw(true);
 	//else
 	
-	platformVBO->draw(false);
+	platformVBO->drawTexture();
 
 	glUseProgram(0);
 
 	
 
+}
+void Render::colorShading(){
+	glUseProgram(*colorShader->GetShaderProgram());
+	glBindAttribLocation(*shader->GetShaderProgram(), VBO_VERTEX, "vertex");
+	glBindAttribLocation(*shader->GetShaderProgram(), VBO_COLOR, "color");
+	pauseVBO->draw(false);
+	glUseProgram(0);
 }
 void Render::render() {
 	//Clear buffer
@@ -324,7 +327,7 @@ void Render::mainMenu(string fps){
 	render();
 	startRendering();	
 
-	pauseVBO->draw(false);
+	colorShading();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
