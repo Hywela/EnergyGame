@@ -45,7 +45,7 @@ Render::Render(Init *init){
 	//pauseVBO->pushBackground(vx, b2Vec2(screenHeight / 2, screenWidth / 2), b2Vec3(0, 0, 255));
 	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
 	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 255, 255), backgroundVBO);
-	shader = new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
+	shader = new Shader("./Shaders/ligthShader.vert", "./Shaders/ligthShader.frag");
 
 	litLightColor = glGetUniformLocation(*shader->GetShaderProgram(), "litLightColor");
 	unlitLightColor = glGetUniformLocation(*shader->GetShaderProgram(), "unlitLightColor");
@@ -83,7 +83,7 @@ void Render::pauseLoop(){
 	render();
 	startRendering();
 
-	pauseVBO->draw();
+	pauseVBO->draw(false);
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -101,7 +101,7 @@ void Render::scoreLoop(vector <int> scores, int scoreFinal, int scorePos, bool i
 	render();
 	startRendering();
 
-	pauseVBO->draw();
+	pauseVBO->draw(false);
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -161,7 +161,7 @@ void Render::settingsLoop(int musVol, int effVol) {
 	render();
 	startRendering();
 
-	pauseVBO->draw();
+	pauseVBO->draw(false);
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -265,10 +265,10 @@ void Render::mainLoopShading(Shader *sh , int i){
 
 	
 	//if (i == 0)
-	backgroundVBO->drawTexture();
+	backgroundVBO->draw(true);
 	//else
 	
-	platformVBO->drawTXT();
+	platformVBO->draw(false);
 
 	glUseProgram(0);
 
@@ -324,7 +324,7 @@ void Render::mainMenu(string fps){
 	render();
 	startRendering();	
 
-	pauseVBO->draw();
+	pauseVBO->draw(false);
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);

@@ -31,7 +31,7 @@ public:
 	PlatformVBO();
 	~PlatformVBO();
 	
-	void draw(); 
+	void draw(bool texture);
 	void drawTexture();
 	void drawTXT();
 	//Setters

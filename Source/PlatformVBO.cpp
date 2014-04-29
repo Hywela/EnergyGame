@@ -1,28 +1,30 @@
 #include "PlatformVBO.h"
 
-void PlatformVBO::draw(){
-	if (vertices.size() > 0){
-	/*	setVBO();
-		
-		glEnableClientState(GL_VERTEX_ARRAY);
+void PlatformVBO::draw(bool texture){
+	if (vertices.size() > 0)
+		setVBO();
 
-		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glVertexPointer(2, GL_FLOAT, 0, 0);
+		setVBO();
+		if (texture){
+		glBindTexture(GL_TEXTURE_2D, bgTexture->GetTexture());
+		glEnable(GL_TEXTURE_2D);
+		}
+	
 
-		glEnableClientState(GL_COLOR_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, colorID);
-		glColorPointer(3, GL_FLOAT, 0, 0);
 
-		glDrawArrays(GL_QUADS, 0, vertices.size()/2);
+		glBindVertexArray(arrayObject);
 
-		glDisableClientState(GL_COLOR_ARRAY);
-		//restore the GL state back
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glDisableClientState(GL_COLOR_ARRAY);
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0); //Restore non VBO mode
-*/
-	}
+
+		glDrawArrays(GL_QUADS, 0, vertices.size() / 2);
+	
+
+		if (texture){
+
+		glBindTexture(GL_TEXTURE_2D, NULL);
+		glDisable(GL_TEXTURE_2D);
+		}
+		glBindVertexArray(NULL);
 	
 }
 void PlatformVBO::drawTXT(){
@@ -30,44 +32,50 @@ void PlatformVBO::drawTXT(){
 	if (vertices.size() > 0){
 		setVBO();
 
+		setVBO();
 		glBindTexture(GL_TEXTURE_2D, bgTexture->GetTexture());
-		glEnable(GL_TEXTURE_2D); 
+		glEnable(GL_TEXTURE_2D);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[VBO_INDEX]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) *indices.size(), &indices.front(), GL_STATIC_DRAW);
+		glEnableClientState(GL_VERTEX_ARRAY);
+
 
 		glBindVertexArray(arrayObject);
 
-		glDrawElements(renderMode, indices.size(), GL_UNSIGNED_INT, 0);
+
+
+		glDrawArrays(GL_QUADS, 0, vertices.size() / 2);
+		glEnableClientState(GL_VERTEX_ARRAY);
+
+
 		glBindTexture(GL_TEXTURE_2D, NULL);
 		glDisable(GL_TEXTURE_2D);
 		glBindVertexArray(NULL);
-		indices.clear();
 	}
 
 }
 void PlatformVBO::drawTexture(){
-	indices.push_back(0);
-	indices.push_back(1);
-	indices.push_back(2);
 
-	indices.push_back(0);
-	indices.push_back(2);
-	indices.push_back(3);
 	if (vertices.size() > 0){
-		setVBO();
+		setVBO(); 
+
 		glBindTexture(GL_TEXTURE_2D, platform->GetTexture());
 		glEnable(GL_TEXTURE_2D);
 
-	
+		glEnableClientState(GL_VERTEX_ARRAY);
+
+
 		glBindVertexArray(arrayObject);
 
-		glDrawElements(renderMode, indices.size() , GL_UNSIGNED_INT, 0);
+
+
+		glDrawArrays(GL_QUADS, 0, vertices.size() / 2);
+		glEnableClientState(GL_VERTEX_ARRAY);
+
 
 		glBindTexture(GL_TEXTURE_2D, NULL);
 		glDisable(GL_TEXTURE_2D);
-		glBindVertexArray(NULL);	
-		indices.clear();
+			glBindVertexArray(NULL);
+	
 	}
 
 }
@@ -93,7 +101,7 @@ PlatformVBO::PlatformVBO() {
 
 	
 
-	bgTexture = new Texture("./Texture/coke_label.bmp");
+	bgTexture = new Texture("./Texture/shiphull.bmp");
 	platform = new Texture("./Texture/shiphull.bmp");
 	// Give the image to OpenGL
 
@@ -120,16 +128,19 @@ void PlatformVBO::setVBO(){
 	glEnableVertexAttribArray(VBO_VERTEX);
 	glVertexAttribPointer(VBO_VERTEX, 2, GL_FLOAT, GL_FALSE, NULL, NULL);
 
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[VBO_COLOR]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * colors.size(), &colors.front(), GL_STATIC_DRAW);
 
+	//Set shader attribute data
+	glEnableVertexAttribArray(VBO_COLOR);
+	glVertexAttribPointer(VBO_COLOR, 3, GL_FLOAT, GL_FALSE, NULL, NULL);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[VBO_TEXCORD]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) *texCoords.size(), &texCoords.front(), GL_STATIC_DRAW);
 	glEnableVertexAttribArray(VBO_TEXCORD);
 	glVertexAttribPointer(VBO_TEXCORD, 2, GL_FLOAT, GL_FALSE, NULL, NULL);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[VBO_INDEX]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) *indices.size(), &indices.front(), GL_STATIC_DRAW);
-	
+
 
 	glBindVertexArray(NULL);
 }
@@ -146,13 +157,7 @@ void PlatformVBO::pushBack(b2Vec2* points, b2Vec2 center, float angle, b2Vec3 co
 		colors.push_back(color.z);
 		
 	}
-		indices.push_back(0);
-		indices.push_back(1);
-		indices.push_back(2);
 
-		indices.push_back(0);
-		indices.push_back(2);
-		indices.push_back(3);
 
 }
 void PlatformVBO::pushBackground(b2Vec2* points, b2Vec2 center,  b2Vec3 color){
@@ -166,13 +171,7 @@ void PlatformVBO::pushBackground(b2Vec2* points, b2Vec2 center,  b2Vec3 color){
 		colors.push_back(color.z);
 	
 	}
-		indices.push_back(0);
-		indices.push_back(1);
-		indices.push_back(2);
 
-		indices.push_back(0);
-		indices.push_back(2);
-		indices.push_back(3);
 }
 void PlatformVBO::pushBackLigthPostionLit(b2Vec2 center){
 	int moveX = center.x*M2P;
@@ -190,7 +189,7 @@ void PlatformVBO::pushBackLigthPostionUnlit(b2Vec2 center){
 void PlatformVBO::clear(){
 	vertices.clear();
 	colors.clear();
-	indices.clear();
+
 	if (litPostions.size() > 0)
 	litPostions.clear();
 	if (unlitPostions.size() > 0)

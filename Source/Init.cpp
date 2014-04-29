@@ -22,9 +22,9 @@ void Init::OpenGL()
 	glEnable(GL_DEPTH_TEST);                        // Enables Depth Testing
 	glDepthFunc(GL_LEQUAL);                         // The Type Of Depth Test To Do
 
-	glShadeModel(GL_SMOOTH);                        // Enable Smooth Shading
+	//glShadeModel(GL_SMOOTH);                        // Enable Smooth Shading
 	
-	glEnable(GL_NORMALIZE);
+	//glEnable(GL_NORMALIZE);
 	/*
 	//Initialize the lights
 	GLfloat LightAmbient[] = { 0.9f, 0.9f, 0.9f, 1.0f };  // Ambient Light Values
@@ -35,7 +35,7 @@ void Init::OpenGL()
 	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);    // Position The Light
 	glEnable(GL_LIGHT1);*/
 
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	GLenum glewError = glewInit();
