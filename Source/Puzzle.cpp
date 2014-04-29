@@ -30,7 +30,7 @@ vector <PartData> Puzzle::getParts() {
 bool Puzzle::isPlayerInside(b2Vec2 position) {
 	bool found = false;
 
-	if (position.x >= spawnX + (700 / scale)) {
+	if (position.x >= spawnX + (500 / scale)) {
 		found = true;
 		activated = true;
 
@@ -124,7 +124,7 @@ void Puzzle::updateExitId(int deletedId) {
 bool Puzzle::cameraAtCenter(b2Vec2 position) {
 	bool found = false;
 
-	if (position.x >= spawnX + (900 / scale)) {
+	if (position.x >= spawnX + (1200 / scale)) {
 		found = true;
 	}
 
