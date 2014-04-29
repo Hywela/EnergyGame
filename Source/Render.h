@@ -59,7 +59,7 @@ private:
 	ParticleVBO *particleVBO, *mainCharParticleVBO;
 	
 	//shader
-	Shader *shader, *colorShader;
+	Shader *shader, *colorShader , *platformShader;
 	GLint mUniform;
 	
 	//Unifroms
@@ -125,5 +125,6 @@ public:
 	ParticleVBO* getMainCharParticleVBO();
 	void gameLoopShading();
 	void colorShading();
+	void setUniforms(Shader *tempShader);
 };
 

@@ -21,72 +21,53 @@ uniform float screenHeight;
 uniform vec3 lightAttenuation;
 uniform float radius;
 
-vec4 light (int i)
-{
-vec2 pixel=gl_FragCoord.xy;		
-	pixel.y=screenHeight-pixel.y;	
-
-	vec2 aux=lightpos[i]-pixel;
-
-	float distance=length(aux)/10;
-		
-	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
-
-	vec4 color1=vec4(attenuation,attenuation,attenuation,1.0);	
-	
-	vec4 color = texture2D(tex, shared_texCoord)*color1;
-  return color;
+vec4 getTexture(){
+vec4 texture = vec4(normalize(texture2D(tex, shared_texCoord) * 2.0 - 1.0));
+return texture;
 }
 
+vec4 calcLigthMap (in int distanceShine,  in float sizeOfLigth , in int lp){
+	vec2 pixel=gl_FragCoord.xy;		
+	pixel.y=screenHeight-pixel.y;
+	vec2 aux=lightpos[lp]-pixel;
+
+	float distance=length(aux)/distanceShine;
+	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
+
+	vec4 outputMap = (vec4(attenuation,attenuation,attenuation,1.0) *getTexture() ) * sizeOfLigth ;
+return outputMap;
+}
 vec4 mainCharLight ()
 {
-vec2 pixel=gl_FragCoord.xy;		
+	vec2 pixel=gl_FragCoord.xy;		
 	pixel.y=screenHeight-pixel.y;	
-
 	vec2 aux=MainCharLightpos-pixel;
-
 	float distance=length(aux);
-
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
-vec4 color1=vec4(attenuation,attenuation,attenuation,1.0);	
-	
- vec4 color  = texture2D(tex, shared_texCoord)*color1;
-  return color;
+	vec4 ligth=vec4(attenuation,attenuation,attenuation,1.0);	
+	vec4 outPutLigth  = getTexture()*ligth;
+  return outPutLigth;
+}
+vec4 litPlatform (in int distanceShine,  in float sizeOfLigth , in int lp){
+	vec2 pixel=gl_FragCoord.xy;		
+	pixel.y=screenHeight-pixel.y;
+	vec2 aux=litPlatformLightpos[lp]-pixel;
+
+	float distance=length(aux)/distanceShine;
+	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
+
+	vec4 outputMap = (vec4(attenuation,attenuation,attenuation,1.0) *getTexture() ) * sizeOfLigth ;
+return outputMap;
 }
 
-vec4 litPlatform (int i)
-{
-vec2 pixel=gl_FragCoord.xy;		
-	pixel.y=screenHeight-pixel.y;	
-
-	vec2 aux=litPlatformLightpos[i]-pixel;
-
-	float distance=length(aux);
-
+vec4 unlitPlatform (in int distanceShine,  in float sizeOfLigth , in int lp){
+	vec2 pixel=gl_FragCoord.xy;		
+	pixel.y=screenHeight-pixel.y;
+	vec2 aux=unlitPlatformLightpos[lp]-pixel;
+	float distance=length(aux)/distanceShine;
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
-
-		vec4 color1=vec4(attenuation,attenuation,attenuation,1.0);	
-	
-	vec4 color  = texture2D(tex, shared_texCoord)*color1*vec4(litLightColor,1)*radius;
-  return color;
-}
-
-vec4 unlitPlatform (int i)
-{
-vec2 pixel=gl_FragCoord.xy;		
-	pixel.y=screenHeight-pixel.y;	
-
-	vec2 aux=unlitPlatformLightpos[i]-pixel;
-
-	float distance=length(aux);
-
-	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
-
-	vec4 color1=vec4(attenuation,attenuation,attenuation,1.0);	
-	
-vec4 color  = texture2D(tex, shared_texCoord)*color1*vec4(unlitLightColor,1);
-
-  return color;
+	vec4 outputMap = (vec4(attenuation,attenuation,attenuation,1.0) *getTexture() ) * sizeOfLigth ;
+return outputMap;
 }
 
 void main()
@@ -94,24 +75,24 @@ void main()
 vec4 sum = vec4(0,0,0,0);
 vec4 lit = vec4(0,0,0,0);
 vec4 unlit = vec4(0,0,0,0);
-
+float radiusSize = 1 ;
+int standard = 8;
 for(int i = 0; i < particleNumLigth; i++){
-sum+=light(i);
+	sum+=calcLigthMap(standard, radiusSize,  i);
 }
-
+radiusSize = radius;
+standard = 1;
+radiusSize = radius;
 for(int i = 0; i < platformNumLitLigth; i++){
-	lit+=litPlatform(i);
-}
 
+	lit+=litPlatform(standard, radiusSize,  i)*vec4(litLightColor,1);
+}
+radiusSize = radius/2;
 for(int i = 0; i < platformNumUnlitLigth; i++){
-	unlit+=unlitPlatform(i);
+
+	unlit+=unlitPlatform(standard, radiusSize, i)*vec4(unlitLightColor,1);;
 }
 
-
-	
-	
 	gl_FragColor = sum+unlit+lit+mainCharLight();
-	
 
-	
 }

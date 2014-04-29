@@ -36,12 +36,8 @@ Texture::Texture(const char* imagepath)
 		// this error should not go unhandled
 	}
 	textureID = 0;
-glGenTextures(1, &textureID);
+	glGenTextures(1, &textureID);
 	glEnable(GL_TEXTURE_2D);
-
-
-	
-	
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexImage2D(GL_TEXTURE_2D,
 		0, nOfColors,
@@ -51,8 +47,8 @@ glGenTextures(1, &textureID);
 		texture_format,
 		GL_UNSIGNED_BYTE,
 		textureImage->pixels);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	SDL_FreeSurface(textureImage);
 	glDisable(GL_TEXTURE_2D);
 	}

@@ -82,7 +82,7 @@ PlatformVBO::PlatformVBO() {
 	texCoords.push_back(1.0f);
 
 	bgTexture = new Texture("./Texture/shiphull.bmp");
-	platform = new Texture("./Texture/thatch01.png");
+	platform = new Texture("./Texture/blue_right.png");
 
 	//glBindBuffer(GL_ARRAY_BUFFER, texID);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) *texCoords.size() / 2, &texCoords, GL_STATIC_DRAW);
