@@ -46,6 +46,7 @@ private:
 	int numParticles, numStored;
 	bool lost;
 	int score;
+	float parR, parG, parB;
 
 	//Random wall variables
 	int spawnCooldown;
@@ -71,6 +72,7 @@ public:
 	b2Body* addRect(int x, int y, int w, int h, bool dyn, int grp = 1);
 	b2Body* addInvisibleWall(int x, int y, int w, int h, bool dyn, int grp = 1);
 	float getCameraSpeed();
+	void setGravity(int x, int y);
 
 	//Update functions
 	void updateWorld();
@@ -98,6 +100,7 @@ public:
 	void retriveParticles();
 	bool gameOver();
 	int getScore();
+	void setParticleColor(int r, int g, int b);
 
 	//Random wall functions
 	void cleanWalls();

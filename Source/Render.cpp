@@ -6,6 +6,7 @@ Render::Render(Init *init){
 	init->OpenGL();
 	cameraX = 0;
 	cameraY = 0;
+	ledR = ledG = ledB = 1;
 
 	//loop = &Render::mainMenu;
 	menuObjects = new vector<button>;
@@ -18,9 +19,9 @@ Render::Render(Init *init){
 	screenHeight = init->getScreenHeight();
 	screenWidth = init->getScreenWidth();
 	float scale = 1080.0 / screenHeight;
-	font = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 42 / scale);
-	menuFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 100 / scale);
-	popupFont = TTF_OpenFont("./Font/helvetica-neue-lt-com-25-ultra-light.ttf", 20 / scale);
+	font = TTF_OpenFont("./Font/CaviarDreams.ttf", 42 / scale);
+	menuFont = TTF_OpenFont("./Font/CaviarDreams.ttf", 60 / scale);
+	popupFont = TTF_OpenFont("./Font/CaviarDreams.ttf", 20 / scale);
 	renderNow = false;
 	shutDown = false;
 
@@ -164,7 +165,7 @@ void Render::scoreLoop(vector <int> scores, int scoreFinal, int scorePos, bool i
 	endRendering();
 	SDL_GL_SwapWindow(init->window);
 }
-void Render::settingsLoop(int musVol, int effVol) {
+void Render::settingsLoop(int musVol, int effVol, string col1, string col2, string grav) {
 	render();
 	startRendering();
 
@@ -178,6 +179,11 @@ void Render::settingsLoop(int musVol, int effVol) {
 	//Update volume button
 	settingsButtons->at(0).tekst = "Music volume: " + to_string(musVol) + "%";
 	settingsButtons->at(1).tekst = "Effects volume: " + to_string(effVol) + "%";
+
+	settingsButtons->at(3).tekst = "Orb Color: " + col1;
+	settingsButtons->at(4).tekst = "Orb Light Color: " + col2;
+
+	settingsButtons->at(6).tekst = "Gravity: " + grav;
 
 	for (int i = 0; i < settingsButtons->size(); i++) {
 		//Render text
@@ -265,7 +271,7 @@ void Render::gameLoopShading(){
 	glUniform1f(mUniformscreenHeight, screenHeight);
 	glUniform3f(lightAttenuation, 1, 1, 1);
 	glUniform1f(radius, 5);
-
+	glUniform3f(glGetUniformLocation(*shader->GetShaderProgram(), "particleLightColor"), 255-ledR, 255-ledG, 255-ledB);
 	
 	//if (i == 0)
 	backgroundVBO->draw(true);
@@ -674,4 +680,9 @@ ParticleVBO* Render::getParticleVBO(){
 }
 ParticleVBO* Render::getMainCharParticleVBO(){
 	return mainCharParticleVBO;
+}
+void Render::setLightColor(int r, int g, int b) {
+	ledR = r;
+	ledG = g;
+	ledB = b;
 }
