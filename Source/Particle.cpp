@@ -2,14 +2,14 @@
 
 
 
-Particle::Particle() {
+Particle::Particle(float r, float g, float b) {
 	//Initialize pointers
 	body = NULL;
 	joint = NULL;
 
 	//Set random color
-	float totCol = 0;
-	float rollR, rollG, rollB;
+	float rollR = r, rollG = g, rollB = b;
+	float totCol = rollR + rollG + rollB;
 	while (totCol < 0.3) {
 		//While dim color
 		rollR = randomRange(1, 100) / 100.0;
@@ -84,4 +84,8 @@ void Particle::update() {
 	if (isFired()) {
 		timeFired++;
 	}
+}
+
+void Particle::setColor(float r, float g, float b) {
+	color = b2Vec3(r, g, b);
 }

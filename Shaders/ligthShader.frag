@@ -20,6 +20,7 @@ uniform vec3 litLightColor;
 uniform float screenHeight;
 uniform vec3 lightAttenuation;
 uniform float radius;
+uniform vec3 particleLightColor;
 
 vec4 getTexture(){
 vec4 texture = vec4(normalize(texture2D(tex, shared_texCoord) * 2.0 - 1.0));
@@ -33,8 +34,8 @@ vec4 calcLigthMap (in int distanceShine,  in float sizeOfLigth , in int lp){
 
 	float distance=length(aux)/distanceShine;
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
-
-	vec4 outputMap = (vec4(attenuation,attenuation,attenuation,1.0) *getTexture() ) * sizeOfLigth ;
+	vec4 outputMap = ((vec4(attenuation,attenuation,attenuation,1.0) *getTexture() ) * sizeOfLigth) - (vec4(particleLightColor, 1));
+	//vec4 outputMap = (vec4(attenuation,attenuation,attenuation,1.0) *getTexture() ) * sizeOfLigth ;
 return outputMap;
 }
 vec4 mainCharLight ()

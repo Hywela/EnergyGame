@@ -30,6 +30,7 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	numStored = 0;
 	lost = false;
 	score = 0;
+	parR = parG = parB = -1;
 
 	//Initialize random wall variables
 	numWalls = START_WALLS - WALL_INCREASE;
@@ -141,10 +142,10 @@ void World::setupWorld() {
 	platformColors->push_back(COLOR_BLACK);
 
 	//Spawn roof and floor
-	platforms->push_back(addRect(roomX, floorY, roomW, WALLSIZE, false, 1));
+	platforms->push_back(addRect(roomX, floorY, roomW, DEATHWALL_SIZE, false, 1));
 	platformColors->push_back(COLOR_SOLID);
 
-	platforms->push_back(addRect(roomX, roofY, roomW, WALLSIZE, false, 1));
+	platforms->push_back(addRect(roomX, roofY, roomW, DEATHWALL_SIZE, false, 1));
 	platformColors->push_back(COLOR_SOLID);
 
 	//Spawn tutorial puzzle
@@ -288,6 +289,11 @@ float World::getCameraSpeed() {
 	return cameraSpeed;
 }
 
+void World::setGravity(int x, int y) {
+	float gravityX = GRAVITY_STRENGTH * x;
+	float gravityY = GRAVITY_STRENGTH * -y;
+	world->SetGravity(b2Vec2(gravityX, gravityY));
+}
 
 
 //Update functions
@@ -816,7 +822,7 @@ void World::spawnGroundParticles(int n, b2Vec2 pos, int r) {
 			int offY = (-camOffY) + posY + dY;
 
 			b2Body *newBody = addCircle(offX, offY, circleRadius, -1);
-			Particle *newParticle = new Particle();
+			Particle *newParticle = new Particle(parR, parG, parB);
 			newParticle->setBody(newBody);
 			particles->push_back(newParticle);
 		}
@@ -1027,7 +1033,7 @@ void World::spawnCharacter() {
 		dY *= roll;
 
 		b2Body *newBody = addCircle(posX + dX, posY + dY, circleRadius, -1);
-		particles->push_back(new Particle());
+		particles->push_back(new Particle(parR, parG, parB));
 		particles->back()->setBody(newBody);
 	}
 }
@@ -1094,6 +1100,15 @@ int World::getScore() {
 	return score;
 }
 
+void World::setParticleColor(int r, int g, int b) {
+	parR = r / 255;
+	parG = g / 255;
+	parB = b / 255;
+
+	for (int i = 0; i < particles->size(); i++) {
+		particles->at(i)->setColor(parR, parG, parB);
+	}
+}
 
 
 //Random wall functions
@@ -1180,11 +1195,12 @@ void World::spawnRandomWalls() {
 			case 2: {y = FLOOR - (h / 2); break;}
 		}
 
-		int offX = (-camOffX) + spawnX;
+		int randWidth = randomRange(0, WALLSIZE - 10) * randomRange(-1, 1);
+		int offX = (-camOffX) + spawnX + randWidth;
 		int offY = (-camOffY) + y;
 
 		//All data collected, create platform
-		platforms->push_back(addRect(offX, offY, WALLSIZE, h, false, 1));
+		platforms->push_back(addRect(offX, offY, WALLSIZE + randWidth, h, false, 1));
 		platformColors->push_back(COLOR_SOLID);
 	}
 
