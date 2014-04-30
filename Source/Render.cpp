@@ -67,6 +67,8 @@ Render::~Render()
 	delete particleVBO;
 	delete mainCharParticleVBO;
 	delete shader;
+	delete colorShader;
+	delete platformShader;
 	delete init;
 
 	//Delete fonts not working
