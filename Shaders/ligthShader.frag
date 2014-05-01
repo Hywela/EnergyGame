@@ -76,14 +76,13 @@ void main()
 vec4 sum = vec4(0,0,0,0);
 vec4 lit = vec4(0,0,0,0);
 vec4 unlit = vec4(0,0,0,0);
-float radiusSize = 1 ;
-int standard = 8;
+float radiusSize = 20;
+int standard = 3;
 for(int i = 0; i < particleNumLigth; i++){
 	sum+=calcLigthMap(standard, radiusSize,  i);
 }
 radiusSize = radius;
 standard = 1;
-radiusSize = radius;
 for(int i = 0; i < platformNumLitLigth; i++){
 
 	lit+=litPlatform(standard, radiusSize,  i)*vec4(litLightColor,1);

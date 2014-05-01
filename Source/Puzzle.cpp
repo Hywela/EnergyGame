@@ -30,7 +30,7 @@ vector <PartData> Puzzle::getParts() {
 bool Puzzle::isPlayerInside(b2Vec2 position) {
 	bool found = false;
 
-	if (position.x >= (spawnX + 600) / scale) {
+	if (position.x >= (spawnX + 625) / scale) {
 		found = true;
 		activated = true;
 		ticksLastSec = SDL_GetTicks();
