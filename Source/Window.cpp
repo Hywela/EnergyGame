@@ -26,7 +26,7 @@ Window::Window() {
 
 	//fps test variables
 	fps_lasttime = SDL_GetTicks(); //the last recorded time.
-	fps_current = 60; //the current FPS.
+	fps_current = 34; //the current FPS.
 	fps_frames = 0; //frames passed since the last recorded fps.
 	inGame = false;
 	scoreFinal = -1;

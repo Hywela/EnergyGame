@@ -56,8 +56,8 @@ private:
 	Mix_Music *bg_music;
 	Mix_Chunk *snd_Shoot, *snd_PuzzleClear, *snd_PuzzleFail;
 
-	//InputQueue *inputQueue;
-	//RenderQue *renderQueue;
+	//Speed variables
+	int movementSpeedGained;
 
 public:
 	World(int screenWidth, int screenHeight, PlatformVBO *platformRendering, ParticleVBO *particleRendering, ParticleVBO *mainCharRendering);

@@ -31,6 +31,7 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	lost = false;
 	score = 0;
 	parR = parG = parB = -1;
+	movementSpeedGained = 0;
 
 	//Initialize random wall variables
 	numWalls = START_WALLS - WALL_INCREASE;
@@ -881,7 +882,7 @@ void World::applyForce(int x, int y) {
 				float xGravityForce = 3; //Force to counteract friction
 				float yGravityForce = 6; //Force to counteract gravity
 				b2Vec2 direction = b2Vec2((dist.x / divider) * xGravityForce, (dist.y / divider) * yGravityForce);
-				direction *= MOVEMENT_SPEED_GAIN; //Apply base speed of the object
+				direction *= movementSpeedGained; //Apply base speed of the object
 
 				//Apply force
 				tempBody->ApplyForce(-direction, tempXY, true);
@@ -943,11 +944,13 @@ int World::shootParticle(int x, int y) {
 	float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
 	float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
 	float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
+
 	float xGravityForce = 1; //Force to counteract friction
 	float yGravityForce = 1; //Force to counteract gravity
+	movementSpeedGained = (int) divider;
 	b2Vec2 direction = b2Vec2(dist.x / divider, dist.y / divider);
-	direction *= PARTICLE_SPEED; //Apply base speed of the object
-
+	direction *= PARTICLE_SPEED * movementSpeedGained; //Apply base speed of the object
+	
 	int closestParticle = -1;
 	int closestTotDist = 0;
 	int particlesLeft = 0;

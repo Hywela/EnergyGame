@@ -39,8 +39,8 @@ const int DEATHWALL_SIZE = 30;
 const int GRAVITY_STRENGTH = 5;
 const int CAMERA_SPEEDUP_RANGE = 800;
 const int HIGHSCORES = 5;
-const float PARTICLE_SPEED = 2000;
-const float MOVEMENT_SPEED_GAIN = PARTICLE_SPEED / 10;
+const float PARTICLE_SPEED = 5;
+const float MOVEMENT_SPEED_GAIN = PARTICLE_SPEED / 10; 
 const int PUZZLE_TIME_TICKS = 360;
 const int BUTTON_BOX_SIZE = 15;
 //Audio variables
