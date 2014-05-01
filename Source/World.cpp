@@ -138,14 +138,14 @@ void World::setupWorld() {
 	spawnCooldown = 0;
 
 	//Set up edge wall
-	platforms->push_back(addInvisibleWall(0, 0, DEATHWALL_SIZE, screenheight, false, -1));
+	platforms->push_back(addInvisibleWall(0, 0, DEATHWALL_SIZE, FLOOR, false, -1));
 	platformColors->push_back(COLOR_BLACK);
 
 	//Spawn roof and floor
-	platforms->push_back(addRect(roomX, floorY, roomW, DEATHWALL_SIZE, false, 1));
+	platforms->push_back(addRect(roomX + camOffX, floorY, roomW, DEATHWALL_SIZE, false, 1));
 	platformColors->push_back(COLOR_SOLID);
 
-	platforms->push_back(addRect(roomX, roofY, roomW, DEATHWALL_SIZE, false, 1));
+	platforms->push_back(addRect(roomX + camOffX, roofY, roomW, DEATHWALL_SIZE, false, 1));
 	platformColors->push_back(COLOR_SOLID);
 
 	//Spawn tutorial puzzle
@@ -1195,8 +1195,10 @@ void World::spawnRandomWalls() {
 			case 2: {y = FLOOR - (h / 2); break;}
 		}
 
-		int randWidth = randomRange(0, WALLSIZE - 10) * randomRange(-1, 1);
-		int offX = (-camOffX) + spawnX + randWidth;
+		int randWidth = randomRange(0, WALLSIZE - 10);
+		int randX = randWidth * randomRange(-1, 1);
+
+		int offX = (-camOffX) + spawnX + randX;
 		int offY = (-camOffY) + y;
 
 		//All data collected, create platform

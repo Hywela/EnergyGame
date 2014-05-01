@@ -81,8 +81,6 @@ for(int i = 0; i < particleNumLigth; i++){
 	sum+=calcLigthMap(standard, radiusSize,  i);
 }
 radiusSize = radius;
-standard = 1;
-radiusSize = radius;
 for(int i = 0; i < platformNumLitLigth; i++){
 
 	lit+=litPlatform(standard, radiusSize,  i)*vec4(litLightColor,1);

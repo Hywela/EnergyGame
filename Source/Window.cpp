@@ -8,9 +8,8 @@ Window::Window() {
 	leftMouseClick = &Window::menuLeftMouseClick;
 	loopType = &Window::menuLoop;
 	showDebug = false;
-	r1 = r2  =  g1 = g2  =  b1 = b2 = 0;
+
 	gravityX = gravityY = 0;
-	col1 = col2 = "Red";
 	grav = "Off";
 
 	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
@@ -18,6 +17,12 @@ Window::Window() {
 	ren = new Render(new Init( flags));
 	tempOFFON = false;
 	buildMenu();
+
+	r1 = 255; g1 = 255; b1 = 255;
+	r2 = 0; g2 = 255; b2 = 255;
+	nextColor(r1, g1, b1, col1, true);
+	nextColor(r2, g2, b2, col2, true);
+	ren->setLightColor(r2, g2, b2);
 
 	//fps test variables
 	fps_lasttime = SDL_GetTicks(); //the last recorded time.
@@ -509,7 +514,7 @@ void Window::loadData() {
 	char buffer[64];
 	string arg;
 
-	if (file) {
+	if (file.is_open()) {
 		while (!file.eof()) {
 			file >> buffer;
 			arg = buffer;
