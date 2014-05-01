@@ -80,6 +80,7 @@ int standard = 10;
 for(int i = 0; i < particleNumLigth; i++){
 	sum+=calcLigthMap(standard, radiusSize,  i);
 }
+ standard = 1;
 radiusSize = radius;
 for(int i = 0; i < platformNumLitLigth; i++){
 
