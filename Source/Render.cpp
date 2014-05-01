@@ -200,7 +200,7 @@ void Render::mainLoop(string fps, string puz, string par, string sco, string tim
 	gameLoopShading();
 	//mainLoopShading(colorShader, 1);
 	particleVBO->draw();
-	
+	mainCharParticleVBO->draw();
 	//mainCharParticleVBO->draw();
 
 		glEnable(GL_TEXTURE_2D);

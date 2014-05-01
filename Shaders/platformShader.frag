@@ -75,8 +75,8 @@ void main()
 vec4 sum = vec4(0,0,0,0);
 vec4 lit = vec4(0,0,0,0);
 vec4 unlit = vec4(0,0,0,0);
-float radiusSize = 1 ;
-int standard = 8;
+float radiusSize = 2 ;
+int standard = 10;
 for(int i = 0; i < particleNumLigth; i++){
 	sum+=calcLigthMap(standard, radiusSize,  i);
 }

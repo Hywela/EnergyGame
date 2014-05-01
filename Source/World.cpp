@@ -108,7 +108,7 @@ void World::setupWorld() {
 	//Create world objects
 	world = new b2World(b2Vec2(0, 0)); //9.81
 
-	world->SetGravity(b2Vec2(0, 7));
+	world->SetGravity(b2Vec2(0, 0));
 
 	world->ShiftOrigin(b2Vec2(screenwidth / 2, screenheight / 2));
 	//Spawn character
