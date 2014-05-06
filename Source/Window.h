@@ -53,6 +53,7 @@ private:
 public:
 	Window();
 	~Window();
+	int gameFPS;
 	void (Window::*leftMouseClick)();
 	void (Window::*loopType)();
 	void checkForMouseInput();

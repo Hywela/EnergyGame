@@ -1,7 +1,6 @@
 #include "Window.h"
 
 Window::Window() {
-
 	running = true;
 	isFullscreen = false;
 	paused = false;
@@ -141,11 +140,12 @@ void Window::gameLoop() {
 	//Fps test end
 	
 
-	world->step(fps_current);
+	world->step(fps_current);	
+	world->updateWorld();
 
 	ren->render();
 	ren->startRendering();
-	world->updateWorld();
+
 
 	Uint32 ticks = SDL_GetTicks();
 	if (ticks >= lastUpdate + (1000.0 / WORLD_UPDATE_FPS)) {
@@ -310,16 +310,7 @@ void Window::menuLoop(){
 	int fps = (1000 / 30) - (timer - SDL_GetTicks());
 	//(this->*loopType)();
 	ren->mainMenu(fpsStr);
-	//	SDL_Delay(fps);
-	timer = SDL_GetTicks();
 
-	fps_frames++;
-	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
-	{
-		fps_lasttime = SDL_GetTicks();
-		fps_current = fps_frames;
-		fps_frames = 0;
-	}
 }
 void Window::pauseLoop(){
 	string fpsStr = "FPS: " + to_string(fps_current);
@@ -328,15 +319,7 @@ void Window::pauseLoop(){
 	//(this->*loopType)();
 	ren->pauseLoop();
 	//	SDL_Delay(fps);
-	timer = SDL_GetTicks();
-
-	fps_frames++;
-	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
-	{
-		fps_lasttime = SDL_GetTicks();
-		fps_current = fps_frames;
-		fps_frames = 0;
-	}
+	
 }
 void Window::scoreLoop() {
 	string fpsStr = "FPS: " + to_string(fps_current);
@@ -478,7 +461,6 @@ void Window::showSettings() {
 void Window::endGame() {
 	//Get score
 	scoreFinal = world->getScore();
-
 	//Check if new highscore
 	for (int i = 0; (i < HIGHSCORES && scorePos == -1); i++) {
 		if (scoreFinal > highScores[i]) {
