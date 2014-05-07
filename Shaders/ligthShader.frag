@@ -23,7 +23,7 @@ uniform float radius;
 uniform vec3 particleLightColor;
 
 vec4 getTexture(){
-vec4 texture = vec4(normalize(texture2D(tex, shared_texCoord) * 2.0 - 1.0));
+vec4 texture = (texture2D(tex, shared_texCoord) * 2.0 - 1.0);
 return texture;
 }
 

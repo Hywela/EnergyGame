@@ -20,7 +20,7 @@ class PlatformVBO{
 private:
 	GLuint  vboID, colorID, texID, indID;
 	std::vector<GLuint> indices;
-	std::vector<GLfloat> vertices, texCoords;
+	std::vector<GLfloat> vertices, texCoords, texCoordsPlat;
 	std::vector <GLfloat> colors;
 	std::vector <GLfloat> litPostions, unlitPostions;
 	Texture *bgTexture,*platform;
