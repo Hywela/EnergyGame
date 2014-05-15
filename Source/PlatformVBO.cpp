@@ -39,7 +39,7 @@ void PlatformVBO::drawTXT(){
 
 		if (platform->GetTexture() >= 0) {
 			glEnable(GL_TEXTURE_2D);      // Turn on Texturing
-			//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 			glBindTexture(GL_TEXTURE_2D, platform->GetTexture());
 		}
 
@@ -47,7 +47,7 @@ void PlatformVBO::drawTXT(){
 
 		glDrawArrays(GL_QUADS, 0, vertices.size() / 2);
 
-		glDisableClientState(GL_COLOR_ARRAY);
+	
 		//restore the GL state back
 		glDisableClientState(GL_VERTEX_ARRAY);
 		if (platform->GetTexture() >= 0) {
@@ -82,7 +82,7 @@ void PlatformVBO::drawTexture(){
 
 			if (bgTexture->GetTexture() >= 0) {
 				glEnable(GL_TEXTURE_2D);      // Turn on Texturing
-			//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+				glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 				glBindTexture(GL_TEXTURE_2D, bgTexture->GetTexture());
 			}
 

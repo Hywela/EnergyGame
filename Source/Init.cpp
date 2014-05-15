@@ -23,7 +23,7 @@ void Init::OpenGL()
 	glDepthFunc(GL_LEQUAL);                         // The Type Of Depth Test To Do
 
 	//glShadeModel(GL_SMOOTH);                        // Enable Smooth Shading
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);          // Really Nice Perspective 
+	
 	
 	//glEnable(GL_NORMALIZE);
 	/*

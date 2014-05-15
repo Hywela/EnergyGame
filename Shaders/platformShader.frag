@@ -45,8 +45,7 @@ vec2 pixel=gl_FragCoord.xy;
 
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 
-	vec4 color=vec4(attenuation,attenuation,attenuation,1.0)*texture2D(tex, gl_TexCoord[1].st)*radius;	
-
+	vec4 color  = texture2D(sampler2D, gl_TexCoord[1].xy);
   return color;
 }
 
@@ -110,7 +109,7 @@ for(int i = 0; i < platformNumUnlitLigth; i++){
 
 	
 	
-	gl_FragColor = sum+unlit+lit+mainCharLight();
+	gl_FragColor = mainCharLight();
 	
 
 	
