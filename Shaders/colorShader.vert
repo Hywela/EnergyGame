@@ -1,9 +1,13 @@
-     varying vec2 texCoord;                                                     
-     varying vec4 lightColor;                                                                               
-void main()                                                                         
-{          
-	texCoord = gl_MultiTexCoord0.xy;                                                                         
-    gl_FrontColor = gl_Color;
-   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;                           
-                             
+#version 120
+
+attribute vec3 vertex;
+attribute vec3 color;
+
+varying vec3 shared_color;
+
+void main() {
+   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;  
+	
+	//Send data to fragment shader
+	shared_color = color;
 }

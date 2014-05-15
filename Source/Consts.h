@@ -5,7 +5,9 @@
 #include <string>
 using namespace std;
 
-
+enum MeshBufferPositions {
+	VBO_VERTEX, VBO_COLOR, VBO_TEXCORD, VBO_NORMAL, VBO_INDEX, VBO_COUNT
+};
 
 //Box2D variables
 const float M2P = 30;
@@ -23,22 +25,24 @@ const b2Vec3 COLOR_LIT = b2Vec3(0, 1, 0);
 const b2Vec3 COLOR_BLACK = b2Vec3(0.1, 0.1, 0.1);
 const int ROOF = 0;
 const int FLOOR = 600;
-const int WALLSIZE = 10;
+const int WALLSIZE = 100;
 const float START_CAMERASPEED = 1.5;
 const float CAMERASPEED_INCREASE = 0;
 const int START_WALLS = 10;
 const int WALL_INCREASE = 4;
-const int WALL_DISTANCE = 100;
+const int WALL_DISTANCE = 200;
 const int START_PARTICLES = 20;
 const int INCREDIBLY_LONG = 10000000;
 const int DEATH_WALL_SPACE = 100;
 const int PICKUP_RANGE = 50;
 const int DEATHWALL_SIZE = 30;
+const int GRAVITY_STRENGTH = 5;
 const int CAMERA_SPEEDUP_RANGE = 800;
 const int HIGHSCORES = 5;
-const float PARTICLE_SPEED = 2000;
-const float MOVEMENT_SPEED_GAIN = PARTICLE_SPEED / 10;
+const float PARTICLE_SPEED = 5;
+const float MOVEMENT_SPEED_GAIN = PARTICLE_SPEED / 10; 
 const int PUZZLE_TIME_TICKS = 360;
+const int BUTTON_BOX_SIZE = 15;
 //Audio variables
 const int AUDIO_RATE = 22050;
 const Uint16 AUDIO_FORMAT = AUDIO_S16; /* 16-bit stereo */

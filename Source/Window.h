@@ -38,6 +38,9 @@ private:
 	int scoreFinal, scorePos;
 	menu currentMenu;
 	int musicVolume, effectVolume;
+	int r1, r2,  g1, g2,  b1, b2;
+	int gravityX, gravityY;
+	string col1, col2, grav;
 	
 	//FPS test variables
 	Uint32 fps_lasttime;
@@ -50,6 +53,7 @@ private:
 public:
 	Window();
 	~Window();
+	int gameFPS;
 	void (Window::*leftMouseClick)();
 	void (Window::*loopType)();
 	void checkForMouseInput();
@@ -77,4 +81,6 @@ public:
 	void endGame();
 	void saveData();
 	void loadData();
+	void nextColor(int &r, int &g, int &b, string &str, bool current = false);
+	void nextGravity(bool current = false);
 };

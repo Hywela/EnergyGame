@@ -1,6 +1,6 @@
 #version 150
 
-uniform sampler2D plattex;
+uniform sampler2D tex;
 uniform int textureFlag;
 
 varying vec3 shared_color;
@@ -22,10 +22,12 @@ uniform vec3 lightAttenuation;
 uniform float radius;
 out vec4 outPut;
 
+
 vec4 getTexture(){
-vec4 texture = texture2D(plattex, shared_texCoord);
+vec4 texture = (texture2D(tex, shared_texCoord) * 2.0 - 1.0);
 return texture;
 }
+
 
 vec4 calcLigthMap (in int distanceShine,  in float sizeOfLigth , in int lp){
 	vec2 pixel=gl_FragCoord.xy;	
@@ -68,17 +70,18 @@ return outputMap;
 }
 
 void main()
-{		
+{	
+	
 vec4 sum = vec4(0,0,0,0);
 vec4 lit = vec4(0,0,0,0);
 vec4 unlit = vec4(0,0,0,0);
-float radiusSize = 2 ;
-int standard = 10;
+float radiusSize = 20;
+int standard = 3;
 for(int i = 0; i < particleNumLigth; i++){
 	sum+=calcLigthMap(standard, radiusSize,  i);
 }
- standard = 1;
 radiusSize = radius;
+standard = 1;
 for(int i = 0; i < platformNumLitLigth; i++){
 
 	lit+=litPlatform(standard, radiusSize,  i)*vec4(litLightColor,1);
@@ -89,6 +92,6 @@ for(int i = 0; i < platformNumUnlitLigth; i++){
 	unlit+=unlitPlatform(standard, radiusSize, i)*vec4(unlitLightColor,1);;
 }
 
-	outPut = sum+unlit+lit+mainCharLight();
+	gl_FragColor = sum+unlit+lit+mainCharLight();
 
 }

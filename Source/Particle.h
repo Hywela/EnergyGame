@@ -11,7 +11,7 @@ private:
 	int timeFired;
 
 public:
-	Particle();
+	Particle(float r = -1, float g = -1, float b = -1);
 	~Particle();
 
 	void setJoint(b2Joint *joint);
@@ -22,4 +22,5 @@ public:
 	bool onGround();
 	bool isFired();
 	void update();
+	void setColor(float r, float g, float b);
 };

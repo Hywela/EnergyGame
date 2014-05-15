@@ -30,6 +30,8 @@ World::World(int screenwidth, int screenheight, PlatformVBO *platformRendering, 
 	numStored = 0;
 	lost = false;
 	score = 0;
+	parR = parG = parB = -1;
+	movementSpeedGained = 0;
 
 	//Initialize random wall variables
 	numWalls = START_WALLS - WALL_INCREASE;
@@ -137,14 +139,14 @@ void World::setupWorld() {
 	spawnCooldown = 0;
 
 	//Set up edge wall
-	platforms->push_back(addInvisibleWall(0, 0, DEATHWALL_SIZE, screenheight, false, -1));
+	platforms->push_back(addInvisibleWall(0, 0, DEATHWALL_SIZE, FLOOR, false, -1));
 	platformColors->push_back(COLOR_BLACK);
 
 	//Spawn roof and floor
-	platforms->push_back(addRect(roomX, floorY, roomW, WALLSIZE, false, 1));
+	platforms->push_back(addRect(roomX + camOffX, floorY, roomW, DEATHWALL_SIZE, false, 1));
 	platformColors->push_back(COLOR_SOLID);
 
-	platforms->push_back(addRect(roomX, roofY, roomW, WALLSIZE, false, 1));
+	platforms->push_back(addRect(roomX + camOffX, roofY, roomW, DEATHWALL_SIZE, false, 1));
 	platformColors->push_back(COLOR_SOLID);
 
 	//Spawn tutorial puzzle
@@ -168,7 +170,6 @@ void World::setupWorld() {
 	}
 	else {
 		cout << "ERROR: The background music was not loaded!\n";
-		cout << "ERROR: " << Mix_GetError() << endl;
 	}
 }
 
@@ -289,6 +290,11 @@ float World::getCameraSpeed() {
 	return cameraSpeed;
 }
 
+void World::setGravity(int x, int y) {
+	float gravityX = GRAVITY_STRENGTH * x;
+	float gravityY = GRAVITY_STRENGTH * -y;
+	world->SetGravity(b2Vec2(gravityX, gravityY));
+}
 
 
 //Update functions
@@ -432,8 +438,8 @@ void World::updatePlatforms() {
 									b2Vec2 parXY = parBody->GetPosition();
 									parXY *= M2P;
 
-									if (parXY.x >= x1.x - 10 && parXY.x <= x2.x + 10) {
-										if (parXY.y >= x1.y - 10 && parXY.y <= x2.y + 10) {
+									if (parXY.x >= x1.x - BUTTON_BOX_SIZE && parXY.x <= x2.x + BUTTON_BOX_SIZE) {
+										if (parXY.y >= x1.y - BUTTON_BOX_SIZE && parXY.y <= x2.y + BUTTON_BOX_SIZE) {
 											//Light platform
 											curColor = COLOR_LIT;
 										
@@ -595,7 +601,7 @@ void World::loadPuzzles(string file) {
 			}
 			else if (dataText.find("Time:") != -1) {
 				lvl >> time;
-				time *= WORLD_UPDATE_FPS;
+				time += 1;
 			}
 			else if (dataText.find("Bonus:") != -1) {
 				lvl >> bonus;
@@ -735,7 +741,7 @@ bool World::startPuzzle() {
 	}
 
 	//Check if camera is over puzzle
-	if (puzzle->cameraAtCenter(b2Vec2((screenwidth / 2), 0))) {
+	if (puzzle->cameraAtCenter(b2Vec2((screenwidth / 2), 0)) || !puzzlesSolved) {
 		cameraSpeed = 0;
 		stopped = true;
 	}
@@ -817,7 +823,7 @@ void World::spawnGroundParticles(int n, b2Vec2 pos, int r) {
 			int offY = (-camOffY) + posY + dY;
 
 			b2Body *newBody = addCircle(offX, offY, circleRadius, -1);
-			Particle *newParticle = new Particle();
+			Particle *newParticle = new Particle(parR, parG, parB);
 			newParticle->setBody(newBody);
 			particles->push_back(newParticle);
 		}
@@ -876,7 +882,7 @@ void World::applyForce(int x, int y) {
 				float xGravityForce = 3; //Force to counteract friction
 				float yGravityForce = 6; //Force to counteract gravity
 				b2Vec2 direction = b2Vec2((dist.x / divider) * xGravityForce, (dist.y / divider) * yGravityForce);
-				direction *= MOVEMENT_SPEED_GAIN; //Apply base speed of the object
+				direction *= movementSpeedGained; //Apply base speed of the object
 
 				//Apply force
 				tempBody->ApplyForce(-direction, tempXY, true);
@@ -899,7 +905,7 @@ void World::applyForce(int x, int y) {
 		float xGravityForce = 3; //Force to counteract friction
 		float yGravityForce = 6; //Force to counteract gravity
 		b2Vec2 direction = b2Vec2((dist.x / divider) * xGravityForce, (dist.y / divider) * yGravityForce);
-		direction *= MOVEMENT_SPEED_GAIN; //Apply base speed of the object
+		direction *= movementSpeedGained; //Apply base speed of the object
 
 		//Apply force
 		playerBody->ApplyForce(-direction, playerPos, true);
@@ -938,11 +944,14 @@ int World::shootParticle(int x, int y) {
 	float xDivider = ((dist.x > 0) ? dist.x : -dist.x); //Dist as positive
 	float yDivider = ((dist.y > 0) ? dist.y : -dist.y); //Dist as positive
 	float divider = ((xDivider >= yDivider) ? xDivider : yDivider); //Largest dist as positive
+
 	float xGravityForce = 1; //Force to counteract friction
 	float yGravityForce = 1; //Force to counteract gravity
+	movementSpeedGained = (int) divider;
 	b2Vec2 direction = b2Vec2(dist.x / divider, dist.y / divider);
-	direction *= PARTICLE_SPEED; //Apply base speed of the object
-
+	b2Vec2 moveDir = direction;
+	direction *= PARTICLE_SPEED * movementSpeedGained; //Apply base speed of the object
+	
 	int closestParticle = -1;
 	int closestTotDist = 0;
 	int particlesLeft = 0;
@@ -989,6 +998,10 @@ int World::shootParticle(int x, int y) {
 		b2Vec2 parXY = parBody->GetPosition();
 		parXY *= M2P;
 
+		b2Vec2 firePos = mainXY + moveDir;
+		firePos *= P2M;
+
+		parBody->SetTransform(firePos, 0);
 		parBody->SetLinearVelocity(b2Vec2(0, 0));
 		parBody->ApplyForce(direction, parXY, true);
 
@@ -1028,7 +1041,7 @@ void World::spawnCharacter() {
 		dY *= roll;
 
 		b2Body *newBody = addCircle(posX + dX, posY + dY, circleRadius, -1);
-		particles->push_back(new Particle());
+		particles->push_back(new Particle(parR, parG, parB));
 		particles->back()->setBody(newBody);
 	}
 }
@@ -1095,6 +1108,15 @@ int World::getScore() {
 	return score;
 }
 
+void World::setParticleColor(int r, int g, int b) {
+	parR = r / 255;
+	parG = g / 255;
+	parB = b / 255;
+
+	for (int i = 0; i < particles->size(); i++) {
+		particles->at(i)->setColor(parR, parG, parB);
+	}
+}
 
 
 //Random wall functions
@@ -1181,11 +1203,14 @@ void World::spawnRandomWalls() {
 			case 2: {y = FLOOR - (h / 2); break;}
 		}
 
-		int offX = (-camOffX) + spawnX;
+		int randWidth = randomRange(0, WALLSIZE - 10);
+		int randX = randWidth * randomRange(-1, 1);
+
+		int offX = (-camOffX) + spawnX + randX;
 		int offY = (-camOffY) + y;
 
 		//All data collected, create platform
-		platforms->push_back(addRect(offX, offY, WALLSIZE, h, false, 1));
+		platforms->push_back(addRect(offX, offY, WALLSIZE + randWidth, h, false, 1));
 		platformColors->push_back(COLOR_SOLID);
 	}
 

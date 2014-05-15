@@ -54,12 +54,14 @@ private:
 		boolean disabled;
 	};
 
+	int ledR, ledG, ledB;
+
 	vector<button> *popupButtons, *menuObjects, *pauseObjects, *scoreButtons, *scoreTexts, *settingsButtons;
 	PlatformVBO *platformVBO,*backgroundVBO, *pauseVBO;
 	ParticleVBO *particleVBO, *mainCharParticleVBO;
 	
 	//shader
-	Shader *shader, *colorShader;
+	Shader *shader, *colorShader , *platformShader;
 	GLint mUniform;
 	
 	//Unifroms
@@ -100,7 +102,7 @@ public:
 	void pauseLoop();
 	void popupMenu();
 	void scoreLoop(vector <int> scores, int scoreFinal, int scorePos, bool inGame);
-	void settingsLoop(int musVol, int effVol);
+	void settingsLoop(int musVol, int effVol, string col1, string col2, string grav);
 
 	void pushOrClearPopupMenu(int type, int x, int y);
 	void pushBackMenuObj(int posX,int posY, string tekst);
@@ -123,6 +125,9 @@ public:
 	PlatformVBO* getPlatformVBO();
 	ParticleVBO* getParticleVBO();
 	ParticleVBO* getMainCharParticleVBO();
-	void mainLoopShading(Shader *sh, int i);
+	void gameLoopShading();
+	void colorShading();
+	void setUniforms(Shader *tempShader);
+	void setLightColor(int r, int g, int b);
 };
 

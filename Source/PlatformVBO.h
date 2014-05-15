@@ -20,16 +20,18 @@ class PlatformVBO{
 private:
 	GLuint  vboID, colorID, texID, indID;
 	std::vector<GLuint> indices;
-	std::vector<GLfloat> vertices, texCoords;
+	std::vector<GLfloat> vertices, texCoords, texCoordsPlat;
 	std::vector <GLfloat> colors;
 	std::vector <GLfloat> litPostions, unlitPostions;
 	Texture *bgTexture,*platform;
 	void setVBO();
+	GLuint arrayObject, buffers[VBO_COUNT];
+	GLenum renderMode;
 public:
 	PlatformVBO();
 	~PlatformVBO();
 	
-	void draw(); 
+	void draw(bool texture);
 	void drawTexture();
 	void drawTXT();
 	//Setters
@@ -45,6 +47,5 @@ public:
 	int getCenterLitSize();
 	GLfloat *getCenterLit();
 	GLfloat *getCenterUnlit();
-	void enableTex(GLhandleARB shaderprogram,
-		const char* textureVariable, bool check);
+	
 };

@@ -24,7 +24,6 @@ void Init::OpenGL()
 
 	//glShadeModel(GL_SMOOTH);                        // Enable Smooth Shading
 	
-	
 	//glEnable(GL_NORMALIZE);
 	/*
 	//Initialize the lights
@@ -44,10 +43,10 @@ void Init::OpenGL()
 	{
 		std::cout << "Error happened when starting Glew." << std::endl;
 	}
-	if (glewIsSupported("GL_VERSION_3_3"))
-		printf("Ready for OpenGL 3.3\n");
+	if (glewIsSupported("GL_VERSION_3_0"))
+		printf("Ready for OpenGL 3.0\n");
 	else {
-		printf("OpenGL 3.3 not supported\n");
+		printf("OpenGL 3.0 not supported\n");
 		exit(1);
 	}
 };

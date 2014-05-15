@@ -1,7 +1,6 @@
 #include "Window.h"
 
 Window::Window() {
-
 	running = true;
 	isFullscreen = false;
 	paused = false;
@@ -9,15 +8,24 @@ Window::Window() {
 	loopType = &Window::menuLoop;
 	showDebug = false;
 
+	gravityX = gravityY = 0;
+	grav = "Off";
+
 	int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;// | SDL_WINDOW_FULLSCREEN;
 
 	ren = new Render(new Init( flags));
 	tempOFFON = false;
 	buildMenu();
 
+	r1 = 255; g1 = 255; b1 = 255;
+	r2 = 0; g2 = 255; b2 = 255;
+	nextColor(r1, g1, b1, col1, true);
+	nextColor(r2, g2, b2, col2, true);
+	ren->setLightColor(r2, g2, b2);
+
 	//fps test variables
 	fps_lasttime = SDL_GetTicks(); //the last recorded time.
-	fps_current = 0; //the current FPS.
+	fps_current = 34; //the current FPS.
 	fps_frames = 0; //frames passed since the last recorded fps.
 	inGame = false;
 	scoreFinal = -1;
@@ -114,22 +122,23 @@ void Window::gameLoop() {
 	string cSpeedStr = "";
 
 	if (world) {
+		scoStr = "Score: " + to_string(world->getScore());
 		if (showDebug) {
 			fpsStr = "FPS: " + to_string(fps_current);
 			puzStr = "Solved: " + to_string(world->getPuzzlesSolved());
 			parStr = "Particles: " + to_string(world->getParticlesLeft());
-			scoStr = "Score: " + to_string(world->getScore());
 			cSpeedStr = "Camera Speed: " + to_string(world->getCameraSpeed());
 		}
 
 		int t = world->getPuzzleTimeLeft();
 		if (t >= 0) {
-			t = 1 + floor(t / WORLD_UPDATE_FPS);
+			t = ceil(t);
 			timeStr = "Time Left: " + to_string(t);
 		}
 	}
 
 	//Fps test end
+	
 	fps_frames++;
 	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
 	{
@@ -138,11 +147,12 @@ void Window::gameLoop() {
 		fps_frames = 0;
 	}
 
-	world->step(fps_current);
+	world->step(fps_current);	
+	world->updateWorld();
 
 	ren->render();
 	ren->startRendering();
-	world->updateWorld();
+
 
 	Uint32 ticks = SDL_GetTicks();
 	if (ticks >= lastUpdate + (1000.0 / WORLD_UPDATE_FPS)) {
@@ -155,7 +165,6 @@ void Window::gameLoop() {
 
 	//SDL_Delay(fps);
 	//Fps test start
-	
 	if (world->gameOver()) {
 		endGame();
 	}
@@ -198,6 +207,7 @@ void Window::pauseLeftMouseClick() {
 	switch (ren->pauseMouseClickCheck(e.button.x, e.button.y)) {
 		case 1: {
 			resumeGame();
+			fps_lasttime = SDL_GetTicks();
 			break;
 		}
 		case 2: {
@@ -235,6 +245,7 @@ void Window::scoreLeftMouseClick() {
 	}
 }
 void Window::settingsLeftMouseClick() {
+
 	switch (ren->settingsMouseClickCheck(e.button.x, e.button.y)) {
 		case 1: {
 			//Music volume
@@ -259,6 +270,35 @@ void Window::settingsLeftMouseClick() {
 			exitGame();
 			break;
 		}
+		case 4: {
+			//Wall color
+			nextColor(r1, g1, b1, col1);
+			break;
+		}
+		case 5: {
+			//Orb color
+			nextColor(r2, g2, b2, col2);
+			ren->setLightColor(r2, g2, b2);
+			break;
+		}
+		case 6: {
+			//Randomize light
+			r1 = randomRange(0, 1) * 255;
+			g1 = randomRange(0, 1) * 255;
+			b1 = randomRange(0, 1) * 255;
+			r2 = randomRange(0, 1) * 255;
+			g2 = randomRange(0, 1) * 255;
+			b2 = randomRange(0, 1) * 255;
+			nextColor(r1, g1, b1, col1);
+			nextColor(r2, g2, b2, col2);
+			ren->setLightColor(r2, g2, b2);
+			break;
+		}
+		case 7: {
+			//Gravity mode
+			nextGravity();
+			break;
+		}
 		default:{
 			break;
 		}
@@ -270,16 +310,7 @@ void Window::menuLoop(){
 	int fps = (1000 / 30) - (timer - SDL_GetTicks());
 	//(this->*loopType)();
 	ren->mainMenu(fpsStr);
-	//	SDL_Delay(fps);
-	timer = SDL_GetTicks();
 
-	fps_frames++;
-	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
-	{
-		fps_lasttime = SDL_GetTicks();
-		fps_current = fps_frames;
-		fps_frames = 0;
-	}
 }
 void Window::pauseLoop(){
 	string fpsStr = "FPS: " + to_string(fps_current);
@@ -288,15 +319,7 @@ void Window::pauseLoop(){
 	//(this->*loopType)();
 	ren->pauseLoop();
 	//	SDL_Delay(fps);
-	timer = SDL_GetTicks();
-
-	fps_frames++;
-	if (fps_lasttime < SDL_GetTicks() - 1.0 * 1000)
-	{
-		fps_lasttime = SDL_GetTicks();
-		fps_current = fps_frames;
-		fps_frames = 0;
-	}
+	
 }
 void Window::scoreLoop() {
 	string fpsStr = "FPS: " + to_string(fps_current);
@@ -317,7 +340,7 @@ void Window::settingsLoop() {
 	string fpsStr = "FPS: " + to_string(fps_current);
 	int fps = (1000 / 30) - (timer - SDL_GetTicks());
 
-	ren->settingsLoop(musicVolume, effectVolume);
+	ren->settingsLoop(musicVolume, effectVolume, col1, col2, grav);
 
 	timer = SDL_GetTicks();
 	fps_frames++;
@@ -334,6 +357,8 @@ void Window::startWorld() {
 		, ren->getMainCharParticleVBO());
 	//worldSimulation = new thread(&World::checkForInput, world);
 	//world->setupWorld();
+	world->setParticleColor(r1, g1, b1);
+	world->setGravity(gravityX, gravityY);
 }
 void Window::buildMenu(){
 	int screenW = ren->getInit()->getScreenWidth();
@@ -360,22 +385,28 @@ void Window::buildMenu(){
 	int scoreTop = offY * 0.5;
 
 	//Highscore objects
-	ren->pushBackScoreTxt(scoreRight, scoreTop, "Score: 0");
+	ren->pushBackScoreTxt(scoreRight + (offX * 0.5), scoreTop, "Score: 0");
 	int highscoreY = scoreTop;
 	ren->pushBackScoreTxt(scoreLeft, highscoreY, "HIGHSCORES");
 	for (int i = 0; i < HIGHSCORES; i++) {
-		ren->pushBackScoreTxt(scoreLeft, highscoreY + (offY * 0.4 * (i + 1)), "1: 1337");
+		ren->pushBackScoreTxt(scoreLeft, highscoreY + (offY * 0.3 * (i + 1)), "1: 1337");
 	}
-	ren->pushBackScoreBtn(scoreRight, scoreTop + (offY * 1.5), "Retry?");
-	ren->pushBackScoreBtn(scoreRight, scoreTop + (offY * 2), "Main Menu");
+	ren->pushBackScoreBtn(scoreRight + (offX * 0.5), scoreTop + (offY * 0.3), "Retry?");
+	ren->pushBackScoreBtn(scoreRight + (offX * 0.5), scoreTop + (offY * 2.5), "Main Menu");
 
 	//Settings objects
-	ren->pushBackSettingsBtn(scoreLeft, scoreTop, "Music volume: 0");
-	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (offY * 0.5), "Effects volume: 0");
-	ren->pushBackSettingsBtn(scoreRight + (offX * 0.75), offY * 2.5, "Back");
+	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (offY * -0.25), "Music volume: 0");
+	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (offY * 0.05), "Effects volume: 0");
+	ren->pushBackSettingsBtn(scoreRight + (offX * 0.5), scoreTop + (offY * 2.5), "Back");
 
+	string c1 = "Orb Color: " + col1;
+	string c2 = "Orb Light Color: " + col2;
 
+	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (offY * 0.95), c1);
+	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (offY * 1.25), c2);
+	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (offY * 1.55), "Randomize colors");
 
+	ren->pushBackSettingsBtn(scoreLeft, scoreTop + (offY * 2.15), "Gravity: Off");
 }
 void Window::resumeGame() {
 	paused = false;
@@ -430,7 +461,6 @@ void Window::showSettings() {
 void Window::endGame() {
 	//Get score
 	scoreFinal = world->getScore();
-
 	//Check if new highscore
 	for (int i = 0; (i < HIGHSCORES && scorePos == -1); i++) {
 		if (scoreFinal > highScores[i]) {
@@ -448,7 +478,10 @@ void Window::saveData() {
 
 	//Save settings
 	file << "MusicVolume: " << musicVolume
-		<< "\nEffectsVolume: " << effectVolume << endl;
+		 << "\nEffectsVolume: " << effectVolume
+		 << "\nOrbColor: " << r1 << " " << g1 << " " << b1
+		 << "\nOrbLightColor: " << r2 << " " << g2 << " " << b2
+		 << "\nGravity: " << gravityX << " " << gravityY << endl;
 
 	//Save highscores
 	file << "Highscores:\n";
@@ -463,7 +496,7 @@ void Window::loadData() {
 	char buffer[64];
 	string arg;
 
-	if (file) {
+	if (file.is_open()) {
 		while (!file.eof()) {
 			file >> buffer;
 			arg = buffer;
@@ -478,6 +511,22 @@ void Window::loadData() {
 				Mix_Volume(EFFECTS, effectVolume);
 			}
 
+			if (arg == "OrbColor:") {
+				file >> r1 >> g1 >> b1;
+				nextColor(r1, g1, b1, col1, true);
+			}
+
+			if (arg == "OrbLightColor:") {
+				file >> r2 >> g2 >> b2;
+				nextColor(r2, g2, b2, col2, true);
+				ren->setLightColor(r2, g2, b2);
+			}
+
+			if (arg == "Gravity:") {
+				file >> gravityX >> gravityY;
+				nextGravity(true);
+			}
+
 			if (arg == "Highscores:") {
 				highScores.clear();
 				for (int i = 0; i < HIGHSCORES; i++) {
@@ -486,6 +535,118 @@ void Window::loadData() {
 					highScores.push_back(newScore);
 				}
 			}
+		}
+	}
+}
+void Window::nextColor(int &r, int &g, int &b, string &str, bool current) {
+	if (r == 0 && g == 0 && b == 255) {
+		if (current) {
+			str = "Blue";
+		}
+		else {
+			r = 0; g = 255; b = 0;
+			str = "Green";
+		}
+	}
+	else if (r == 0 && g == 255 && b == 0) {
+		if (current) {
+			str = "Green";
+		}
+		else {
+			r = 255; g = 0; b = 0;
+			str = "Red";
+		}
+	}
+	else if (r == 255 && g == 0 && b == 0) {
+		if (current) {
+			str = "Red";
+		}
+		else {
+			r = 0; g = 255; b = 255;
+			str = "Cyan";
+		}
+	}
+	else if (r == 0 && g == 255 && b == 255) {
+		if (current) {
+			str = "Cyan";
+		}
+		else {
+			r = 255; g = 0; b = 255;
+			str = "Magenta";
+		}
+	}
+	else if (r == 255 && g == 0 && b == 255) {
+		if (current) {
+			str = "Magenta";
+		}
+		else {
+			r = 255; g = 255; b = 0;
+			str = "Yellow";
+		}
+	}
+	else if (r == 255 && g == 255 && b == 0) {
+		if (current) {
+			str = "Yellow";
+		}
+		else {
+			r = 255; g = 255; b = 255;
+			str = "White";
+		}
+	}
+	else {
+		if (current) {
+			str = "White";
+		}
+		else {
+			r = 0; g = 0; b = 255;
+			str = "Blue";
+		}
+	}
+}
+void Window::nextGravity(bool current) {
+	if (gravityX == 0 && gravityY == 0) {
+		if (current) {
+			grav = "Off";
+		}
+		else {
+			gravityX = 0; gravityY = 1;
+			grav = "Up";
+		}
+	}
+	else if (gravityX == 0 && gravityY == 1) {
+		if (current) {
+			grav = "Up";
+		}
+		else {
+			gravityX = 0; gravityY = -1;
+			grav = "Down";
+		}
+	}
+	else if (gravityX == 0 && gravityY == -1) {
+		if (current) {
+			grav = "Down";
+		}
+		else {
+			gravityX = -1; gravityY = 0;
+			grav = "Left";
+		}
+	}
+	else if (gravityX == -1 && gravityY == 0) {
+		if (current) {
+			grav = "Left";
+		}
+		else {
+			gravityX = 1; gravityY = 0;
+			grav = "Right";
+		}
+	}
+	else {
+		if (current) {
+			grav = "Right";
+		}
+		else {
+			gravityX = 0; gravityY = 0;
+			grav = "Off";
 		}
 	}
 }
