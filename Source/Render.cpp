@@ -282,7 +282,7 @@ void Render::gameLoopShading(){
 	
 	glUseProgram(*platformShader->GetShaderProgram());
 
-	uniform_location = glGetUniformLocationARB(*platformShader->GetShaderProgram(), "tex");
+	uniform_location = glGetUniformLocationARB(*platformShader->GetShaderProgram(), "plattex");
 	glUniform1iARB(uniform_location, 0);
 	glBindAttribLocation(*platformShader->GetShaderProgram(), VBO_VERTEX, "vertex");
 	glBindAttribLocation(*platformShader->GetShaderProgram(), VBO_COLOR, "color");

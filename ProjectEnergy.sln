@@ -5,16 +5,40 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProjectEnergy", "ProjectEnergy.vcxproj", "{1950523D-860B-4A77-9B9B-705A3CB75F1D}"
 EndProject
+Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "EnergyZone", "..\EnergyZone\EnergyZone.isproj", "{C8A1F750-6B41-49EB-920A-BC3D22C28E51}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1950523D-860B-4A77-9B9B-705A3CB75F1D} = {1950523D-860B-4A77-9B9B-705A3CB75F1D}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CD_ROM|Win32 = CD_ROM|Win32
 		Debug|Win32 = Debug|Win32
+		DVD-5|Win32 = DVD-5|Win32
 		Release|Win32 = Release|Win32
+		SingleImage|Win32 = SingleImage|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1950523D-860B-4A77-9B9B-705A3CB75F1D}.CD_ROM|Win32.ActiveCfg = Release|Win32
+		{1950523D-860B-4A77-9B9B-705A3CB75F1D}.CD_ROM|Win32.Build.0 = Release|Win32
 		{1950523D-860B-4A77-9B9B-705A3CB75F1D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{1950523D-860B-4A77-9B9B-705A3CB75F1D}.Debug|Win32.Build.0 = Debug|Win32
+		{1950523D-860B-4A77-9B9B-705A3CB75F1D}.DVD-5|Win32.ActiveCfg = Debug|Win32
+		{1950523D-860B-4A77-9B9B-705A3CB75F1D}.DVD-5|Win32.Build.0 = Debug|Win32
 		{1950523D-860B-4A77-9B9B-705A3CB75F1D}.Release|Win32.ActiveCfg = Release|Win32
 		{1950523D-860B-4A77-9B9B-705A3CB75F1D}.Release|Win32.Build.0 = Release|Win32
+		{1950523D-860B-4A77-9B9B-705A3CB75F1D}.SingleImage|Win32.ActiveCfg = Release|Win32
+		{1950523D-860B-4A77-9B9B-705A3CB75F1D}.SingleImage|Win32.Build.0 = Release|Win32
+		{C8A1F750-6B41-49EB-920A-BC3D22C28E51}.CD_ROM|Win32.ActiveCfg = CD_ROM
+		{C8A1F750-6B41-49EB-920A-BC3D22C28E51}.CD_ROM|Win32.Build.0 = CD_ROM
+		{C8A1F750-6B41-49EB-920A-BC3D22C28E51}.Debug|Win32.ActiveCfg = DVD-5
+		{C8A1F750-6B41-49EB-920A-BC3D22C28E51}.Debug|Win32.Build.0 = DVD-5
+		{C8A1F750-6B41-49EB-920A-BC3D22C28E51}.DVD-5|Win32.ActiveCfg = DVD-5
+		{C8A1F750-6B41-49EB-920A-BC3D22C28E51}.DVD-5|Win32.Build.0 = DVD-5
+		{C8A1F750-6B41-49EB-920A-BC3D22C28E51}.Release|Win32.ActiveCfg = SingleImage
+		{C8A1F750-6B41-49EB-920A-BC3D22C28E51}.Release|Win32.Build.0 = SingleImage
+		{C8A1F750-6B41-49EB-920A-BC3D22C28E51}.SingleImage|Win32.ActiveCfg = SingleImage
+		{C8A1F750-6B41-49EB-920A-BC3D22C28E51}.SingleImage|Win32.Build.0 = SingleImage
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
