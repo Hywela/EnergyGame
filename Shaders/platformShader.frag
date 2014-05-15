@@ -90,5 +90,5 @@ for(int i = 0; i < platformNumUnlitLigth; i++){
 }
 
 	outPut = sum+unlit+lit+mainCharLight();
-
+	//outPut = getTexture();
 }

@@ -297,6 +297,7 @@ void World::setGravity(int x, int y) {
 }
 
 
+
 //Update functions
 void World::updateWorld() {
 	//Check if player is dead
@@ -511,8 +512,8 @@ void World::updateFixed() {
 				setPuzzle(randomPuzzleId);
 
 				//Spawn particles for bonus
-				int offX = puzzles->at(puzzleId)->getSpawn() + 200;
-				int offY = 150;
+				//int offX = puzzles->at(puzzleId)->getSpawn() + 200;
+				//int offY = 150;
 				//spawnGroundParticles(10, b2Vec2(offX, offY), 30);
 			}
 		}
@@ -580,7 +581,6 @@ void World::loadPuzzles(string file) {
 				puzzle->setParts(parts);
 				puzzle->setChallenge(challenge);
 				puzzle->setBonus(bonus);
-				puzzle->setScale(screenwidth);
 				puzzle->setTime(time);
 				puzzle->setParticleSpawn(par, parX, parY);
 				puzzles->push_back(puzzle);
@@ -641,7 +641,6 @@ void World::loadPuzzles(string file) {
 	puzzle->setParts(parts);
 	puzzle->setChallenge(challenge);
 	puzzle->setBonus(bonus);
-	puzzle->setScale(screenwidth);
 	puzzle->setTime(time);
 	puzzle->setParticleSpawn(par, parX, parY);
 	puzzles->push_back(puzzle);
@@ -652,7 +651,7 @@ void World::spawnPuzzle(int puzzleId) {
 	this->puzzleId = puzzleId;
 
 	//Store offset
-	puzzle->setSpawn(spawnX);
+	puzzle->setSpawn(spawnX, camOffX);
 	int doorNum = 0;
 
 	//Spawn all parts
@@ -729,7 +728,7 @@ bool World::startPuzzle() {
 					playerPos *= M2P;
 					playerPos.x += camOffX;
 					playerPos.y += camOffY;
-					spawnGroundParticles(challenge, playerPos, 30);
+					spawnGroundParticles(challenge, playerPos, FIELD_RADIUS);
 				}
 			}
 
@@ -741,7 +740,9 @@ bool World::startPuzzle() {
 	}
 
 	//Check if camera is over puzzle
-	if (puzzle->cameraAtCenter(b2Vec2((screenwidth / 2), 0)) || !puzzlesSolved) {
+	float scale = screenwidth / 1920.0;
+	int camStopPosX = (screenwidth / 2) / scale;
+	if (puzzle->cameraAtCenter(b2Vec2(camStopPosX, 0)) || !puzzlesSolved) {
 		cameraSpeed = 0;
 		stopped = true;
 	}
@@ -811,21 +812,26 @@ void World::spawnGroundParticles(int n, b2Vec2 pos, int r) {
 
 		//Create particles
 		for (float d = 0; d < 360; d += degreeStep) {
-			float xTurn = cos(d * pi / 180.0F);
-			float yTurn = sin(d * pi / 180.0F);
-			int dX = (xTurn * fieldRadius);
-			int dY = (yTurn * fieldRadius);
-			float roll = randomRange(30, 100) / 100.0;
-			dX *= roll;
-			dY *= roll;
+			if (particles->size() < MAX_PARTICLES) {
+				float xTurn = cos(d * pi / 180.0F);
+				float yTurn = sin(d * pi / 180.0F);
+				int dX = (xTurn * fieldRadius);
+				int dY = (yTurn * fieldRadius);
+				float roll = randomRange(30, 100) / 100.0;
+				dX *= roll;
+				dY *= roll;
 
-			int offX = (-camOffX) + posX + dX;
-			int offY = (-camOffY) + posY + dY;
+				int offX = (-camOffX) + posX + dX;
+				int offY = (-camOffY) + posY + dY;
 
-			b2Body *newBody = addCircle(offX, offY, circleRadius, -1);
-			Particle *newParticle = new Particle(parR, parG, parB);
-			newParticle->setBody(newBody);
-			particles->push_back(newParticle);
+				b2Body *newBody = addCircle(offX, offY, circleRadius, -1);
+				Particle *newParticle = new Particle(parR, parG, parB);
+				newParticle->setBody(newBody);
+				particles->push_back(newParticle);
+			}
+			else {
+				printf("Failed to spawn particle. Maximum capasity reached!\n");
+			}
 		}
 	}
 }
@@ -833,7 +839,7 @@ void World::spawnGroundParticles(int n, b2Vec2 pos, int r) {
 void World::setPuzzle(int id) {
 	//Spawn puzzle
 	spawnPuzzle(id);
-	spawnX += 900;
+	spawnX += 900 + (WALLSIZE * 2);
 
 	//Increase difficulty
 	numWalls += WALL_INCREASE;
@@ -950,6 +956,7 @@ int World::shootParticle(int x, int y) {
 	movementSpeedGained = (int) divider;
 	b2Vec2 direction = b2Vec2(dist.x / divider, dist.y / divider);
 	b2Vec2 moveDir = direction;
+	moveDir *= FIELD_RADIUS;
 	direction *= PARTICLE_SPEED * movementSpeedGained; //Apply base speed of the object
 	
 	int closestParticle = -1;
@@ -1022,7 +1029,7 @@ void World::spawnCharacter() {
 	float degreeStep = 360 / numParticles;
 	int posX = 400;
 	int posY = 300;
-	int fieldRadius = 50;
+	int fieldRadius = FIELD_RADIUS;
 	float circleRadius = 0.1;
 	float pi = 3.14159265;
 
@@ -1093,7 +1100,7 @@ void World::retriveParticles() {
 		playerPos *= M2P;
 		playerPos.x += camOffX;
 		playerPos.y += camOffY;
-		spawnGroundParticles(totalParticles, playerPos, 30);
+		spawnGroundParticles(totalParticles, playerPos, FIELD_RADIUS);
 
 		//Regained stored particles
 		numStored = 0;
@@ -1204,7 +1211,7 @@ void World::spawnRandomWalls() {
 		}
 
 		int randWidth = randomRange(0, WALLSIZE - 10);
-		int randX = randWidth * randomRange(-1, 1);
+		int randX = (WALLSIZE - randWidth) * randomRange(-1, 1);
 
 		int offX = (-camOffX) + spawnX + randX;
 		int offY = (-camOffY) + y;

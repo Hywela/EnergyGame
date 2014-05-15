@@ -19,7 +19,7 @@ puzzle 0:
 
 
 puzzle 1:
-Challenge: 1
+Challenge: 2
 Time: 10
 Bonus: 5
 Particles: 5 200 450
@@ -74,7 +74,7 @@ Bonus: 5
 
 
 puzzle 4:
-Challenge: 1
+Challenge: 2
 Time: 15
 Bonus: 5
 Particles: 5 400 100

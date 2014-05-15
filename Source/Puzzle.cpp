@@ -6,12 +6,12 @@ Puzzle::Puzzle() {
 	entranceId = -1;
 	exitId = -1;
 	spawnX = 0;
+	camOffX = 0;
 	tasksTotal = 0;
 	tasksDone = 0;
 	activated = true;
 	bonusParticles = 0;
 	challengeParticles = 0;
-	scale = 1;
 	time = -1;
 	timeChallenge = -1;
 	par = 0;
@@ -30,38 +30,24 @@ vector <PartData> Puzzle::getParts() {
 bool Puzzle::isPlayerInside(b2Vec2 position) {
 	bool found = false;
 
-	if (scale == 1) {
-		if (position.x >= spawnX + (600 / scale)) {
-			found = true;
-			activated = true;
-			ticksLastSec = SDL_GetTicks();
+	if (position.x >= spawnX + (-camOffX) + 40) {
+		found = true;
+		activated = true;
+		ticksLastSec = SDL_GetTicks();
 
-			//If time challenge
-			if (time < 0 && timeChallenge > 0) {
-				//Start timer
-				time = 0;
-			}
-		}
-	}
-	else {
-		if (position.x >= spawnX + (450 / scale)) {
-			found = true;
-			activated = true;
-			ticksLastSec = SDL_GetTicks();
-
-			//If time challenge
-			if (time < 0 && timeChallenge > 0) {
-				//Start timer
-				time = 0;
-			}
+		//If time challenge
+		if (time < 0 && timeChallenge > 0) {
+			//Start timer
+			time = 0;
 		}
 	}
 
 	return found;
 }
 
-void Puzzle::setSpawn(int offX) {
-	spawnX = offX;
+void Puzzle::setSpawn(float spawnX, int camOffX) {
+	this->spawnX = spawnX;
+	this->camOffX = camOffX;
 	activated = false;
 }
 
@@ -140,15 +126,8 @@ void Puzzle::updateExitId(int deletedId) {
 bool Puzzle::cameraAtCenter(b2Vec2 position) {
 	bool found = false;
 
-	if (scale == 1) {
-		if (position.x >= spawnX + (1410 / scale)) {
-			found = true;
-		}
-	}
-	else {
-		if (position.x >= spawnX + (1200 / scale)) {
-			found = true;
-		}
+	if (position.x >= spawnX + (-camOffX) + 850) {
+		found = true;
 	}
 
 	return found;
@@ -189,11 +168,6 @@ bool Puzzle::hasFailed() {
 	}
 
 	return fail;
-}
-
-void Puzzle::setScale(int screenW) {
-	scale = 1920.0 / screenW;
-	this->screenW = screenW;
 }
 
 void Puzzle::setTime(int t) {

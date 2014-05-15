@@ -14,14 +14,13 @@ struct PartData {
 class Puzzle {
 private:
 	float spawnX;
+	int camOffX;
 	int tasksTotal, tasksDone;
 	vector <PartData> parts;
 	int entranceId, exitId;
 	bool activated;
 	int bonusParticles;
 	int challengeParticles;
-	float scale;
-	int screenW;
 	int time, timeChallenge;
 	int par, parX, parY;
 	Uint32 ticksLastSec;
@@ -32,7 +31,7 @@ public:
 
 	vector <PartData> getParts();
 	bool isPlayerInside(b2Vec2 position);
-	void setSpawn(int offX);
+	void setSpawn(float spawnX, int camOffX);
 	void setExit(int id);
 	PartData getEntrance();
 	int getSpawn();
@@ -49,7 +48,6 @@ public:
 	int getChallenge();
 	int getBonus();
 	bool hasFailed();
-	void setScale(int screenW);
 	void setTime(int t);
 	int getTimeLeft();
 	void progressUpdate();

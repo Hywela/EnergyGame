@@ -123,10 +123,11 @@ void Window::gameLoop() {
 
 	if (world) {
 		scoStr = "Score: " + to_string(world->getScore());
+		parStr = "Particles: " + to_string(world->getParticlesLeft());
+		puzStr = "Solved: " + to_string(world->getPuzzlesSolved());
+
 		if (showDebug) {
 			fpsStr = "FPS: " + to_string(fps_current);
-			puzStr = "Solved: " + to_string(world->getPuzzlesSolved());
-			parStr = "Particles: " + to_string(world->getParticlesLeft());
 			cSpeedStr = "Camera Speed: " + to_string(world->getCameraSpeed());
 		}
 
@@ -450,7 +451,7 @@ void Window::newGame() {
 	leftMouseClick = &Window::gameLeftMouseClick;
 	loopType = &Window::gameLoop;
 	currentMenu = MENU_NONE;
-	showDebug = true;
+	showDebug = false;
 	lastUpdate = 0;
 }
 void Window::showSettings() {
