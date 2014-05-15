@@ -905,7 +905,7 @@ void World::applyForce(int x, int y) {
 		float xGravityForce = 3; //Force to counteract friction
 		float yGravityForce = 6; //Force to counteract gravity
 		b2Vec2 direction = b2Vec2((dist.x / divider) * xGravityForce, (dist.y / divider) * yGravityForce);
-		direction *= MOVEMENT_SPEED_GAIN; //Apply base speed of the object
+		direction *= movementSpeedGained; //Apply base speed of the object
 
 		//Apply force
 		playerBody->ApplyForce(-direction, playerPos, true);
@@ -949,6 +949,7 @@ int World::shootParticle(int x, int y) {
 	float yGravityForce = 1; //Force to counteract gravity
 	movementSpeedGained = (int) divider;
 	b2Vec2 direction = b2Vec2(dist.x / divider, dist.y / divider);
+	b2Vec2 moveDir = direction;
 	direction *= PARTICLE_SPEED * movementSpeedGained; //Apply base speed of the object
 	
 	int closestParticle = -1;
@@ -997,6 +998,10 @@ int World::shootParticle(int x, int y) {
 		b2Vec2 parXY = parBody->GetPosition();
 		parXY *= M2P;
 
+		b2Vec2 firePos = mainXY + moveDir;
+		firePos *= P2M;
+
+		parBody->SetTransform(firePos, 0);
 		parBody->SetLinearVelocity(b2Vec2(0, 0));
 		parBody->ApplyForce(direction, parXY, true);
 

@@ -21,6 +21,7 @@ private:
 	int bonusParticles;
 	int challengeParticles;
 	float scale;
+	int screenW;
 	int time, timeChallenge;
 	int par, parX, parY;
 	Uint32 ticksLastSec;
