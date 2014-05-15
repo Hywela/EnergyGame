@@ -19,6 +19,7 @@ uniform vec3 unlitLightColor;
 uniform vec3 litLightColor;
 uniform float screenHeight;
 uniform vec3 lightAttenuation;
+uniform vec3 particleLightColor;
 uniform float radius;
 out vec4 outPut;
 
@@ -35,7 +36,8 @@ vec4 calcLigthMap (in int distanceShine,  in float sizeOfLigth , in int lp){
 	vec2 aux=lightpos[lp]-pixel;
 	float distance=length(aux)/distanceShine;
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
-	vec4 outputMap = (vec4(attenuation,attenuation,attenuation,1.0) *getTexture() ) * sizeOfLigth ;
+	vec4 outputMap = ((vec4(attenuation,attenuation,attenuation,1.0) *getTexture() ) * sizeOfLigth) - (vec4(particleLightColor, 1));
+
 return outputMap;
 }
 vec4 mainCharLight ()
@@ -46,7 +48,7 @@ vec4 mainCharLight ()
 	float distance=length(aux);
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 	vec4 ligth=vec4(attenuation,attenuation,attenuation,1.0);	
-	vec4 outPutLigth  = getTexture()*ligth;
+	vec4 outPutLigth  = getTexture()*ligth - (vec4(particleLightColor, 1));
   return outPutLigth;
 }
 vec4 litPlatform (in int distanceShine,  in float sizeOfLigth , in int lp){

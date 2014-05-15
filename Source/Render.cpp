@@ -305,7 +305,7 @@ void Render::gameLoopShading(){
 	glUniform1f(glGetUniformLocation(*platformShader->GetShaderProgram(), "screenHeight"), screenHeight);
 	glUniform3f(glGetUniformLocation(*platformShader->GetShaderProgram(), "lightAttenuation"), 1, 1, 1);
 	glUniform1f(glGetUniformLocation(*platformShader->GetShaderProgram(), "radius"), 50);
-
+	glUniform3f(glGetUniformLocation(*shader->GetShaderProgram(), "particleLightColor"), 255 - ledR, 255 - ledG, 255 - ledB);
 
 
 	platformVBO->drawTexture();
