@@ -353,7 +353,7 @@ void Window::settingsLoop() {
 }
 void Window::startWorld() {
 	inGame = true;
-	world = new World(ren->getInit()->getScreenWidth(), ren->getInit()->getScreenHeight(), ren->getPlatformVBO(), ren->getParticleVBO()
+	world = new World(WORLDHEIGHT, WORLDWIDE, ren->getPlatformVBO(), ren->getParticleVBO()
 		, ren->getMainCharParticleVBO());
 	//worldSimulation = new thread(&World::checkForInput, world);
 	//world->setupWorld();
