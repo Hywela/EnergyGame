@@ -54,3 +54,6 @@ const string DATA_FILE = "GameData.txt";
 const int WORLD_UPDATE_FPS = 120;
 
 int randomRange(int min, int max);
+
+const int WORLDHEIGHT = 1920;
+const int WORLDWIDE = 1080;
