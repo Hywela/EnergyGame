@@ -371,15 +371,16 @@ void Window::buildMenu(){
 	int offY = screenH / 20 + fontSizeOffsett;
 
 	//Main menu objects
-	ren->pushBackMenuObj(offX, offY * 0.5, "Play");
-	ren->pushBackMenuObj(offX, offY * 1, "Settings");
-	ren->pushBackMenuObj(offX, offY * 1.5, "Highscores");
+	ren->pushBackMenuObj(offX, offY * 0.75, "Play");
+	ren->pushBackMenuObj(offX, offY * 1.1, "Settings");
+	ren->pushBackMenuObj(offX, offY * 1.45, "Highscores");
 	ren->pushBackMenuObj(offX, offY * 2.5, "Quit");
+	ren->pushBackMenuObj(offX, offY * 0.25, "Energy Zone");
 
 	//Pause objects
-	ren->pushBackPauseObj(offX, offY * 0.5, "Resume");
-	ren->pushBackPauseObj(offX, offY * 1, "Restart");
-	ren->pushBackPauseObj(offX, offY * 1.5, "Main Menu");
+	ren->pushBackPauseObj(offX, offY * 0.75, "Resume");
+	ren->pushBackPauseObj(offX, offY * 2.15, "Restart");
+	ren->pushBackPauseObj(offX, offY * 2.5, "Main Menu");
 	
 	int scoreLeft = 80;
 	int scoreRight = (screenW / 2) + 80;

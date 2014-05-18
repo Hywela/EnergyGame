@@ -44,7 +44,7 @@ private:
 	int cameraX;
 	int cameraY;
 	//MainMenu
-	TTF_Font *font, *menuFont, *popupFont;
+	TTF_Font *font, *menuFont, *popupFont, *titleFont;
 	struct button{
 		b2Vec2 buttonBox[4];
 		int posX;

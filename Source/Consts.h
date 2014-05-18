@@ -14,6 +14,7 @@ const float M2P = 30;
 const float P2M = 1 / M2P;
 //Meny const
 const SDL_Color MENU_COLOR_HOVER = { 255, 255, 0 };
+const SDL_Color TITLE_COLOR = { 255, 90, 0 };
 const SDL_Color MENU_COLOR_NORMAL = { 0, 255, 255 };
 const SDL_Color HIGHSCORE_COLOR_NORMAL = { 255, 255, 255 };
 const SDL_Color HIGHSCORE_COLOR_NEW = { 0, 220, 0 };

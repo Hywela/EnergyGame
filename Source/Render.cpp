@@ -21,6 +21,7 @@ Render::Render(Init *init){
 	float scale = 1080.0 / screenHeight;
 	font = TTF_OpenFont("./Font/CaviarDreams.ttf", 42 / scale);
 	menuFont = TTF_OpenFont("./Font/CaviarDreams.ttf", 60 / scale);
+	titleFont = TTF_OpenFont("./Font/CaviarDreams.ttf", 80 / scale);
 	popupFont = TTF_OpenFont("./Font/CaviarDreams.ttf", 20 / scale);
 	renderNow = false;
 	shutDown = false;
@@ -381,7 +382,13 @@ void Render::mainMenu(string fps){
 
 	renderText(font, MENU_COLOR_NORMAL, 20, screenHeight - 50, 0, fps);
 	for (int i = 0; i < menuObjects->size(); i++){
-		renderText(menuFont, menuObjects->at(i).color, menuObjects->at(i).posX, menuObjects->at(i).posY, 0, menuObjects->at(i).tekst);
+		TTF_Font *useFont = menuFont;
+		SDL_Color useColor = menuObjects->at(i).color;
+		if (i == 4) {
+			useFont = titleFont;
+			useColor = TITLE_COLOR;
+		}
+		renderText(useFont, useColor, menuObjects->at(i).posX, menuObjects->at(i).posY, 0, menuObjects->at(i).tekst);
 	}
 
 	endRendering();
@@ -430,14 +437,17 @@ void Render::renderText(const TTF_Font *Font, SDL_Color Color,
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 void Render::pushBackMenuObj(int posX, int posY, string tekst ){
-
 	button but;
+	but.disabled = false;
 	but.color = MENU_COLOR_NORMAL;
 	but.posX = posX;
 	but.posY = posY;
 	but.tekst = tekst;
+
+	float scale = 1080.0 / screenHeight;
+	float fontHeight = 60 / scale;
 	int offsetX = 700;
-	int offsetY = 100;
+	int offsetY = fontHeight;
 
 	but.buttonBox[0].x = posX;
 	but.buttonBox[0].y = posY;
@@ -451,7 +461,6 @@ void Render::pushBackMenuObj(int posX, int posY, string tekst ){
 	but.buttonBox[3].x = posX;
 	but.buttonBox[3].y = posY + offsetY;
 
-	but.disabled = false;
 	menuObjects->push_back(but);
 }
 void Render::pushBackPauseObj(int posX, int posY, string tekst){
@@ -461,8 +470,10 @@ void Render::pushBackPauseObj(int posX, int posY, string tekst){
 	but.posX = posX;
 	but.posY = posY;
 	but.tekst = tekst;
+	float scale = 1080.0 / screenHeight;
+	float fontHeight = 60 / scale;
 	int offsetX = 700;
-	int offsetY = 100;
+	int offsetY = fontHeight;
 
 	but.buttonBox[0].x = posX;
 	but.buttonBox[0].y = posY;
@@ -485,8 +496,10 @@ void Render::pushBackScoreBtn(int posX, int posY, string tekst){
 	but.posX = posX;
 	but.posY = posY;
 	but.tekst = tekst;
+	float scale = 1080.0 / screenHeight;
+	float fontHeight = 60 / scale;
 	int offsetX = 700;
-	int offsetY = 100;
+	int offsetY = fontHeight;
 
 	but.buttonBox[0].x = posX;
 	but.buttonBox[0].y = posY;
@@ -509,8 +522,10 @@ void Render::pushBackScoreTxt(int posX, int posY, string tekst){
 	but.posX = posX;
 	but.posY = posY;
 	but.tekst = tekst;
+	float scale = 1080.0 / screenHeight;
+	float fontHeight = 60 / scale;
 	int offsetX = 700;
-	int offsetY = 100;
+	int offsetY = fontHeight;
 
 	but.buttonBox[0].x = posX;
 	but.buttonBox[0].y = posY;
@@ -533,8 +548,10 @@ void Render::pushBackSettingsBtn(int posX, int posY, string tekst){
 	but.posX = posX;
 	but.posY = posY;
 	but.tekst = tekst;
+	float scale = 1080.0 / screenHeight;
+	float fontHeight = 60 / scale;
 	int offsetX = 700;
-	int offsetY = 100;
+	int offsetY = fontHeight;
 
 	but.buttonBox[0].x = posX;
 	but.buttonBox[0].y = posY;
@@ -553,9 +570,9 @@ void Render::pushBackSettingsBtn(int posX, int posY, string tekst){
 }
 
 int Render::menuMouseClickCheck(int x, int y){
-	for (int i = 0; i < menuObjects->size(); i++){
-		if(menuObjects->at(i).buttonBox[0].x <= x && menuObjects->at(i).buttonBox[2].y >= y){
-			if (menuObjects->at(i).buttonBox[2].x >= x && menuObjects->at(i).buttonBox[0].y <= y){
+	for (int i = 0; i < menuObjects->size() - 1; i++){
+		if(menuObjects->at(i).buttonBox[0].x <= x && menuObjects->at(i).buttonBox[2].x >= x){
+			if (menuObjects->at(i).buttonBox[0].y <= y && menuObjects->at(i).buttonBox[2].y >= y){
 				if (!menuObjects->at(i).disabled) {
 					menuObjects->at(i).color = MENU_COLOR_NORMAL;
 					return i + 1;
@@ -568,8 +585,8 @@ int Render::menuMouseClickCheck(int x, int y){
 }
 int Render::pauseMouseClickCheck(int x, int y){
 	for (int i = 0; i < pauseObjects->size(); i++){
-		if (pauseObjects->at(i).buttonBox[0].x <= x && pauseObjects->at(i).buttonBox[2].y >= y){
-			if (pauseObjects->at(i).buttonBox[2].x >= x && pauseObjects->at(i).buttonBox[0].y <= y){
+		if (pauseObjects->at(i).buttonBox[0].x <= x && pauseObjects->at(i).buttonBox[2].x >= x){
+			if (pauseObjects->at(i).buttonBox[0].y <= y && pauseObjects->at(i).buttonBox[2].y >= y){
 				if (!pauseObjects->at(i).disabled) {
 					pauseObjects->at(i).color = MENU_COLOR_NORMAL;
 					return i + 1;
@@ -582,8 +599,8 @@ int Render::pauseMouseClickCheck(int x, int y){
 }
 int Render::scoreMouseClickCheck(int x, int y){
 	for (int i = 0; i < scoreButtons->size(); i++) {
-		if (scoreButtons->at(i).buttonBox[0].x <= x && scoreButtons->at(i).buttonBox[2].y >= y) {
-			if (scoreButtons->at(i).buttonBox[2].x >= x && scoreButtons->at(i).buttonBox[0].y <= y) {
+		if (scoreButtons->at(i).buttonBox[0].x <= x && scoreButtons->at(i).buttonBox[2].x >= x) {
+			if (scoreButtons->at(i).buttonBox[0].y <= y && scoreButtons->at(i).buttonBox[2].y >= y) {
 				if (!scoreButtons->at(i).disabled) {
 					scoreButtons->at(i).color = MENU_COLOR_NORMAL;
 					return i + 1;
@@ -596,8 +613,8 @@ int Render::scoreMouseClickCheck(int x, int y){
 }
 int Render::settingsMouseClickCheck(int x, int y){
 	for (int i = 0; i < settingsButtons->size(); i++) {
-		if (settingsButtons->at(i).buttonBox[0].x <= x && settingsButtons->at(i).buttonBox[2].y >= y) {
-			if (settingsButtons->at(i).buttonBox[2].x >= x && settingsButtons->at(i).buttonBox[0].y <= y) {
+		if (settingsButtons->at(i).buttonBox[0].x <= x && settingsButtons->at(i).buttonBox[2].x >= x) {
+			if (settingsButtons->at(i).buttonBox[0].y <= y && settingsButtons->at(i).buttonBox[2].y >= y) {
 				if (!settingsButtons->at(i).disabled) {
 					settingsButtons->at(i).color = MENU_COLOR_NORMAL;
 					return i + 1;
@@ -623,8 +640,8 @@ void Render::menuMouseHoverCheck(int x, int y, int type){
 		for (int i = 0; i < temp->size(); i++){
 			temp->at(i).color = MENU_COLOR_NORMAL;
 
-			if (temp->at(i).buttonBox[0].x <= x && temp->at(i).buttonBox[2].y >= y){
-				if (temp->at(i).buttonBox[2].x >= x && temp->at(i).buttonBox[0].y <= y){
+			if (temp->at(i).buttonBox[0].x <= x && temp->at(i).buttonBox[2].x >= x){
+				if (temp->at(i).buttonBox[0].y <= y && temp->at(i).buttonBox[2].y >= y){
 					temp->at(i).color = MENU_COLOR_HOVER;
 				}
 			}
