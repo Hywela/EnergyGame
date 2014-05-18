@@ -45,10 +45,10 @@ vec4 mainCharLight ()
 	vec2 pixel=gl_FragCoord.xy;	
 	pixel.y=screenHeight-pixel.y;	
 	vec2 aux=MainCharLightpos-pixel;
-	float distance=length(aux);
+	float distance=length(aux)/3;
 	float attenuation=1.0/(lightAttenuation.x+lightAttenuation.y*distance+lightAttenuation.z*distance*distance);	
 	vec4 ligth=vec4(attenuation,attenuation,attenuation,1.0);	
-	vec4 outPutLigth  = getTexture()*ligth - (vec4(particleLightColor, 1));
+	vec4 outPutLigth = ((vec4(attenuation,attenuation,attenuation,1.0) *getTexture() ) * 25) - (vec4(particleLightColor, 1));
   return outPutLigth;
 }
 vec4 litPlatform (in int distanceShine,  in float sizeOfLigth , in int lp){
