@@ -154,11 +154,11 @@ void World::setupWorld() {
 
 	//Load sounds
 	string sndPath;
-	sndPath = DIR_EFFECTS + "Super Mario - Fireball Effect.wav";
+	sndPath = DIR_EFFECTS + "Shoot.wav";
 	snd_Shoot = Mix_LoadWAV(sndPath.c_str());
-	sndPath = DIR_EFFECTS + "Super Mario - Powerup.wav";
+	sndPath = DIR_EFFECTS + "Succeed.wav";
 	snd_PuzzleClear = Mix_LoadWAV(sndPath.c_str());
-	sndPath = DIR_EFFECTS + "Super Mario - Pipe.wav";
+	sndPath = DIR_EFFECTS + "Fail.wav";
 	snd_PuzzleFail = Mix_LoadWAV(sndPath.c_str());
 
 	//Play music
