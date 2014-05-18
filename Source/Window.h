@@ -41,6 +41,7 @@ private:
 	int r1, r2,  g1, g2,  b1, b2;
 	int gravityX, gravityY;
 	string col1, col2, grav;
+	Mix_Chunk *snd_Lost;
 	
 	//FPS test variables
 	Uint32 fps_lasttime;

@@ -49,7 +49,7 @@ const int MAX_PARTICLES = 40;
 //Audio variables
 const int AUDIO_RATE = 22050;
 const Uint16 AUDIO_FORMAT = AUDIO_S16; /* 16-bit stereo */
-enum SOUND_CHANNEL {BG_MUSIC, EFFECTS, AUDIO_CHANNELS};
+enum SOUND_CHANNEL {BG_MUSIC, EFFECTS = -1, AUDIO_CHANNELS};
 const int AUDIO_BUFFERS = 2048;
 const string DIR_MUSIC = "Audio/Music/";
 const string DIR_EFFECTS = "Audio/Effects/";

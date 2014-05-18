@@ -160,6 +160,8 @@ void World::setupWorld() {
 	snd_PuzzleClear = Mix_LoadWAV(sndPath.c_str());
 	sndPath = DIR_EFFECTS + "Fail.wav";
 	snd_PuzzleFail = Mix_LoadWAV(sndPath.c_str());
+	sndPath = DIR_EFFECTS + "Pickup.wav";
+	snd_Pickup = Mix_LoadWAV(sndPath.c_str());
 
 	//Play music
 	string song1 = DIR_MUSIC + "Tobu - Colors.mp3";
@@ -303,8 +305,9 @@ void World::updateWorld() {
 	//Check if player is dead
 	b2Vec2 playerPos = playerBody->GetPosition();
 	playerPos *= M2P;
+	int circleRadius = 34;
 
-	if (playerPos.x < DEATH_WALL_SPACE) {
+	if (playerPos.x - circleRadius < DEATH_WALL_SPACE) {
 		lost = true;
 	}
 
@@ -381,6 +384,11 @@ void World::updateChar() {
 
 				//printf("Picked up particle!\n");
 				numParticles++;
+
+				//Play pickup sound
+				if (snd_Pickup != NULL) {
+					Mix_PlayChannel(EFFECTS, snd_Pickup, 0);
+				}
 			}
 		}
 	}

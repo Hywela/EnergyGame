@@ -46,6 +46,10 @@ Window::Window() {
 	Mix_VolumeMusic(musicVolume);
 	effectVolume = 0;
 	Mix_Volume(EFFECTS, effectVolume);
+
+	string sndPath = DIR_EFFECTS + "Death.wav";
+	snd_Lost = Mix_LoadWAV(sndPath.c_str());
+
 	loadData();
 }
 
@@ -461,6 +465,11 @@ void Window::showSettings() {
 	currentMenu = MENU_SETTINGS;
 }
 void Window::endGame() {
+	//Play death sound
+	if (snd_Lost != NULL) {
+		Mix_PlayChannel(EFFECTS, snd_Lost, 0);
+	}
+
 	//Get score
 	scoreFinal = world->getScore();
 	//Check if new highscore
