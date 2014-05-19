@@ -1,6 +1,6 @@
 #pragma once
-#include "Circle.h"
-#include "Platform.h"
+#include <glew.h>
+#include <gl\GL.h>
 #include <random>
 #include <fstream>
 #include <Windows.h>

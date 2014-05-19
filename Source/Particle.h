@@ -1,8 +1,9 @@
 #pragma once
-#include "Circle.h"
-
-
-
+#include <glew.h>
+#include <gl\GL.h>
+#include <Box2D\Box2D.h>
+#include <SDL.h>
+#include "Consts.h"
 class Particle {
 private:
 	b2Body *body;

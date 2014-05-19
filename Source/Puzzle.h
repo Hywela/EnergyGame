@@ -1,5 +1,4 @@
 #pragma once
-#include "Platform.h"
 #include "Consts.h"
 using namespace std;
 
