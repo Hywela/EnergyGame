@@ -18,7 +18,7 @@ Window::Window() {
 	buildMenu();
 
 	r1 = 255; g1 = 255; b1 = 255;
-	r2 = 0; g2 = 255; b2 = 255;
+	r2 = 255; g2 = 255; b2 = 255;
 	nextColor(r1, g1, b1, col1, true);
 	nextColor(r2, g2, b2, col2, true);
 	ren->setLightColor(r2, g2, b2);

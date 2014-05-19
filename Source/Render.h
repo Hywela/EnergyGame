@@ -54,11 +54,11 @@ private:
 	int ledR, ledG, ledB;
 
 	vector<button> *popupButtons, *menuObjects, *pauseObjects, *scoreButtons, *scoreTexts, *settingsButtons;
-	PlatformVBO *platformVBO,*backgroundVBO, *pauseVBO;
+	PlatformVBO *platformVBO,*backgroundVBO;
 	ParticleVBO *particleVBO, *mainCharParticleVBO;
 	
 	//shader
-	Shader *shader, *colorShader , *platformShader;
+	Shader *shader,*platformShader;
 	GLint mUniform;
 	
 	//Unifroms

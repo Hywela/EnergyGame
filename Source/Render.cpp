@@ -29,7 +29,7 @@ Render::Render(Init *init){
 	platformVBO = new PlatformVBO();
 	particleVBO = new ParticleVBO();
 	backgroundVBO = new PlatformVBO(); 
-	pauseVBO = new PlatformVBO();	
+	//pauseVBO = new PlatformVBO();	
 	mainCharParticleVBO = new ParticleVBO();
 	b2Vec2 vx[4];
 	vx[0].x = 0;
@@ -44,12 +44,12 @@ Render::Render(Init *init){
 	vx[3].x = 0;
 	vx[3].y = screenHeight;
 	
-	//pauseVBO->pushBackground(vx, b2Vec2(screenHeight / 2, screenWidth / 2), b2Vec3(0, 0, 255));
-	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
+	//pauseVBO->pushBackground(vx, b2Vec2(screenHeight / 2, screenWidth / 2), b2Vec3(255, 0, 255));
+//	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
 	setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 255, 255), backgroundVBO);
 	shader = new Shader("./Shaders/ligthShader.vert", "./Shaders/ligthShader.frag");
 	platformShader =  new Shader("./Shaders/platformShader.vert", "./Shaders/platformShader.frag");
-	colorShader = new Shader("./Shaders/colorShader.vert", "./Shaders/colorShader.frag");
+//	colorShader = new Shader("./Shaders/colorShader.vert", "./Shaders/colorShader.frag");
 	setUniforms(shader);
 	
 	
@@ -65,11 +65,11 @@ Render::~Render()
 	delete settingsButtons;
 	delete platformVBO;
 	delete backgroundVBO;
-	delete pauseVBO;
+//	delete pauseVBO;
 	delete particleVBO;
 	delete mainCharParticleVBO;
 	delete shader;
-	delete colorShader;
+//	delete colorShader;
 	delete platformShader;
 	delete init;
 
@@ -92,7 +92,7 @@ void Render::pauseLoop(){
 	render();
 	startRendering();
 
-	colorShading();
+	//colorShading();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -110,7 +110,7 @@ void Render::scoreLoop(vector <int> scores, int scoreFinal, int scorePos, bool i
 	render();
 	startRendering();
 
-	colorShading();
+	//colorShading();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -170,7 +170,7 @@ void Render::settingsLoop(int musVol, int effVol, string col1, string col2, stri
 	render();
 	startRendering();
 
-	colorShading();
+	//colorShading();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -245,7 +245,9 @@ void Render::mainLoop(string fps, string puz, string par, string sco, string tim
 		
 }
 void Render::gameLoopShading(){
-	
+	glEnable(GL_BLEND);
+
+	glBlendFunc(GL_ONE, GL_ONE);
 	GLint uniform_location;
 	glUseProgram(*shader->GetShaderProgram());
 	
@@ -280,7 +282,10 @@ void Render::gameLoopShading(){
 	
 
 	glUseProgram(0);
-	
+	glDisable(GL_BLEND);
+	glEnable(GL_BLEND);
+
+	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	glUseProgram(*platformShader->GetShaderProgram());
 
 	uniform_location = glGetUniformLocationARB(*platformShader->GetShaderProgram(), "plattex");
@@ -313,15 +318,15 @@ void Render::gameLoopShading(){
 
 
 	glUseProgram(0);
-	
+	glDisable(GL_BLEND);
 
 }
 void Render::colorShading(){
-	glUseProgram(*colorShader->GetShaderProgram());
-	glBindAttribLocation(*shader->GetShaderProgram(), VBO_VERTEX, "vertex");
-	glBindAttribLocation(*shader->GetShaderProgram(), VBO_COLOR, "color");
-	pauseVBO->draw(false);
-	glUseProgram(0);
+	//glUseProgram(*colorShader->GetShaderProgram());
+//	glBindAttribLocation(*shader->GetShaderProgram(), VBO_VERTEX, "vertex");
+	//glBindAttribLocation(*shader->GetShaderProgram(), VBO_COLOR, "color");
+//	pauseVBO->draw(false);
+//	glUseProgram(0);
 }
 void Render::render() {
 	//Clear buffer
@@ -372,7 +377,7 @@ void Render::mainMenu(string fps){
 	render();
 	startRendering();	
 
-	colorShading();
+	//colorShading();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -671,12 +676,12 @@ void Render::setMousePointLigth(int x, int y){
 	mousePointer.y = y;
 }
 void Render::pushOrClearPopupMenu(int type, int x, int y ){
-	pauseVBO->clear();
-	if (type == 0){
+//	pauseVBO->clear();
+/*	if (type == 0){
 		setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
 		setBackgroundSquare(x, y, 200, 200, b2Vec3(0, 255, 255), pauseVBO);
 	}else
-		setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);
+		setBackgroundSquare(0, 0, screenWidth, screenHeight, b2Vec3(0, 0, 0), pauseVBO);*/
 }
 void Render::setCameraDirectionX(int offsett){
 	cameraX += offsett;
