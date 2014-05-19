@@ -5,11 +5,8 @@
 #include <gl\GL.h>
 #include <gl\GLU.h>
 #include <Box2D\Box2D.h>
-#include "InputQueue.h"
-#include "InputData.h"
 #include <iostream>
 #include "Consts.h"
-#include "RenderQue.h"
 #include <string>
 #include <Windows.h>
 #include "SDL_ttf.h"
@@ -83,10 +80,10 @@ public:
 	//Loops //call for rendering 
 	void (Render::*loop)();
 	void mainLoop(string fps = "", string puz = "", string par = "", string sco = "", string tim = "", string csp = "");
-	void renderLoop(RenderQue *renQue, InputQueue *que);
+	//void renderLoop(RenderQue *renQue, InputQueue *que);
 	void mainMenu(string fps);
 	//init
-	void initiaze(int h, int w, InputQueue *que);
+	//void initiaze(int h, int w, InputQueue *que);
 	void setUpOGL();
 	void setUpSDL(int flags);
 	//render

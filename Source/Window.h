@@ -9,11 +9,7 @@
 #include <SDL_mixer.h>
 #include <fstream>
 #include "World.h"
-#include "InputData.h"
-#include "InputQueue.h"
 #include <thread>
-#include "RenderData.h"
-#include "RenderQue.h"
 #include "Render.h"
 #include "Init.h"
 

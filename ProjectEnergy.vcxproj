@@ -11,21 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Circle.cpp" />
     <ClCompile Include="Source\FileReader.cpp" />
     <ClCompile Include="Source\ParticleVBO.cpp" />
     <ClCompile Include="Source\Consts.cpp" />
     <ClCompile Include="Source\Init.cpp" />
-    <ClCompile Include="Source\Input.cpp" />
-    <ClCompile Include="Source\InputData.cpp" />
-    <ClCompile Include="Source\InputQueue.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Particle.cpp" />
-    <ClCompile Include="Source\Platform.cpp" />
     <ClCompile Include="Source\Puzzle.cpp" />
     <ClCompile Include="Source\Render.cpp" />
-    <ClCompile Include="Source\RenderData.cpp" />
-    <ClCompile Include="Source\RenderQue.cpp" />
     <ClCompile Include="Source\PlatformVBO.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
@@ -33,20 +26,13 @@
     <ClCompile Include="Source\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Circle.h" />
     <ClInclude Include="Source\FileReader.h" />
     <ClInclude Include="Source\ParticleVBO.h" />
     <ClInclude Include="Source\Consts.h" />
     <ClInclude Include="Source\Init.h" />
-    <ClInclude Include="Source\Input.h" />
-    <ClInclude Include="Source\InputData.h" />
-    <ClInclude Include="Source\InputQueue.h" />
     <ClInclude Include="Source\Particle.h" />
-    <ClInclude Include="Source\Platform.h" />
     <ClInclude Include="Source\Puzzle.h" />
     <ClInclude Include="Source\Render.h" />
-    <ClInclude Include="Source\RenderData.h" />
-    <ClInclude Include="Source\RenderQue.h" />
     <ClInclude Include="Source\PlatformVBO.h" />
     <ClInclude Include="Source\Shader.h" />
     <ClInclude Include="Source\Texture.h" />
@@ -60,6 +46,11 @@
     <Image Include="Texture\shiphull.bmp" />
     <Image Include="Texture\shiphull.jpg" />
     <Image Include="Texture\techmb.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1950523D-860B-4A77-9B9B-705A3CB75F1D}</ProjectGuid>
